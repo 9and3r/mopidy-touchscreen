@@ -3,7 +3,7 @@ import pykka
 import logging
 from threading import Thread
 import pygame
-from .main_screen import MainScreen
+from .screen_manager import ScreenManager
 
 from mopidy import core
 
@@ -14,38 +14,31 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
     def __init__(self, config, core):
 	super(TouchScreen, self).__init__()
         self.core = core
+	self.screen_size=(320, 240)
 
     def start_thread(self):
+	self.screen_manager = ScreenManager(self.screen_size)
 	pygame.init()
 	clock = pygame.time.Clock()
-	main_screen = MainScreen()
-	screen = pygame.display.set_mode((200,200));
+	screen = pygame.display.set_mode(self.screen_size)
 	while self.running:
 		clock.tick(60)
-		main_screen.update(screen)
+		screen.blit(self.screen_manager.update(self.core),(0,0))
 		pygame.display.flip()
-	logger.error("bukatzen")
 	pygame.quit()
-	logger.error("bukatu dot")
 	
 	
 
     def on_start(self):
 	self.running=True
-	self.thread = Thread(target=self.start_thread)
-	self.thread.start()
-
+	thread = Thread(target=self.start_thread)
+	thread.start()
+	pass
     def on_stop(self):
 	self.running = False
 	
 	
 
     def track_playback_started(self, tl_track):
-	pass
-	#myfont = pygame.font.SysFont("monospace", 15)
-
-				# render text
-	#label = myfont.render(tl_track.track.name, 1, (255,255,0))
-	#self.screen.blit(label, (100, 100))
-    	#pygame.display.flip()
+	self.screen_manager.track_started(tl_track)
  
