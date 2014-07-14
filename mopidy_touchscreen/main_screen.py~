@@ -1,0 +1,8 @@
+import pygame
+
+
+class MainScreen():
+
+	def update(self):
+		surface = pygame.Surface((200,200)).fill((255,255,255))
+		return surface
