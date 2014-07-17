@@ -31,7 +31,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
     pygame.quit()
 
     def on_start(self):
-        logger.error("hemen nago")
         self.running=True
         thread = Thread(target=self.start_thread)
         thread.start()
@@ -40,5 +39,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.running = False
 
     def track_playback_started(self, tl_track):
-        self.screen_manager.track_started(tl_track)
+        try:
+            self.screen_manager.track_started(tl_track)
+        except:
+            traceback.print_exc()
+
  
