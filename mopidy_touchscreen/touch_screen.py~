@@ -31,9 +31,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def on_start(self):
 	self.running=True
-	self.thread = Thread(target=self.start_thread)
-	self.thread.start()
-	pass
+	thread = Thread(target=self.start_thread)
+	thread.start()
     def on_stop(self):
 	self.running = False
 	
