@@ -1,6 +1,0 @@
-class ImageManager():
-
-	def __init__(self,cache):
-		self.cache = cache
-
-	def isImageInCache(self,imagename):
