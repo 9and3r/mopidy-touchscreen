@@ -20,13 +20,13 @@ class ScreenObjectsManager():
         return self.text_objects[key]
 
     def add_touch_object(self, key, text, pos, color):
-        self.touch_objects['key'] = TouchAndTextItem(text, pos, color, self.base_size)
+        self.touch_objects[key] = TouchAndTextItem(text, pos, color, self.base_size)
 
     def get_touch_object(self,key):
-        return self.touch_objects['key']
+        return self.touch_objects[key]
 
     def add_progressbar(self, key, pos, pos2, max):
-        self.touch_objects['key'] = Progressbar(pos,pos2,max)
+        self.touch_objects[key] = Progressbar(pos,pos2,max)
 
     def render(self, surface):
         for key in self.text_objects:
@@ -34,6 +34,13 @@ class ScreenObjectsManager():
             self.text_objects[key].render(surface)
         for key in self.touch_objects:
             self.touch_objects[key].render(surface)
+
+    def get_touch_objects_in_pos(self, pos):
+        objects = []
+        for key in self.touch_objects:
+            if self.touch_objects[key].is_pos_inside(pos):
+                objects.append(key)
+        return objects
 
 
 class BaseItem():
@@ -45,6 +52,7 @@ class BaseItem():
         self.size[0] = self.pos2[0] - self.pos[0]
         self.size[1] = self.pos2[1] - self.pos[1]
         self.rect = pygame.Rect(0,0,self.size[0],self.size[1])
+        self.rect_in_pos = pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[1])
 
 
 class TextItem(BaseItem):
@@ -114,6 +122,8 @@ class TouchObject(BaseItem):
     def render(self,surface):
         surface.blit(self.background_box, self.pos)
 
+    def is_pos_inside(self, pos):
+        return self.rect_in_pos.collidepoint(pos)
 
 class TouchAndTextItem(TouchObject, TextItem):
 
@@ -128,7 +138,7 @@ class TouchAndTextItem(TouchObject, TextItem):
         TouchObject.render(self,surface)
         TextItem.render(self,surface)
 
-class Progressbar(BaseItem):
+class Progressbar(TouchObject):
 
     def __init__(self, pos, pos2, max):
         BaseItem.__init__(self, pos, pos2)
@@ -152,4 +162,8 @@ class Progressbar(BaseItem):
         pos_pixel = value * self.size[0] / self.max
         rect = pygame.Rect(0,0,pos_pixel,self.size[1])
         self.surface.fill(self.main_color, rect)
+
+    def get_pos_value(self, pos):
+        x = pos[0] - self.pos[0]
+        return x * self.max / self.size[0]
 

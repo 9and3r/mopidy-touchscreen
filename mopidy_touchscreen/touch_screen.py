@@ -21,17 +21,17 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         #self.screen_size=(320, 240)
         self.screen_size=(800, 600)
         pygame.init()
-        self.screen_manager = ScreenManager(self.screen_size)
+        self.screen_manager = ScreenManager(self.screen_size,self.core)
 
     def start_thread(self):
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode(self.screen_size)
         while self.running:
             clock.tick(30)
-            screen.blit(self.screen_manager.update(self.core),(0,0))
+            screen.blit(self.screen_manager.update(),(0,0))
             pygame.display.flip()
             for event in pygame.event.get():
-                pass
+                self.screen_manager.event(event)
         pygame.quit()
 
     def on_start(self):
