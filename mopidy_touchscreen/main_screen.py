@@ -8,7 +8,7 @@ import urllib
 import urllib2
 import json
 from mopidy.audio import PlaybackState
-from .touch_text_manager import TouchTextManager
+from .screen_objects import ScreenObjectsManager
 from .dynamic_background import DynamicBackground
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class MainScreen():
         self.track = None
         self.cache = cache
         self.image = None
-        self.touch_text_manager = TouchTextManager(size,self.base_size)
+        self.touch_text_manager = ScreenObjectsManager(size,self.base_size)
         self.touch_text_manager.add_touch_object("pause_play","Play",(0,0),(255,255,255))
 
 
