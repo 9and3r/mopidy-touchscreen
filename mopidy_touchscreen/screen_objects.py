@@ -13,20 +13,21 @@ class ScreenObjectsManager():
         self.touch_objects = {}
         self.text_objects = {}
 
-    def add_object(self, key, text, pos, pos2, color):
-        self.text_objects[key] = TextItem(text, pos,pos2,color,self.base_size)
+    def add_object(self, key, font, text, pos, pos2, color):
+        self.text_objects[key] = TextItem(font, text, pos,pos2,color,self.base_size)
 
     def get_object(self, key):
         return self.text_objects[key]
 
-    def add_touch_object(self, key, text, pos, color):
-        self.touch_objects[key] = TouchAndTextItem(text, pos, color, self.base_size)
+    def add_touch_object(self, key, font, text, pos, color):
+        self.touch_objects[key] = TouchAndTextItem(font, text, pos, color, self.base_size)
+        return self.touch_objects[key].get_right_pos()
 
     def get_touch_object(self,key):
         return self.touch_objects[key]
 
-    def add_progressbar(self, key, pos, pos2, max):
-        self.touch_objects[key] = Progressbar(pos,pos2,max)
+    def add_progressbar(self, key, font, text, pos, pos2, max,value_text):
+        self.touch_objects[key] = Progressbar(font, text,pos,pos2,max,self.base_size,value_text)
 
     def render(self, surface):
         for key in self.text_objects:
@@ -54,14 +55,17 @@ class BaseItem():
         self.rect = pygame.Rect(0,0,self.size[0],self.size[1])
         self.rect_in_pos = pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[1])
 
+    def get_right_pos(self):
+        return self.pos2[0]
+
 
 class TextItem(BaseItem):
 
-    def __init__(self, text, pos,pos2, color,text_size):
+    def __init__(self, font, text, pos,pos2, color,text_size):
         if pos2 is not None:
             BaseItem.__init__(self,pos,pos2)
         self.text_size = text_size
-        self.font = pygame.font.SysFont("arial", text_size)
+        self.font = font
         self.text = text
         self.color = color
         self.box = self.font.render(text, True, self.color)
@@ -108,62 +112,69 @@ class TextItem(BaseItem):
             self.box = self.font.render(self.text, True, self.color)
         surface.blit(self.box,self.pos,area=self.rect)
 
-    def set_text(self, text):
-        self.__init__(text,self.pos,self.pos2,self.color,self.text_size)
+    def set_text(self, text, size_mantain):
+        if size_mantain:
+            self.__init__(self.font, text,self.pos,None,self.color,self.text_size)
+        else:
+            self.__init__(self.font, text,self.pos,self.pos2,self.color,self.text_size)
 
 class TouchObject(BaseItem):
 
     def __init__(self,pos,pos2):
         BaseItem.__init__(self,pos,pos2)
         self.active = False
-        self.background_box = pygame.Surface(self.size)
-        self.background_box.fill((0,128,255))
-
-    def render(self,surface):
-        surface.blit(self.background_box, self.pos)
 
     def is_pos_inside(self, pos):
         return self.rect_in_pos.collidepoint(pos)
 
 class TouchAndTextItem(TouchObject, TextItem):
 
-    def __init__(self, text, pos, color,text_size):
-        TextItem.__init__(self,text, pos,None, color,text_size)
+    def __init__(self, font, text, pos, color,text_size):
+        TextItem.__init__(self, font, text, pos,None, color,text_size)
         TouchObject.__init__(self,pos,self.pos2)
 
     def update(self):
         TextItem.update()
 
-    def render(self,surface):
-        TouchObject.render(self,surface)
-        TextItem.render(self,surface)
+class Progressbar(TouchObject, TextItem):
 
-class Progressbar(TouchObject):
-
-    def __init__(self, pos, pos2, max):
+    def __init__(self,font,text, pos, pos2, max,size, value_text):
         BaseItem.__init__(self, pos, pos2)
         logger.error(pos2)
         self.value = 0
         self.max = max
         self.back_color = (0,0,0,128)
-        self.main_color = (255,255,255)
+        self.main_color = (0,150,255)
         self.surface = pygame.Surface(self.size, pygame.SRCALPHA)
         self.surface.fill(self.back_color)
+        self.value_text = value_text
+        if value_text:
+            self.text = TextItem(font,str(self.max),pos,None,(255,255,255),size)
+            self.text.set_text(str(self.value),True)
+        else:
+            self.text = TextItem(font,text,pos,None,(255,255,255),size)
+        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /2,self.text.pos[1])
 
     def update(self):
         pass
 
     def render(self, surface):
         surface.blit(self.surface, self.pos)
+        self.text.render(surface)
 
     def set_value(self, value):
-        self.value = value
-        self.surface.fill(self.back_color)
-        pos_pixel = value * self.size[0] / self.max
-        rect = pygame.Rect(0,0,pos_pixel,self.size[1])
-        self.surface.fill(self.main_color, rect)
+        if value != self.value:
+            self.value = value
+            if self.value_text:
+                self.set_text(str(self.value))
+            self.surface.fill(self.back_color)
+            pos_pixel = value * self.size[0] / self.max
+            rect = pygame.Rect(0,0,pos_pixel,self.size[1])
+            self.surface.fill(self.main_color, rect)
 
     def get_pos_value(self, pos):
         x = pos[0] - self.pos[0]
         return x * self.max / self.size[0]
 
+    def set_text(self, text):
+        self.text.set_text(text , True)

@@ -3,14 +3,10 @@ from __future__ import unicode_literals
 import logging
 import os
 
-# TODO: Remove entirely if you don't register GStreamer elements below
-import pygst
-pygst.require('0.10')
-import gst
-import gobject
 
 from mopidy import config, ext
-
+from .touch_screen import TouchScreen
+from .touch_screen_backend import TouchScreenBackend
 
 __version__ = '0.1.0'
 
@@ -36,8 +32,6 @@ class Extension(ext.Extension):
         return schema
 
     def setup(self, registry):
-        # You will typically only implement one of the following things
-        # in a single extension.
-	from .touch_screen import TouchScreen
         registry.add('frontend', TouchScreen)
+        registry.add('backend', TouchScreenBackend)
         
