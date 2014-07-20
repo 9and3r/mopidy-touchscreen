@@ -35,7 +35,7 @@ class MainScreen():
 
         if self.track is not None:
             if self.image is not None:
-                screen.blit(self.image, (self.base_size, self.base_size*2))
+                screen.blit(self.image, (self.base_size/2, self.base_size + self.base_size/2))
             self.touch_text_manager.get_touch_object("time_progress").set_value(self.core.playback.time_position.get()/1000)
             self.touch_text_manager.get_touch_object("time_progress").set_text(time.strftime('%M:%S', time.gmtime(self.core.playback.time_position.get()/1000))+"/"+time.strftime('%M:%S', time.gmtime(self.track.length/1000)))
         self.touch_text_manager.render(screen)
@@ -43,9 +43,10 @@ class MainScreen():
 
     def track_started(self, track):
         self.image = None
-        self.touch_text_manager.add_object("track_name",self.fonts['dejavusans'],track.name,(self.size[0]/2,self.base_size*2), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
-        self.touch_text_manager.add_object("album_name",self.fonts['dejavusans'],track.album.name,(self.size[0]/2,self.base_size*3), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
-        self.touch_text_manager.add_object("artist_name",self.fonts['dejavusans'],self.getFirstArtist(track),(self.size[0]/2,self.base_size*4), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
+        x = self.base_size * 5
+        self.touch_text_manager.add_object("track_name",self.fonts['dejavusans'],track.name,(x,self.base_size*2), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
+        self.touch_text_manager.add_object("album_name",self.fonts['dejavusans'],track.album.name,(x,self.base_size*3), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
+        self.touch_text_manager.add_object("artist_name",self.fonts['dejavusans'],self.getFirstArtist(track),(x,self.base_size*4), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
         self.touch_text_manager.add_progressbar("time_progress", self.fonts['dejavusans'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(0,self.base_size*6), (self.size[0],self.base_size*7),track.length/1000, False)
         self.track = track
         if not self.is_image_in_cache():
@@ -78,18 +79,25 @@ class MainScreen():
         return os.path.isfile(self.getCoverFolder()+self.getImageFileName())
 
     def downloadImage(self):
-        safe_artist=urllib.quote_plus(self.getFirstArtist(None))
-        safe_album=urllib.quote_plus(self.track.album.name)
-        url="http://ws.audioscrobbler.com/2.0/?"
-        params="method=album.getinfo&api_key=59a04c6a73fb99d6e8996e01db306829&artist="+safe_artist+"&album="+safe_album+"&format=json"
-        response = urllib2.urlopen(url+params)
-        data = json.load(response)
-        image = data['album']['image'][-1]['#text']
-        urllib.urlretrieve(image, self.getCoverFolder()+self.getImageFileName())
-        self.loadImage()
+        try:
+            safe_artist=urllib.quote_plus(self.getFirstArtist(self.track))
+            safe_album=urllib.quote_plus(self.track.album.name)
+            url="http://ws.audioscrobbler.com/2.0/?"
+            params="method=album.getinfo&api_key=59a04c6a73fb99d6e8996e01db306829&artist="+safe_artist+"&album="+safe_album+"&format=json"
+            response = urllib2.urlopen(url+params)
+            data = json.load(response)
+            image = data['album']['image'][-1]['#text']
+            urllib.urlretrieve(image, self.getCoverFolder()+self.getImageFileName())
+            self.loadImage()
+        except:
+            logger.warning("Cover could not be downloaded")
+            logger.error(self.track.name)
+            self.touch_text_manager.add_object("track_name",self.fonts['dejavusans'],self.track.name,(self.base_size,self.base_size*2), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
+            self.touch_text_manager.add_object("album_name",self.fonts['dejavusans'],self.track.album.name,(self.base_size,self.base_size*3), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
+            self.touch_text_manager.add_object("artist_name",self.fonts['dejavusans'],self.getFirstArtist(self.track),(self.base_size,self.base_size*4), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
 
     def loadImage(self):
-        size = self.base_size*3
+        size = self.base_size * 4
         self.image = pygame.transform.scale(pygame.image.load(self.getCoverFolder()+self.getImageFileName()).convert(),(size,size))
 
     def touch_event(self, event):

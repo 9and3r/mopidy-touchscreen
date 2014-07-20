@@ -61,7 +61,7 @@ class BaseItem():
 
 class TextItem(BaseItem):
 
-    def __init__(self, font, text, pos,pos2, color,text_size):
+    def __init__(self, font, text, pos, pos2, color, text_size):
         if pos2 is not None:
             BaseItem.__init__(self,pos,pos2)
         self.text_size = text_size
@@ -112,11 +112,11 @@ class TextItem(BaseItem):
             self.box = self.font.render(self.text, True, self.color)
         surface.blit(self.box,self.pos,area=self.rect)
 
-    def set_text(self, text, size_mantain):
-        if size_mantain:
-            self.__init__(self.font, text,self.pos,None,self.color,self.text_size)
+    def set_text(self, text, same_size):
+        if same_size:
+            TextItem.__init__(self, self.font, text, self.pos, None, self.color, self.text_size)
         else:
-            self.__init__(self.font, text,self.pos,self.pos2,self.color,self.text_size)
+            TextItem.__init__(self, self.font, text, self.pos, self.pos2, self.color, self.text_size)
 
 class TouchObject(BaseItem):
 

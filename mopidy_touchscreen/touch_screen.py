@@ -55,3 +55,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def volume_changed(self, volume):
         self.screen_manager.volume_changed(volume)
+
+    def playback_state_changed(self,old_state, new_state):
+        self.screen_manager.playback_state_changed(old_state, new_state)

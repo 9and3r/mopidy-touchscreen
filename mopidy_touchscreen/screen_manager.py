@@ -3,6 +3,8 @@ from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager
 import pygame
 import logging
+import mopidy
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ class ScreenManager():
         self.track = None
         self.touch_manager = TouchManager(size)
         self.screen_objects_manager = ScreenObjectsManager(size,self.base_size)
-        x = self.screen_objects_manager.add_touch_object("pause_play",self.fonts['dejavusans'],u" ll",(0,0),(255,255,255))
+        x = self.screen_objects_manager.add_touch_object("pause_play",self.fonts['dejavusans']," ll",(0,0),(255,255,255))
         x = x + self.base_size / 2
         x = self.screen_objects_manager.add_touch_object("random",self.fonts['dejavuserif'],u"\u2928",(x,0),(255,255,255))
         x = x + self.base_size / 2
@@ -33,6 +35,7 @@ class ScreenManager():
         self.screen_objects_manager.get_touch_object("volume").set_value(self.core.playback.volume.get())
         self.top_bar = pygame.Surface((self.size[0],self.base_size),pygame.SRCALPHA)
         self.top_bar.fill((0,0,0,128))
+        self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -56,10 +59,22 @@ class ScreenManager():
                             value = self.screen_objects_manager.get_touch_object(key).get_pos_value(touch_event.current_pos)
                             self.backend.tell({'action':'volume','value':value})
                             self.screen_objects_manager.get_touch_object(key).set_value(value)
+                        elif key == "pause_play":
+                            if self.core.playback.state.get() == mopidy.core.PlaybackState.PLAYING:
+                                self.core.playback.pause()
+                                logger.error("pausatzen")
+                            else:
+                                self.core.playback.play()
+                                logger.error("erreproduzitzen")
             self.screens[0].touch_event(touch_event)
 
     def volume_changed(self, volume):
         self.screen_objects_manager.get_touch_object("volume").set_value(volume)
 
+    def playback_state_changed(self, old_state, new_state):
+        if new_state == mopidy.core.PlaybackState.PLAYING:
+            self.screen_objects_manager.get_touch_object("pause_play").set_text(" ll",False)
+        else:
+            self.screen_objects_manager.get_touch_object("pause_play").set_text(u" \u25B8",True)
 
 
