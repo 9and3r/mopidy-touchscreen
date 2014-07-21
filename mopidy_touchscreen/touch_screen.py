@@ -20,8 +20,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         logger.error(self.backend)
         self.core = core
         self.running = False
-        #self.screen_size=(320, 240)
-        self.screen_size=(800, 600)
+        self.screen_size=(320, 240)
+        #self.screen_size=(800, 600)
         pygame.init()
         self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend)
 
