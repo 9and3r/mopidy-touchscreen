@@ -49,12 +49,12 @@ Features
 Working
 -------
 
--Seek Track
--Play/Pause
--Mute/Unmute
--Change volume
--Next/Previous track
--See track info (track name, album, artist, cover image)
+*Seek Track
+*Play/Pause
+*Mute/Unmute
+*Change volume
+*Next/Previous track
+*See track info (track name, album, artist, cover image)
 
 Planned
 -------
