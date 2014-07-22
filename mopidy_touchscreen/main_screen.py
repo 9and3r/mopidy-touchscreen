@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class MainScreen():
 
-    def __init__(self,size,manager,cache,core, fonts):
+    def __init__(self, size, manager, cache, core, fonts):
         self.core = core
         self.size = size
         self.base_size = self.size[1]/8
@@ -113,3 +113,17 @@ class MainScreen():
                 self.core.playback.next()
             elif event.direction == TouchManager.right:
                 self.core.playback.previous()
+            elif event.direction == TouchManager.up:
+                volume = self.core.playback.volume.get() + 10
+                if volume > 100:
+                    volume = 100
+                self.manager.backend.tell({'action':'volume','value':volume})
+                self.manager.volume_changed(volume)
+            elif event.direction == TouchManager.down:
+                volume = self.core.playback.volume.get() - 10
+                if volume < 0:
+                    volume = 0
+                self.manager.backend.tell({'action':'volume','value':volume})
+                self.manager.volume_changed(volume)
+
+

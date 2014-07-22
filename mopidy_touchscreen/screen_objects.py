@@ -127,6 +127,9 @@ class TouchObject(BaseItem):
     def is_pos_inside(self, pos):
         return self.rect_in_pos.collidepoint(pos)
 
+    def set_active(self, active):
+        self.active = active
+
 class TouchAndTextItem(TouchObject, TextItem):
 
     def __init__(self, font, text, pos, color,text_size):
@@ -135,6 +138,14 @@ class TouchAndTextItem(TouchObject, TextItem):
 
     def update(self):
         TextItem.update()
+
+    def set_active(self, active):
+        self.active = active
+        if active:
+            color = (0,150,255)
+        else:
+            color = (255,255,255)
+        TextItem.__init__(self.font,self.text,self.pos,self.pos2,color,self.text_size)
 
 class Progressbar(TouchObject, TextItem):
 

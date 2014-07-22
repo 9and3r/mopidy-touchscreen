@@ -39,10 +39,8 @@ class TouchManager():
             elif abs(self.down_pos[1] - self.up_pos[1]) > self.min_swipe_move:
                 return TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
         elif self.down_pos[1] - self.up_pos[1] < self.max_move_margin:
-            logger.error("hemen nago")
             logger.error( abs(self.down_pos[1] - self.up_pos[1]))
             if abs(self.down_pos[0] - self.up_pos[0]) > self.min_swipe_move:
-                logger.error("kaixo")
                 return TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, False)
 
 

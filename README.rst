@@ -20,6 +20,8 @@ Mopidy-Touchscreen
 
 Mopidy extension to show info on a display and control from it
 
+.. image:: http://i60.tinypic.com/i4l0fq.jpg
+
 
 Installation
 ============
@@ -39,7 +41,7 @@ Before starting Mopidy, you must add configuration for
 Mopidy-Touchscreen to your Mopidy configuration file::
 
     [touchscreen]
-    # TODO: Add example of extension config
+    enabled = true
 
 
 Project resources

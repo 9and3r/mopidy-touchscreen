@@ -12,7 +12,10 @@ class TouchScreenBackend(pykka.ThreadingActor, backend.Backend):
         logger.error("backend funciona")
 
     def on_receive(self, message):
-        logger.error("heldu naiz")
-        if message['action'] == 'volume':
-            logger.error("bolumena aldatzen")
+        action = message['action']
+        if action == 'volume':
             self.audio.set_volume(message['value'])
+        elif action == "mute":
+            self.audio.set_mute(message['value'])
+        elif action == "random":
+            self.audio.set_random(message['value'])

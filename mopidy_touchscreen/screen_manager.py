@@ -66,6 +66,13 @@ class ScreenManager():
                             else:
                                 self.core.playback.play()
                                 logger.error("erreproduzitzen")
+                        elif key == "mute":
+                            mute = not self.core.playback.mute.get()
+                            self.backend.tell({'action':'mute','value':mute})
+                        elif key == "random":
+                            logger.error(self.core.tracklist.random)
+                            self.core.tracklist.random = not self.core.tracklist.random
+                            #self.backend.tell({'action':'random','value':random})
             self.screens[0].touch_event(touch_event)
 
     def volume_changed(self, volume):
@@ -77,4 +84,5 @@ class ScreenManager():
         else:
             self.screen_objects_manager.get_touch_object("pause_play").set_text(u" \u25B8",True)
 
-
+    def mute_changed(self, mute):
+        self.touch_text_manager.get_touch_object("mute").set_active(mute)
