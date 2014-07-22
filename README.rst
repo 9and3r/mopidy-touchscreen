@@ -43,6 +43,38 @@ Mopidy-Touchscreen to your Mopidy configuration file::
     [touchscreen]
     enabled = true
 
+Features
+=============
+
+Working
+-------
+
+-Seek Track
+-Play/Pause
+-Mute/Unmute
+-Change volume
+-Next/Previous track
+-See track info (track name, album, artist, cover image)
+
+Planned
+-------
+
+-Resolution on config file
+-Shuffle on/off
+-Repeat one/on/off
+-Playback list and control
+-Playlists
+-Library
+-Menu (exit mopidy, restart...)
+-Use keyboard or GPIO buttons instead of touchscreen
+
+Screenshots
+===========
+
+.. image:: http://tinypic.com/r/i4l0fq/8
+
+.. image:: http://tinypic.com/r/nd7vk1/8
+Extension running on [Texy's display](http://www.raspberrypi.org/forums/viewtopic.php?f=93&t=65566)
 
 Project resources
 =================
