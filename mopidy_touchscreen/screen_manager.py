@@ -1,6 +1,7 @@
 from .main_screen import MainScreen
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager
+from .tracklist import Tracklist
 import pygame
 import logging
 import mopidy
@@ -16,31 +17,39 @@ class ScreenManager():
         self.core = core
         self.backend = backend
         self.fonts = {}
+        self.current_screen = 1
         self.base_size = self.size[1] / 8
         self.fonts['dejavuserif'] = pygame.font.SysFont("dejavuserif", self.base_size)
         self.fonts['dejavusans'] = pygame.font.SysFont("dejavusans", self.base_size)
-        self.screens = [MainScreen(size, self, "/home/ander", core,self.fonts)]
+        try:
+            self.screens = [MainScreen(size, self, "/home/ander", core,self.fonts),Tracklist(size,self.base_size,self)]
+        except:
+            traceback.print_exc()
         self.track = None
         self.touch_manager = TouchManager(size)
-        self.screen_objects_manager = ScreenObjectsManager(size,self.base_size)
-        x = self.screen_objects_manager.add_touch_object("pause_play",self.fonts['dejavusans']," ll",(0,0),(255,255,255))
+        self.screen_objects_manager = ScreenObjectsManager(self.base_size)
+        x = self.screen_objects_manager.add_touch_object("pause_play",self.fonts['dejavusans']," ll",(0,0), None, (255,255,255))
         x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("random",self.fonts['dejavuserif'],u"\u2928",(x,0),(255,255,255))
+        x = self.screen_objects_manager.add_touch_object("random",self.fonts['dejavuserif'],u"\u2928",(x,0),None,(255,255,255))
         x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("repeat",self.fonts['dejavuserif'],u"\u27F21",(x,0),(255,255,255))
+        x = self.screen_objects_manager.add_touch_object("repeat",self.fonts['dejavuserif'],u"\u27F21",(x,0),None,(255,255,255))
         x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("mute",self.fonts['dejavusans'],"Mute",(x,0),(255,255,255))
+        x = self.screen_objects_manager.add_touch_object("mute",self.fonts['dejavusans'],"Mute",(x,0),None,(255,255,255))
         x = x + self.base_size / 2
         self.screen_objects_manager.add_progressbar("volume",self.fonts['dejavusans'],"100", (x,0), (self.size[0],self.base_size),100, True)
         self.screen_objects_manager.get_touch_object("volume").set_value(self.core.playback.volume.get())
         self.top_bar = pygame.Surface((self.size[0],self.base_size),pygame.SRCALPHA)
         self.top_bar.fill((0,0,0,128))
         self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
+        self.down_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
+        self.down_bar.fill((0,0,0,128))
+        x = self.screen_objects_manager.add_touch_object("menu_main",self.fonts['dejavusans'],"Main",(0,self.base_size*7),None,(255,255,255))
 
     def update(self):
         surface = pygame.Surface(self.size)
-        self.screens[0].update(surface)
+        self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar,(0,0))
+        surface.blit(self.top_bar,(0,self.base_size*7))
         self.screen_objects_manager.render(surface)
         return surface
 

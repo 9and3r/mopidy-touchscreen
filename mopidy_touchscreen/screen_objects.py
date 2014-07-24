@@ -7,8 +7,7 @@ class ScreenObjectsManager():
 
 
 
-    def __init__(self,size,base_size):
-        self.size = size
+    def __init__(self,base_size):
         self.base_size = base_size
         self.touch_objects = {}
         self.text_objects = {}
@@ -19,8 +18,8 @@ class ScreenObjectsManager():
     def get_object(self, key):
         return self.text_objects[key]
 
-    def add_touch_object(self, key, font, text, pos, color):
-        self.touch_objects[key] = TouchAndTextItem(font, text, pos, color, self.base_size)
+    def add_touch_object(self, key, font, text, pos, pos2, color):
+        self.touch_objects[key] = TouchAndTextItem(font, text, pos, pos2, color, self.base_size)
         return self.touch_objects[key].get_right_pos()
 
     def get_touch_object(self,key):
@@ -132,8 +131,8 @@ class TouchObject(BaseItem):
 
 class TouchAndTextItem(TouchObject, TextItem):
 
-    def __init__(self, font, text, pos, color,text_size):
-        TextItem.__init__(self, font, text, pos,None, color,text_size)
+    def __init__(self, font, text, pos, pos2, color,text_size):
+        TextItem.__init__(self, font, text, pos, pos2, color,text_size)
         TouchObject.__init__(self,pos,self.pos2)
 
     def update(self):
