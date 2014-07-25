@@ -36,6 +36,7 @@ class ScreenObjectsManager():
             self.text_objects[key].update()
             self.text_objects[key].render(surface)
         for key in self.touch_objects:
+            self.touch_objects[key].update()
             self.touch_objects[key].render(surface)
 
     def get_touch_objects_in_pos(self, pos):
@@ -66,6 +67,9 @@ class BaseItem():
 
     def get_right_pos(self):
         return self.pos2[0]
+
+    def update(self):
+        pass
 
 
 class TextItem(BaseItem):
@@ -144,10 +148,10 @@ class TouchAndTextItem(TouchObject, TextItem):
 
     def __init__(self, font, text, pos, pos2, color,text_size):
         TextItem.__init__(self, font, text, pos, pos2, color,text_size)
-        TouchObject.__init__(self,pos,self.pos2)
+        TouchObject.__init__(self, pos, self.pos2)
 
     def update(self):
-        TextItem.update()
+        TextItem.update(self)
 
     def set_active(self, active):
         self.active = active
@@ -179,6 +183,7 @@ class Progressbar(TouchObject, TextItem):
 
     def update(self):
         pass
+
 
     def render(self, surface):
         surface.blit(self.surface, self.pos)

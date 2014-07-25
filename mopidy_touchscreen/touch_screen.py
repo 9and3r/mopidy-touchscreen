@@ -66,3 +66,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def playback_state_changed(self,old_state, new_state):
         self.screen_manager.playback_state_changed(old_state, new_state)
+
+    def tracklist_changed(self):
+        self.screen_manager.tracklist_changed()

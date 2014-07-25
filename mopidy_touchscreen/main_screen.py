@@ -10,7 +10,7 @@ import json
 from mopidy.audio import PlaybackState
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager
-from .dynamic_background import DynamicBackground
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ class MainScreen():
         self.base_size = self.size[1]/8
         self.fonts = fonts
         self.manager = manager
-        self.background = DynamicBackground()
         self.track = None
         self.cache = cache
         self.image = None
@@ -31,8 +30,6 @@ class MainScreen():
 
 
     def update(self, screen):
-        self.background.drawBackground(screen)
-
         if self.track is not None:
             if self.image is not None:
                 screen.blit(self.image, (self.base_size/2, self.base_size + self.base_size/2))

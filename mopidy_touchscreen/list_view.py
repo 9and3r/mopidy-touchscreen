@@ -41,8 +41,11 @@ class ListView():
             self.screen_objects.clear(None)
         i = self.current_item
         z = 0
+        if self.scrollbar:
+            x2 = self.pos[0] + self.size[0] - self.base_size
+            x2 = self.pos[0] + self.size[0]
         while i < self.list_size and z < self.max_rows:
-            self.screen_objects.add_touch_object(str(i),self.fonts['dejavusans'], str(self.list[i]), (self.pos[0],self.pos[1]+self.base_size*z),None, (255, 255, 255))
+            self.screen_objects.add_touch_object(str(i),self.fonts['dejavusans'], self.list[i], (self.pos[0],self.pos[1]+self.base_size*z),(x2, self.pos[1]+self.base_size*(z+1)), (255, 255, 255))
             i += 1
             z += 1
 

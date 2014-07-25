@@ -2,6 +2,7 @@ from .main_screen import MainScreen
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager
 from .tracklist import Tracklist
+from .dynamic_background import DynamicBackground
 import pygame
 import logging
 import mopidy
@@ -17,6 +18,7 @@ class ScreenManager():
         self.core = core
         self.backend = backend
         self.fonts = {}
+        self.background = DynamicBackground()
         self.current_screen = 1
         self.base_size = self.size[1] / 8
         self.fonts['dejavuserif'] = pygame.font.SysFont("dejavuserif", self.base_size)
@@ -47,6 +49,7 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
+        self.background.drawBackground(surface)
         self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar,(0,0))
         surface.blit(self.top_bar,(0,self.base_size*7))
@@ -95,3 +98,6 @@ class ScreenManager():
 
     def mute_changed(self, mute):
         self.touch_text_manager.get_touch_object("mute").set_active(mute)
+
+    def tracklist_changed(self):
+        self.screens[1].tracklist_changed()
