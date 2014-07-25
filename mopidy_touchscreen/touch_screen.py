@@ -21,8 +21,16 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.core = core
         self.running = False
         #self.screen_size=(320, 240)
-        self.screen_size=(800, 600)
+        try:
+            self.screen_size = (config['touchscreen']['screen_width'],config['touchscreen']['screen_height'])
+        except KeyError:
+            self.screen_size=(320, 240)
+            logger.warning("Screen size not defined. Using default size: " + str(self.screen_size))
         pygame.init()
+        try:
+            pygame.mouse.set_visible(config['touchscreen']['cursor'])
+        except KeyError:
+            pygame.mouse.set_visible(True)
         self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend)
 
     def start_thread(self):

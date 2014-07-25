@@ -39,6 +39,9 @@ Mopidy-Touchscreen to your Mopidy configuration file::
 
     [touchscreen]
     enabled = true
+    screen_width = 800
+    screen_height = 600
+    cursor = False
 
 Features
 =============
@@ -56,7 +59,6 @@ Working
 Planned
 -------
 
-* Resolution on config file
 * Shuffle on/off
 * Repeat one/on/off
 * Playback list and control

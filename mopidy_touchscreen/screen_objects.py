@@ -28,6 +28,9 @@ class ScreenObjectsManager():
     def add_progressbar(self, key, font, text, pos, pos2, max,value_text):
         self.touch_objects[key] = Progressbar(font, text,pos,pos2,max,self.base_size,value_text)
 
+    def add_scroll_bar(self, key, pos, size, max, items_on_screen):
+        self.touch_objects[key] = ScrollBar(pos,size,max,items_on_screen)
+
     def render(self, surface):
         for key in self.text_objects:
             self.text_objects[key].update()
@@ -188,3 +191,25 @@ class Progressbar(TouchObject, TextItem):
 
     def set_text(self, text):
         self.text.set_text(text , True)
+
+class ScrollBar(TouchObject):
+
+    def __init__(self, pos, size, max, items_on_screen):
+        self.pos = pos
+        self.size = size
+        self.max = max
+        self.items_on_screen = items_on_screen
+        self.current_item = 0
+        self.back_bar = pygame.Surface(self.size)
+        self.back_bar.fill((255,255,255))
+        if self.max < 1:
+            self.barsize = self.size[1]
+        else:
+            self.barsize = float(self.items_on_screen)/float(self.max) * float(self.size[1])
+        logger.error(self.barsize)
+        self.bar = pygame.Surface((self.size[0],self.barsize))
+        self.bar.fill((255,255,0))
+
+    def render(self, surface):
+        surface.blit(self.back_bar, self.pos)
+        surface.blit(self.bar,self.pos)
