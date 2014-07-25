@@ -3,8 +3,10 @@ import logging
 import pygame
 from .touch_manager import TouchManager
 from .touch_manager import TouchEvent
+from .screen_objects import *
 
 logger = logging.getLogger(__name__)
+
 
 class ListView():
 
@@ -12,7 +14,7 @@ class ListView():
         self.size = size
         self.pos = pos
         self.base_size = base_size
-        self.screen_objects = ScreenObjectsManager(self.base_size)
+        self.screen_objects = ScreenObjectsManager()
         self.max_rows = self.size[1] / self.base_size
         self.current_item = 0
         self.fonts = fonts
@@ -21,14 +23,14 @@ class ListView():
         self.scrollbar = False
         self.set_list([])
 
-
-
     def set_list(self, item_list):
         self.list = item_list
         self.list_size = len(item_list)
         if self.max_rows < self.list_size:
             self.scrollbar = True
-            self.screen_objects.add_scroll_bar("scrollbar", (self.pos[0]+self.size[0]-self.base_size,self.pos[1]), (self.base_size, self.size[1]),self.list_size,self.max_rows)
+            scroll_bar = ScrollBar((self.pos[0]+self.size[0]-self.base_size,self.pos[1]), (self.base_size, self.size[1]),self.list_size,self.max_rows)
+            self.screen_objects.add_touch_object("scrollbar", scroll_bar)
+            logger.error("hemen nao")
         else:
             self.scrollbar = False
         self.load_new_item_position(0)
@@ -42,10 +44,13 @@ class ListView():
         i = self.current_item
         z = 0
         if self.scrollbar:
-            x2 = self.pos[0] + self.size[0] - self.base_size
-            x2 = self.pos[0] + self.size[0]
+            width = self.size[0] - self.base_size
+        else:
+            width = self.size[0]
         while i < self.list_size and z < self.max_rows:
-            self.screen_objects.add_touch_object(str(i),self.fonts['dejavusans'], self.list[i], (self.pos[0],self.pos[1]+self.base_size*z),(x2, self.pos[1]+self.base_size*(z+1)), (255, 255, 255))
+            logger.error("sartu naiz")
+            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0],self.pos[1]+self.base_size*z),(width, self.base_size))
+            self.screen_objects.add_touch_object(str(i), item)
             i += 1
             z += 1
 
@@ -61,7 +66,6 @@ class ListView():
                         direction = self.screen_objects.get_touch_object(key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
-
 
     def move_to(self, direction):
         if direction == 1:

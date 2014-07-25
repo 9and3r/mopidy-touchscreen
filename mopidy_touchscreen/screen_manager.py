@@ -1,6 +1,6 @@
 from .main_screen import MainScreen
 from .touch_manager import TouchManager
-from .screen_objects import ScreenObjectsManager
+from .screen_objects import *
 from .tracklist import Tracklist
 from .dynamic_background import DynamicBackground
 import pygame
@@ -29,23 +29,36 @@ class ScreenManager():
             traceback.print_exc()
         self.track = None
         self.touch_manager = TouchManager(size)
-        self.screen_objects_manager = ScreenObjectsManager(self.base_size)
-        x = self.screen_objects_manager.add_touch_object("pause_play",self.fonts['dejavusans']," ll",(0,0), None, (255,255,255))
-        x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("random",self.fonts['dejavuserif'],u"\u2928",(x,0),None,(255,255,255))
-        x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("repeat",self.fonts['dejavuserif'],u"\u27F21",(x,0),None,(255,255,255))
+        self.screen_objects_manager = ScreenObjectsManager()
+        button = TouchAndTextItem(self.fonts['dejavusans']," ll",(0, 0), None)
+        self.screen_objects_manager.add_touch_object("pause_play", button)
+        x = button.get_right_pos() + self.base_size / 2
+        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928",(x,0),None)
+        self.screen_objects_manager.add_touch_object("random",button)
+        x = button.get_right_pos()
+        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u27F21",(x,0),None)
+        self.screen_objects_manager.add_touch_object("repeat",button)
+        x = button.get_right_pos() + self.base_size / 2
+        button = TouchAndTextItem(self.fonts['dejavusans'],"Mute",(x,0),None)
+        self.screen_objects_manager.add_touch_object("mute",button)
+        x = button.get_right_pos() + self.base_size / 2
+        '''
+
         x = x + self.base_size / 2
         x = self.screen_objects_manager.add_touch_object("mute",self.fonts['dejavusans'],"Mute",(x,0),None,(255,255,255))
         x = x + self.base_size / 2
         self.screen_objects_manager.add_progressbar("volume",self.fonts['dejavusans'],"100", (x,0), (self.size[0],self.base_size),100, True)
         self.screen_objects_manager.get_touch_object("volume").set_value(self.core.playback.volume.get())
+
+        self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
+
+        x = self.screen_objects_manager.add_touch_object("menu_main",self.fonts['dejavusans'],"Main",(0,self.base_size*7),None,(255,255,255))
+        '''
         self.top_bar = pygame.Surface((self.size[0],self.base_size),pygame.SRCALPHA)
         self.top_bar.fill((0,0,0,128))
-        self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
+
         self.down_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
         self.down_bar.fill((0,0,0,128))
-        x = self.screen_objects_manager.add_touch_object("menu_main",self.fonts['dejavusans'],"Main",(0,self.base_size*7),None,(255,255,255))
 
     def update(self):
         surface = pygame.Surface(self.size)

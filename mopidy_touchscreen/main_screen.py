@@ -26,7 +26,7 @@ class MainScreen():
         self.track = None
         self.cache = cache
         self.image = None
-        self.touch_text_manager = ScreenObjectsManager(self.base_size)
+        self.touch_text_manager = ScreenObjectsManager()
 
 
     def update(self, screen):
