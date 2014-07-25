@@ -1,13 +1,13 @@
 import pygame
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
+
 class ScreenObjectsManager():
 
-
-
-    def __init__(self,base_size):
+    def __init__(self, base_size):
         self.base_size = base_size
         self.touch_objects = {}
         self.text_objects = {}
@@ -44,6 +44,13 @@ class ScreenObjectsManager():
             if self.touch_objects[key].is_pos_inside(pos):
                 objects.append(key)
         return objects
+
+    def clear(self, mantain):
+        if mantain is not None:
+            object = self.get_touch_object(mantain)
+        self.touch_objects = {}
+        if mantain is not None:
+            self.touch_objects[mantain] = object
 
 
 class BaseItem():
@@ -88,7 +95,6 @@ class TextItem(BaseItem):
             self.fit_horizontal = True
             self.fit_vertical = True
 
-
     def update(self):
         if not self.fit_horizontal:
             if self.text == self.original_text:
@@ -105,7 +111,7 @@ class TextItem(BaseItem):
                 new_text = new_text + self.text[:1]
                 self.text = new_text
             else:
-                self.step = self.step + 1
+                self.step += 1
 
     def render(self,surface):
         if self.fit_horizontal:
@@ -120,6 +126,7 @@ class TextItem(BaseItem):
         else:
             TextItem.__init__(self, self.font, text, self.pos, self.pos2, self.color, self.text_size)
 
+
 class TouchObject(BaseItem):
 
     def __init__(self,pos,pos2):
@@ -131,6 +138,7 @@ class TouchObject(BaseItem):
 
     def set_active(self, active):
         self.active = active
+
 
 class TouchAndTextItem(TouchObject, TextItem):
 
@@ -148,6 +156,7 @@ class TouchAndTextItem(TouchObject, TextItem):
         else:
             color = (255,255,255)
         TextItem.__init__(self.font,self.text,self.pos,self.pos2,color,self.text_size)
+
 
 class Progressbar(TouchObject, TextItem):
 
@@ -192,9 +201,11 @@ class Progressbar(TouchObject, TextItem):
     def set_text(self, text):
         self.text.set_text(text , True)
 
+
 class ScrollBar(TouchObject):
 
     def __init__(self, pos, size, max, items_on_screen):
+        BaseItem.__init__(self, pos, (pos[0]+size[0],pos[1]+size[1]))
         self.pos = pos
         self.size = size
         self.max = max
@@ -202,14 +213,27 @@ class ScrollBar(TouchObject):
         self.current_item = 0
         self.back_bar = pygame.Surface(self.size)
         self.back_bar.fill((255,255,255))
+        self.bar_pos = 0
         if self.max < 1:
             self.barsize = self.size[1]
         else:
-            self.barsize = float(self.items_on_screen)/float(self.max) * float(self.size[1])
-        logger.error(self.barsize)
+            self.barsize = math.ceil(float(self.items_on_screen)/float(self.max) * float(self.size[1]))
         self.bar = pygame.Surface((self.size[0],self.barsize))
-        self.bar.fill((255,255,0))
+        self.bar.fill((255, 255, 0))
 
     def render(self, surface):
         surface.blit(self.back_bar, self.pos)
-        surface.blit(self.bar,self.pos)
+        surface.blit(self.bar, (self.pos[0], self.pos[1]+self.bar_pos))
+
+    def touch(self, pos):
+        if pos[1] < self.pos[1]+self.bar_pos:
+            return -1
+        elif pos[1] > self.pos[1] + self.bar_pos + self.barsize:
+            return 1
+        else:
+            return 0
+
+    def set_item(self, current_item):
+        logger.error(current_item)
+        self.current_item = current_item
+        self.bar_pos = float(self.current_item)/float(self.max) * float(self.size[1])

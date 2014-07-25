@@ -82,7 +82,7 @@ class ScreenManager():
                             logger.error(self.core.tracklist.random)
                             self.core.tracklist.random = not self.core.tracklist.random
                             #self.backend.tell({'action':'random','value':random})
-            self.screens[0].touch_event(touch_event)
+            self.screens[self.current_screen].touch_event(touch_event)
 
     def volume_changed(self, volume):
         self.screen_objects_manager.get_touch_object("volume").set_value(volume)
