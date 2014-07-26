@@ -38,7 +38,7 @@ class ListView():
     def load_new_item_position(self, item_pos):
         self.current_item = item_pos
         if self.scrollbar:
-            self.screen_objects.clear_touch("scrollbar")
+            self.screen_objects.clear_touch(["scrollbar"])
         else:
             self.screen_objects.clear_touch(None)
         i = self.current_item

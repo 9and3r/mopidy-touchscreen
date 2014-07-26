@@ -19,7 +19,7 @@ class ScreenManager():
         self.backend = backend
         self.fonts = {}
         self.background = DynamicBackground()
-        self.current_screen = 1
+        self.current_screen = 0
         self.base_size = self.size[1] / 8
         self.fonts['dejavuserif'] = pygame.font.SysFont("dejavuserif", self.base_size)
         self.fonts['dejavusans'] = pygame.font.SysFont("dejavusans", self.base_size)
@@ -30,35 +30,51 @@ class ScreenManager():
         self.track = None
         self.touch_manager = TouchManager(size)
         self.screen_objects_manager = ScreenObjectsManager()
+
+        #Top bar
+        self.top_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
+        self.top_bar.fill((0, 0, 0, 128))
+
+        #Play/pause
         button = TouchAndTextItem(self.fonts['dejavusans']," ll",(0, 0), None)
         self.screen_objects_manager.set_touch_object("pause_play", button)
-        x = button.get_right_pos() + self.base_size / 2
+        x = button.get_right_pos()
+
+        #Random
         button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928",(x,0),None)
         self.screen_objects_manager.set_touch_object("random",button)
         x = button.get_right_pos()
+
+        #Repeat
         button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u27F21",(x,0),None)
         self.screen_objects_manager.set_touch_object("repeat",button)
-        x = button.get_right_pos() + self.base_size / 2
+        x = button.get_right_pos()
+
+        #Mute
         button = TouchAndTextItem(self.fonts['dejavusans'],"Mute",(x,0),None)
         self.screen_objects_manager.set_touch_object("mute",button)
-        x = button.get_right_pos() + self.base_size / 2
-        '''
+        x = button.get_right_pos()
 
-        x = x + self.base_size / 2
-        x = self.screen_objects_manager.add_touch_object("mute",self.fonts['dejavusans'],"Mute",(x,0),None,(255,255,255))
-        x = x + self.base_size / 2
-        self.screen_objects_manager.add_progressbar("volume",self.fonts['dejavusans'],"100", (x,0), (self.size[0],self.base_size),100, True)
-        self.screen_objects_manager.get_touch_object("volume").set_value(self.core.playback.volume.get())
-
+        #Volume
+        progress = Progressbar(self.fonts['dejavusans'], "100", (x, 0), (self.size[0]-x, self.base_size), 100, True)
+        self.screen_objects_manager.set_touch_object("volume", progress)
+        progress.set_value(self.core.playback.volume.get())
         self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
 
-        x = self.screen_objects_manager.add_touch_object("menu_main",self.fonts['dejavusans'],"Main",(0,self.base_size*7),None,(255,255,255))
-        '''
-        self.top_bar = pygame.Surface((self.size[0],self.base_size),pygame.SRCALPHA)
-        self.top_bar.fill((0,0,0,128))
+        #Menu buttons
 
+        #Main button
+        button = TouchAndTextItem(self.fonts['dejavusans'],"Main",(0,self.base_size*7),None)
+        self.screen_objects_manager.set_touch_object("menu_main", button)
+        x = button.get_right_pos()
+
+        #Tracklist button
+        button = TouchAndTextItem(self.fonts['dejavusans'],"Tracklist",(x,self.base_size*7),None)
+        self.screen_objects_manager.set_touch_object("menu_tracklist", button)
+
+        #Down bar
         self.down_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
-        self.down_bar.fill((0,0,0,128))
+        self.down_bar.fill((0, 0, 0, 128))
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -98,6 +114,10 @@ class ScreenManager():
                             logger.error(self.core.tracklist.random)
                             self.core.tracklist.random = not self.core.tracklist.random
                             #self.backend.tell({'action':'random','value':random})
+                        elif key == "menu_main":
+                            self.current_screen = 0
+                        elif key == "menu_tracklist":
+                            self.current_screen = 1
             self.screens[self.current_screen].touch_event(touch_event)
 
     def volume_changed(self, volume):

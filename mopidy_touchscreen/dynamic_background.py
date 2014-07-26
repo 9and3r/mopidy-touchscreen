@@ -1,4 +1,7 @@
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DynamicBackground():
@@ -12,7 +15,7 @@ class DynamicBackground():
         for x in range(0, 3):
             if self.current[x] > self.target[x]:
                 self.current[x] -= 1
-            elif self.current[x]<self.target[x]:
+            elif self.current[x] < self.target[x]:
                 self.current[x] += 1
             if self.current != self.target:
                 same = False
@@ -34,5 +37,5 @@ def get_valid_color():
     extra = total - 510
     if extra > 0:
         i = random.randint(0, 2)
-        color[i] -= - extra
+        color[i] -= extra
     return color

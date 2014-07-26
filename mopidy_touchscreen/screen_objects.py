@@ -44,7 +44,8 @@ class ScreenObjectsManager():
             for key in not_remove:
                 new_touch[key] = self.get_touch_object(key)
             self.touch_objects = new_touch
-        self.touch_objects = {}
+        else:
+            self.touch_objects = {}
 
 
 class BaseItem():
@@ -72,7 +73,7 @@ class TextItem(BaseItem):
         if size is not None:
             BaseItem.__init__(self, pos, size)
         else:
-            BaseItem.__init__(self, pos, self.box.get_rect().size)
+            BaseItem.__init__(self, pos, self.font.size(text))
         if size is not None:
             if self.pos[0] + self.box.get_rect().width > pos[0] + size[0]:
                 self.fit_horizontal = False
@@ -86,7 +87,6 @@ class TextItem(BaseItem):
             else:
                 self.fit_vertical = True
         else:
-            BaseItem.__init__(self, pos, (pos[0] + self.box.get_rect().width, pos[1] + self.box.get_rect().height))
             self.fit_horizontal = True
             self.fit_vertical = True
 
@@ -220,6 +220,5 @@ class ScrollBar(TouchObject):
             return 0
 
     def set_item(self, current_item):
-        logger.error(current_item)
         self.current_item = current_item
         self.bar_pos = float(self.current_item)/float(self.max) * float(self.size[1])
