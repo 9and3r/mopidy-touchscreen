@@ -26,15 +26,11 @@ class Extension(ext.Extension):
 
     def get_config_schema(self):
         schema = super(Extension, self).get_config_schema()
-	schema['screen_width'] = config.Integer()
-	schema['screen_height'] = config.Integer()
-	schema['cursor'] = config.Boolean()
-        # TODO: Comment in and edit, or remove entirely
-        #schema['username'] = config.String()
-        #schema['password'] = config.Secret()
+        schema['screen_width'] = config.Integer()
+        schema['screen_height'] = config.Integer()
+        schema['cursor'] = config.Boolean()
         return schema
 
     def setup(self, registry):
         registry.add('frontend', TouchScreen)
         registry.add('backend', TouchScreenBackend)
-        

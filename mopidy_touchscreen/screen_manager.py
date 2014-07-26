@@ -31,16 +31,16 @@ class ScreenManager():
         self.touch_manager = TouchManager(size)
         self.screen_objects_manager = ScreenObjectsManager()
         button = TouchAndTextItem(self.fonts['dejavusans']," ll",(0, 0), None)
-        self.screen_objects_manager.add_touch_object("pause_play", button)
+        self.screen_objects_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos() + self.base_size / 2
         button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928",(x,0),None)
-        self.screen_objects_manager.add_touch_object("random",button)
+        self.screen_objects_manager.set_touch_object("random",button)
         x = button.get_right_pos()
         button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u27F21",(x,0),None)
-        self.screen_objects_manager.add_touch_object("repeat",button)
+        self.screen_objects_manager.set_touch_object("repeat",button)
         x = button.get_right_pos() + self.base_size / 2
         button = TouchAndTextItem(self.fonts['dejavusans'],"Mute",(x,0),None)
-        self.screen_objects_manager.add_touch_object("mute",button)
+        self.screen_objects_manager.set_touch_object("mute",button)
         x = button.get_right_pos() + self.base_size / 2
         '''
 
@@ -62,7 +62,7 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
-        self.background.drawBackground(surface)
+        self.background.draw_background(surface)
         self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar,(0,0))
         surface.blit(self.top_bar,(0,self.base_size*7))

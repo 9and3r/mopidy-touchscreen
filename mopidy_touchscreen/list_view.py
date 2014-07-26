@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class ListView():
 
-    def __init__(self, pos, size, base_size,fonts):
+    def __init__(self, pos, size, base_size, fonts):
         self.size = size
         self.pos = pos
         self.base_size = base_size
@@ -29,7 +29,7 @@ class ListView():
         if self.max_rows < self.list_size:
             self.scrollbar = True
             scroll_bar = ScrollBar((self.pos[0]+self.size[0]-self.base_size,self.pos[1]), (self.base_size, self.size[1]),self.list_size,self.max_rows)
-            self.screen_objects.add_touch_object("scrollbar", scroll_bar)
+            self.screen_objects.set_touch_object("scrollbar", scroll_bar)
             logger.error("hemen nao")
         else:
             self.scrollbar = False
@@ -38,9 +38,9 @@ class ListView():
     def load_new_item_position(self, item_pos):
         self.current_item = item_pos
         if self.scrollbar:
-            self.screen_objects.clear("scrollbar")
+            self.screen_objects.clear_touch("scrollbar")
         else:
-            self.screen_objects.clear(None)
+            self.screen_objects.clear_touch(None)
         i = self.current_item
         z = 0
         if self.scrollbar:
@@ -48,9 +48,8 @@ class ListView():
         else:
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
-            logger.error("sartu naiz")
-            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0],self.pos[1]+self.base_size*z),(width, self.base_size))
-            self.screen_objects.add_touch_object(str(i), item)
+            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0], self.pos[1]+self.base_size*z), (width, self.base_size))
+            self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
 
@@ -80,5 +79,3 @@ class ListView():
                 self.current_item = 0
             self.load_new_item_position(self.current_item)
             self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
-
-

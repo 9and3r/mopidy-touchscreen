@@ -11,13 +11,13 @@ class ScreenObjectsManager():
         self.touch_objects = {}
         self.text_objects = {}
 
-    def add_object(self, key, add_object):
+    def set_object(self, key, add_object):
         self.text_objects[key] = add_object
 
     def get_object(self, key):
         return self.text_objects[key]
 
-    def add_touch_object(self, key, add_object):
+    def set_touch_object(self, key, add_object):
         self.touch_objects[key] = add_object
 
     def get_touch_object(self, key):
@@ -38,12 +38,13 @@ class ScreenObjectsManager():
                 touched_objects.append(key)
         return touched_objects
 
-    def clear(self, mantain):
-        if mantain is not None:
-            object = self.get_touch_object(mantain)
+    def clear_touch(self, not_remove):
+        if not_remove is not None:
+            new_touch = {}
+            for key in not_remove:
+                new_touch[key] = self.get_touch_object(key)
+            self.touch_objects = new_touch
         self.touch_objects = {}
-        if mantain is not None:
-            self.touch_objects[mantain] = object
 
 
 class BaseItem():
@@ -146,7 +147,7 @@ class TouchAndTextItem(TouchObject, TextItem):
 
 class Progressbar(TouchObject):
 
-    def __init__(self, font, text, pos,size, max_value, value_text):
+    def __init__(self, font, text, pos, size, max_value, value_text):
         BaseItem.__init__(self, pos, size)
         self.value = 0
         self.max = max_value
@@ -156,7 +157,7 @@ class Progressbar(TouchObject):
         self.surface.fill(self.back_color)
         self.value_text = value_text
         if value_text:
-            self.text = TextItem(font, str(self.max), pos, None, (255, 255, 255), size)
+            self.text = TextItem(font, str(self.max), pos, None)
             self.text.set_text(str(self.value), True)
         else:
             self.text = TextItem(font, text, pos, None)
@@ -176,7 +177,7 @@ class Progressbar(TouchObject):
                 self.set_text(str(self.value))
             self.surface.fill(self.back_color)
             pos_pixel = value * self.size[0] / self.max
-            rect = pygame.Rect(0,0, pos_pixel, self.size[1])
+            rect = pygame.Rect(0, 0, pos_pixel, self.size[1])
             self.surface.fill(self.main_color, rect)
 
     def get_pos_value(self, pos):
