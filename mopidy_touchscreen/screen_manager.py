@@ -36,12 +36,12 @@ class ScreenManager():
         self.top_bar.fill((0, 0, 0, 128))
 
         #Play/pause
-        button = TouchAndTextItem(self.fonts['dejavusans']," ll",(0, 0), None)
+        button = TouchAndTextItem(self.fonts['dejavusans']," ll", (0, 0), None)
         self.screen_objects_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
         #Random
-        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928",(x,0),None)
+        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928", (x, 0), None)
         self.screen_objects_manager.set_touch_object("random",button)
         x = button.get_right_pos()
 
@@ -75,6 +75,8 @@ class ScreenManager():
         #Down bar
         self.down_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 128))
+
+        self.options_changed()
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -110,11 +112,13 @@ class ScreenManager():
                         elif key == "mute":
                             mute = not self.core.playback.mute.get()
                             self.core.playback.set_mute(mute)
-                            #self.backend.tell({'action':'mute','value':mute})
+                            self.mute_changed(mute)
                         elif key == "random":
-                            logger.error(self.core.tracklist.random)
-                            self.core.tracklist.random = not self.core.tracklist.random
-                            #self.backend.tell({'action':'random','value':random})
+                            random = not self.core.tracklist.random.get()
+                            self.core.tracklist.set_random(random)
+                            self.options_changed()
+                        elif key == "repeat":
+                            self.change_repeat_single()
                         elif key == "menu_main":
                             self.current_screen = 0
                         elif key == "menu_tracklist":
@@ -126,12 +130,44 @@ class ScreenManager():
 
     def playback_state_changed(self, old_state, new_state):
         if new_state == mopidy.core.PlaybackState.PLAYING:
-            self.screen_objects_manager.get_touch_object("pause_play").set_text(" ll",False)
+            self.screen_objects_manager.get_touch_object("pause_play").set_text(" ll", True)
         else:
             self.screen_objects_manager.get_touch_object("pause_play").set_text(u" \u25B8",True)
 
     def mute_changed(self, mute):
-        self.touch_text_manager.get_touch_object("mute").set_active(mute)
+        self.screen_objects_manager.get_touch_object("mute").set_active(mute)
 
     def tracklist_changed(self):
         self.screens[1].tracklist_changed()
+
+    def options_changed(self):
+        self.screen_objects_manager.get_touch_object("random").set_active(self.core.tracklist.random.get())
+        repeat = self.core.tracklist.repeat.get()
+        single = self.core.tracklist.single.get()
+        repeat_button = self.screen_objects_manager.get_touch_object("repeat")
+        repeat_button.set_active(repeat)
+        if single:
+            repeat_button.set_text(u"\u27F21", True)
+        else:
+            repeat_button.set_text(u"\u27F2", True)
+
+    def change_repeat_single(self):
+        repeat = self.core.tracklist.repeat.get()
+        single = self.core.tracklist.single.get()
+        if single:
+            if repeat:
+                repeat = False
+                single = False
+            else:
+                repeat = True
+                single = False
+        else:
+            if repeat:
+                repeat = True
+                single = True
+            else:
+                repeat = False
+                single = True
+        self.core.tracklist.set_repeat(repeat)
+        self.core.tracklist.set_single(single)
+        self.options_changed()

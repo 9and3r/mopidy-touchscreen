@@ -110,13 +110,13 @@ class TextItem(BaseItem):
 
     def render(self, surface):
         if self.fit_horizontal:
-            self.box
+            pass
         else:
             self.box = self.font.render(self.text, True, self.color)
         surface.blit(self.box, self.pos, area=self.rect)
 
-    def set_text(self, text, same_size):
-        if same_size:
+    def set_text(self, text, change_size):
+        if change_size:
             TextItem.__init__(self, self.font, text, self.pos, None)
         else:
             TextItem.__init__(self, self.font, text, self.pos, self.size)
@@ -140,10 +140,24 @@ class TouchAndTextItem(TouchObject, TextItem):
     def __init__(self, font, text, pos, size):
         TextItem.__init__(self, font, text, pos, size)
         TouchObject.__init__(self, pos, self.size)
+        self.active_color = (255, 0, 255)
+        self.active_box = self.font.render(text, True, self.active_color)
 
     def update(self):
         TextItem.update(self)
 
+    def render(self, surface):
+        if self.fit_horizontal:
+            pass
+        else:
+            if self.active:
+                self.active_box = self.font.render(self.text, True, self.active_color)
+            else:
+                self.box = self.font.render(self.text, True, self.color)
+        if self.active:
+            surface.blit(self.active_box, self.pos, area=self.rect)
+        else:
+            surface.blit(self.box, self.pos, area=self.rect)
 
 class Progressbar(TouchObject):
 
