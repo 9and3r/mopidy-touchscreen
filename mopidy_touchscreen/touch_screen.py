@@ -4,7 +4,6 @@ import logging
 from threading import Thread
 import pygame
 from .screen_manager import ScreenManager
-from pygame.locals import *
 
 from mopidy import core
 
@@ -20,27 +19,28 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         logger.error(self.backend)
         self.core = core
         self.running = False
-        #self.screen_size=(320, 240)
-        try:
-            self.screen_size = (config['touchscreen']['screen_width'],config['touchscreen']['screen_height'])
-        except KeyError:
-            self.screen_size=(320, 240)
-            logger.warning("Screen size not defined. Using default size: " + str(self.screen_size))
+        self.screen_size = (config['touchscreen']['screen_width'], config['touchscreen']['screen_height'])
+        self.cache_dir = config['touchscreen']['cache_dir']
+        self.fullscreen = config['touchscreen']['fullscreen']
         pygame.init()
-        try:
-            pygame.mouse.set_visible(config['touchscreen']['cursor'])
-        except KeyError:
-            pygame.mouse.set_visible(True)
+        pygame.mouse.set_visible(config['touchscreen']['cursor'])
         self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend)
 
     def start_thread(self):
         clock = pygame.time.Clock()
-        screen = pygame.display.set_mode(self.screen_size)
+        if self.fullscreen:
+            screen = pygame.display.set_mode(self.screen_size, pygame.FULLSCREEN)
+        else:
+            screen = pygame.display.set_mode(self.screen_size)
         while self.running:
             clock.tick(15)
-            screen.blit(self.screen_manager.update(),(0,0))
+            screen.blit(self.screen_manager.update(), (0, 0))
             pygame.display.flip()
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                if event.type == pygame.KEYUP and event.key == pygame.K_q:
+                    self.running = False
                 self.screen_manager.event(event)
         pygame.quit()
 

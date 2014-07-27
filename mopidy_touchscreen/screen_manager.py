@@ -109,7 +109,8 @@ class ScreenManager():
                                 logger.error("erreproduzitzen")
                         elif key == "mute":
                             mute = not self.core.playback.mute.get()
-                            self.backend.tell({'action':'mute','value':mute})
+                            self.core.playback.set_mute(mute)
+                            #self.backend.tell({'action':'mute','value':mute})
                         elif key == "random":
                             logger.error(self.core.tracklist.random)
                             self.core.tracklist.random = not self.core.tracklist.random

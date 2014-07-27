@@ -39,9 +39,11 @@ Mopidy-Touchscreen to your Mopidy configuration file::
 
     [touchscreen]
     enabled = true
-    screen_width = 800
-    screen_height = 600
-    cursor = False
+    screen_width = 320
+    screen_height = 240
+    cursor = True
+    fullscreen = False
+    cache_dir = $XDG_CACHE_DIR/mopidy/touchscreen
 
 Features
 =============

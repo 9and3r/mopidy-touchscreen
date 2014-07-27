@@ -26,9 +26,11 @@ class Extension(ext.Extension):
 
     def get_config_schema(self):
         schema = super(Extension, self).get_config_schema()
-        schema['screen_width'] = config.Integer()
-        schema['screen_height'] = config.Integer()
+        schema['screen_width'] = config.Integer(minimum=1)
+        schema['screen_height'] = config.Integer(minimum=1)
         schema['cursor'] = config.Boolean()
+        schema['fullscreen'] = config.Boolean()
+        schema['cache_dir'] = config.Path()
         return schema
 
     def setup(self, registry):
