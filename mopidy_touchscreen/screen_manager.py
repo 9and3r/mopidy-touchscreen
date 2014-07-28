@@ -90,6 +90,7 @@ class ScreenManager():
     def track_started(self, track):
         self.track = track
         self.screens[0].track_started(track.track)
+        self.screens[1].track_started(track)
 
     def event(self, event):
         touch_event = self.touch_manager.event(event)

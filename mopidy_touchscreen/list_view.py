@@ -22,6 +22,7 @@ class ListView():
         self.list = []
         self.scrollbar = False
         self.set_list([])
+        self.selected = []
 
     def set_list(self, item_list):
         self.list = item_list
@@ -65,6 +66,11 @@ class ListView():
                         direction = self.screen_objects.get_touch_object(key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
+        elif touch_event.type == TouchManager.swipe:
+            if touch_event.direction == TouchManager.up:
+                self.move_to(-1)
+            elif touch_event.direction == TouchManager.down:
+                self.move_to(1)
 
     def move_to(self, direction):
         if direction == 1:
@@ -79,3 +85,17 @@ class ListView():
                 self.current_item = 0
             self.load_new_item_position(self.current_item)
             self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
+        self.set_selected(self.selected)
+
+    def set_selected(self, selected):
+        for number in self.selected:
+            try:
+                self.screen_objects.get_touch_object(str(number)).set_active(False)
+            except KeyError:
+                pass
+        for number in selected:
+            try:
+                self.screen_objects.get_touch_object(str(number)).set_active(True)
+            except KeyError:
+                pass
+        self.selected = selected

@@ -23,7 +23,16 @@ class TouchManager():
 
     def event(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
-            return self.mouse_up(event)
+            if event.button == 4:
+                touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
+                touch_event.direction = TouchManager.up
+                return touch_event
+            elif event.button == 5:
+                touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
+                touch_event.direction = TouchManager.down
+                return touch_event
+            else:
+                return self.mouse_up(event)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self.mouse_down(event)
             return None
@@ -31,7 +40,7 @@ class TouchManager():
     def mouse_down(self, event):
         self.down_pos = event.pos
 
-    def mouse_up(self,event):
+    def mouse_up(self, event):
         self.up_pos = event.pos
         if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
             if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:

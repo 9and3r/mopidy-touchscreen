@@ -26,3 +26,6 @@ class Tracklist():
 
     def touch_event(self, touch_event):
         self.list_view.touch_event(touch_event)
+
+    def track_started(self, track):
+        self.list_view.set_selected([self.manager.core.tracklist.index(track).get()])
