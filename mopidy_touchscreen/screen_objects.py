@@ -71,7 +71,10 @@ class TextItem(BaseItem):
         self.color = (255, 255, 255)
         self.box = self.font.render(text, True, self.color)
         if size is not None:
-            BaseItem.__init__(self, pos, size)
+            if size[1] == -1:
+                BaseItem.__init__(self, pos, (size[0], self.font.size(text)[1]))
+            else:
+                BaseItem.__init__(self, pos, size)
         else:
             BaseItem.__init__(self, pos, self.font.size(text))
         if size is not None:
@@ -140,7 +143,7 @@ class TouchAndTextItem(TouchObject, TextItem):
     def __init__(self, font, text, pos, size):
         TextItem.__init__(self, font, text, pos, size)
         TouchObject.__init__(self, pos, self.size)
-        self.active_color = (255, 0, 255)
+        self.active_color = (0, 150, 255)
         self.active_box = self.font.render(text, True, self.active_color)
 
     def update(self):
@@ -158,6 +161,7 @@ class TouchAndTextItem(TouchObject, TextItem):
             surface.blit(self.active_box, self.pos, area=self.rect)
         else:
             surface.blit(self.box, self.pos, area=self.rect)
+
 
 class Progressbar(TouchObject):
 
@@ -211,15 +215,15 @@ class ScrollBar(TouchObject):
         self.max = max_value
         self.items_on_screen = items_on_screen
         self.current_item = 0
-        self.back_bar = pygame.Surface(self.size)
-        self.back_bar.fill((255, 255, 255))
+        self.back_bar = pygame.Surface(self.size, pygame.SRCALPHA)
+        self.back_bar.fill((255, 255, 255, 128))
         self.bar_pos = 0
         if self.max < 1:
             self.bar_size = self.size[1]
         else:
             self.bar_size = math.ceil(float(self.items_on_screen)/float(self.max) * float(self.size[1]))
         self.bar = pygame.Surface((self.size[0], self.bar_size))
-        self.bar.fill((255, 255, 0))
+        self.bar.fill((255, 255, 255))
 
     def render(self, surface):
         surface.blit(self.back_bar, self.pos)

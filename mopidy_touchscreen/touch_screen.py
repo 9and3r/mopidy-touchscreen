@@ -78,3 +78,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             self.screen_manager.options_changed()
          except:
             traceback.print_exc()
+
+    def playlists_loaded(self):
+        self.screen_manager.playlists_loaded()

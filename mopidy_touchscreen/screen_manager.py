@@ -2,6 +2,7 @@ from .main_screen import MainScreen
 from .touch_manager import TouchManager
 from .screen_objects import *
 from .tracklist import Tracklist
+from .playlist_screen import PlaylistScreen
 from .dynamic_background import DynamicBackground
 import pygame
 import logging
@@ -24,7 +25,8 @@ class ScreenManager():
         self.fonts['dejavusans'] = pygame.font.SysFont("dejavusans", self.base_size)
         try:
             self.screens = [MainScreen(size, self, "/home/ander", core, self.fonts),
-                            Tracklist(size, self.base_size, self)]
+                            Tracklist(size, self.base_size, self),
+                            PlaylistScreen(size, self.base_size, self)]
         except:
             traceback.print_exc()
         self.track = None
@@ -64,12 +66,17 @@ class ScreenManager():
 
         #Main button
         button = TouchAndTextItem(self.fonts['dejavusans'], "Main", (0, self.base_size * 7), None)
-        self.screen_objects_manager.set_touch_object("menu_main", button)
+        self.screen_objects_manager.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         #Tracklist button
         button = TouchAndTextItem(self.fonts['dejavusans'], "Tracklist", (x, self.base_size * 7), None)
-        self.screen_objects_manager.set_touch_object("menu_tracklist", button)
+        self.screen_objects_manager.set_touch_object("menu_1", button)
+        x = button.get_right_pos()
+
+         #Playlist button
+        button = TouchAndTextItem(self.fonts['dejavusans'], "Playlist", (x, self.base_size * 7), None)
+        self.screen_objects_manager.set_touch_object("menu_2", button)
 
         #Down bar
         self.down_bar = pygame.Surface((self.size[0], self.base_size), pygame.SRCALPHA)
@@ -77,6 +84,7 @@ class ScreenManager():
 
         self.options_changed()
         self.playback_state_changed(self.core.playback.state.get(), self.core.playback.state.get())
+        self.change_screen(self.current_screen)
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -121,10 +129,8 @@ class ScreenManager():
                             self.options_changed()
                         elif key == "repeat":
                             self.change_repeat_single()
-                        elif key == "menu_main":
-                            self.current_screen = 0
-                        elif key == "menu_tracklist":
-                            self.current_screen = 1
+                        elif key[:-1] == "menu_":
+                            self.change_screen(int(key[-1:]))
             self.screens[self.current_screen].touch_event(touch_event)
 
     def volume_changed(self, volume):
@@ -173,3 +179,11 @@ class ScreenManager():
         self.core.tracklist.set_repeat(repeat)
         self.core.tracklist.set_single(single)
         self.options_changed()
+
+    def change_screen(self, new_screen):
+        self.screen_objects_manager.get_touch_object("menu_"+str(self.current_screen)).set_active(False)
+        self.current_screen = new_screen
+        self.screen_objects_manager.get_touch_object("menu_"+str(new_screen)).set_active(True)
+
+    def playlists_loaded(self):
+        self.screens[2].playlists_loaded()

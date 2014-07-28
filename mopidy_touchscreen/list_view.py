@@ -31,7 +31,6 @@ class ListView():
             self.scrollbar = True
             scroll_bar = ScrollBar((self.pos[0]+self.size[0]-self.base_size,self.pos[1]), (self.base_size, self.size[1]),self.list_size,self.max_rows)
             self.screen_objects.set_touch_object("scrollbar", scroll_bar)
-            logger.error("hemen nao")
         else:
             self.scrollbar = False
         self.load_new_item_position(0)
@@ -49,7 +48,7 @@ class ListView():
         else:
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
-            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0], self.pos[1]+self.base_size*z), (width, self.base_size))
+            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0], self.pos[1]+self.base_size*z), (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
@@ -66,6 +65,8 @@ class ListView():
                         direction = self.screen_objects.get_touch_object(key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
+                    else:
+                        return int(key)
         elif touch_event.type == TouchManager.swipe:
             if touch_event.direction == TouchManager.up:
                 self.move_to(-1)
