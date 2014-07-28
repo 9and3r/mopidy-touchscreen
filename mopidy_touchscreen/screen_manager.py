@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class ScreenManager():
-
     def __init__(self, size, core, backend):
         self.size = size
         self.core = core
@@ -24,66 +23,67 @@ class ScreenManager():
         self.fonts['dejavuserif'] = pygame.font.SysFont("dejavuserif", self.base_size)
         self.fonts['dejavusans'] = pygame.font.SysFont("dejavusans", self.base_size)
         try:
-            self.screens = [MainScreen(size, self, "/home/ander", core,self.fonts),Tracklist(size,self.base_size,self)]
+            self.screens = [MainScreen(size, self, "/home/ander", core, self.fonts),
+                            Tracklist(size, self.base_size, self)]
         except:
             traceback.print_exc()
         self.track = None
         self.touch_manager = TouchManager(size)
         self.screen_objects_manager = ScreenObjectsManager()
 
-        #Top bar
-        self.top_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
+        # Top bar
+        self.top_bar = pygame.Surface((self.size[0], self.base_size), pygame.SRCALPHA)
         self.top_bar.fill((0, 0, 0, 128))
 
         #Play/pause
-        button = TouchAndTextItem(self.fonts['dejavusans']," ll", (0, 0), None)
+        button = TouchAndTextItem(self.fonts['dejavusans'], " ll", (0, 0), None)
         self.screen_objects_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
         #Random
-        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u2928", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("random",button)
+        button = TouchAndTextItem(self.fonts['dejavuserif'], u"\u2928", (x, 0), None)
+        self.screen_objects_manager.set_touch_object("random", button)
         x = button.get_right_pos()
 
         #Repeat
-        button = TouchAndTextItem(self.fonts['dejavuserif'],u"\u27F21",(x,0),None)
-        self.screen_objects_manager.set_touch_object("repeat",button)
+        button = TouchAndTextItem(self.fonts['dejavuserif'], u"\u27F21", (x, 0), None)
+        self.screen_objects_manager.set_touch_object("repeat", button)
         x = button.get_right_pos()
 
         #Mute
-        button = TouchAndTextItem(self.fonts['dejavusans'],"Mute",(x,0),None)
-        self.screen_objects_manager.set_touch_object("mute",button)
+        button = TouchAndTextItem(self.fonts['dejavusans'], "Mute", (x, 0), None)
+        self.screen_objects_manager.set_touch_object("mute", button)
         x = button.get_right_pos()
 
         #Volume
-        progress = Progressbar(self.fonts['dejavusans'], "100", (x, 0), (self.size[0]-x, self.base_size), 100, True)
+        progress = Progressbar(self.fonts['dejavusans'], "100", (x, 0), (self.size[0] - x, self.base_size), 100, True)
         self.screen_objects_manager.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
-        self.playback_state_changed(mopidy.core.PlaybackState.STOPPED, self.core.playback.state.get())
 
         #Menu buttons
 
         #Main button
-        button = TouchAndTextItem(self.fonts['dejavusans'],"Main",(0,self.base_size*7),None)
+        button = TouchAndTextItem(self.fonts['dejavusans'], "Main", (0, self.base_size * 7), None)
         self.screen_objects_manager.set_touch_object("menu_main", button)
         x = button.get_right_pos()
 
         #Tracklist button
-        button = TouchAndTextItem(self.fonts['dejavusans'],"Tracklist",(x,self.base_size*7),None)
+        button = TouchAndTextItem(self.fonts['dejavusans'], "Tracklist", (x, self.base_size * 7), None)
         self.screen_objects_manager.set_touch_object("menu_tracklist", button)
 
         #Down bar
-        self.down_bar = pygame.Surface((self.size[0], self.base_size),pygame.SRCALPHA)
+        self.down_bar = pygame.Surface((self.size[0], self.base_size), pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 128))
 
         self.options_changed()
+        self.playback_state_changed(self.core.playback.state.get(), self.core.playback.state.get())
 
     def update(self):
         surface = pygame.Surface(self.size)
         self.background.draw_background(surface)
         self.screens[self.current_screen].update(surface)
-        surface.blit(self.top_bar,(0,0))
-        surface.blit(self.top_bar,(0,self.base_size*7))
+        surface.blit(self.top_bar, (0, 0))
+        surface.blit(self.top_bar, (0, self.base_size * 7))
         self.screen_objects_manager.render(surface)
         return surface
 
@@ -99,8 +99,9 @@ class ScreenManager():
                 if objects is not None:
                     for key in objects:
                         if key == "volume":
-                            value = self.screen_objects_manager.get_touch_object(key).get_pos_value(touch_event.current_pos)
-                            self.backend.tell({'action':'volume','value':value})
+                            value = self.screen_objects_manager.get_touch_object(key).get_pos_value(
+                                touch_event.current_pos)
+                            self.backend.tell({'action': 'volume', 'value': value})
                             self.screen_objects_manager.get_touch_object(key).set_value(value)
                         elif key == "pause_play":
                             if self.core.playback.state.get() == mopidy.core.PlaybackState.PLAYING:
@@ -132,7 +133,7 @@ class ScreenManager():
         if new_state == mopidy.core.PlaybackState.PLAYING:
             self.screen_objects_manager.get_touch_object("pause_play").set_text(" ll", True)
         else:
-            self.screen_objects_manager.get_touch_object("pause_play").set_text(u" \u25B8",True)
+            self.screen_objects_manager.get_touch_object("pause_play").set_text(u" \u25B8", True)
 
     def mute_changed(self, mute):
         self.screen_objects_manager.get_touch_object("mute").set_active(mute)
@@ -163,10 +164,10 @@ class ScreenManager():
                 single = False
         else:
             if repeat:
-                repeat = True
+                # repeat = True
                 single = True
             else:
-                repeat = False
+                # repeat = False
                 single = True
         self.core.tracklist.set_repeat(repeat)
         self.core.tracklist.set_single(single)
