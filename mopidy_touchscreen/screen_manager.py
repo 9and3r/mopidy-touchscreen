@@ -4,6 +4,7 @@ from .screen_objects import *
 from .tracklist import Tracklist
 from .playlist_screen import PlaylistScreen
 from .dynamic_background import DynamicBackground
+from .library_screen import LibraryScreen
 import logging
 import mopidy
 import traceback
@@ -29,6 +30,7 @@ class ScreenManager():
         try:
             self.screens = [MainScreen(size, self, cache, core, self.fonts),
                             Tracklist(size, self.base_size, self),
+                            LibraryScreen(size, self.base_size, self),
                             PlaylistScreen(size, self.base_size, self),
                             MenuScreen(size, self.base_size, self)]
         except:
@@ -61,8 +63,6 @@ class ScreenManager():
         self.screen_objects_manager.set_touch_object("single", button)
         x = button.get_right_pos()
 
-
-        logger.error(font)
         #Mute
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("mute", button)
@@ -75,24 +75,31 @@ class ScreenManager():
 
         #Menu buttons
 
+        button_size = (self.size[0]/5, self.base_size)
+
         #Main button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue600 ", (0, self.base_size * 7), None)
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue600", (0, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         #Tracklist button
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue60d ", (x, self.base_size * 7), None)
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue60d", (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
-        #Playlist button
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue605 ", (x, self.base_size * 7), None)
+        #Library button
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue604", (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
-        #Menu button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue60a ", (x, self.base_size * 7), None)
+        #Playlist button
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue605", (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_3", button)
+        x = button.get_right_pos()
+
+        #Menu button
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue60a", (x, self.base_size * 7), None)
+        self.screen_objects_manager.set_touch_object("menu_4", button)
         x = button.get_right_pos()
 
         #Down bar
@@ -193,4 +200,4 @@ class ScreenManager():
         self.screen_objects_manager.get_touch_object("menu_"+str(new_screen)).set_active(True)
 
     def playlists_loaded(self):
-        self.screens[2].playlists_loaded()
+        self.screens[3].playlists_loaded()

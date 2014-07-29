@@ -55,8 +55,18 @@ class MainScreen():
         label = TextItem(self.fonts['base'],self.getFirstArtist(track),(x,self.base_size*4), (width,self.size[1]))
         self.touch_text_manager.set_object("artist_name",label)
 
+        #Previous track button
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue61c", (0, self.base_size * 6), None)
+        self.touch_text_manager.set_touch_object("previous", button)
+        size_1 = button.get_right_pos()
+
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue61d", (0, 0), None)
+        self.touch_text_manager.set_touch_object("next", button)
+        size_2 = button.get_right_pos()
+        button.pos = (self.size[0] - size_2, self.base_size * 6)
+
         #Progress
-        progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(0,self.base_size*6), (self.size[0],self.base_size),track.length/1000, False)
+        progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(size_1, self.base_size*6), (self.size[0] - size_1- size_2,self.base_size),track.length/1000, False)
         self.touch_text_manager.set_touch_object("time_progress", progress)
 
         self.track = track
@@ -114,9 +124,6 @@ class MainScreen():
             current = TextItem(self.fonts['base'],self.getFirstArtist(self.track),(self.base_size/2,self.base_size*4),(width, self.base_size))
             self.touch_text_manager.set_object("artist_name", current)
 
-            #self.touch_text_manager.set_object("album_name",), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
-            #self.touch_text_manager.set_object("artist_name",self.fonts['dejavusans'],self.getFirstArtist(self.track),(self.base_size,self.base_size*4), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
-
     def loadImage(self):
         size = self.base_size * 4
         self.image = pygame.transform.scale(pygame.image.load(self.getCoverFolder()+self.getImageFileName()).convert(),(size,size))
@@ -129,6 +136,10 @@ class MainScreen():
                     if key == "time_progress":
                         value = self.touch_text_manager.get_touch_object(key).get_pos_value(event.current_pos) * 1000
                         self.core.playback.seek(value)
+                    elif key == "previous":
+                        self.core.playback.previous()
+                    elif key == "next":
+                        self.core.playback.next()
         elif event.type == TouchManager.swipe:
             if event.direction == TouchManager.left:
                 self.core.playback.next()
