@@ -57,14 +57,14 @@ Working
 * Change volume
 * Next/Previous track
 * See track info (track name, album, artist, cover image)
-
-Planned
--------
-
 * Shuffle on/off
 * Repeat one/on/off
 * Playback list and control
 * Playlists
+
+Planned
+-------
+
 * Library
 * Menu (exit mopidy, restart...)
 * Use keyboard or GPIO buttons instead of touchscreen
