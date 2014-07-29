@@ -60,10 +60,9 @@ class MainScreen():
         self.touch_text_manager.set_touch_object("previous", button)
         size_1 = button.get_right_pos()
 
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue61d", (0, 0), None)
+        size_2 = self.fonts['icon'].size(u"\ue61d")[0]
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue61d", (self.size[0] - size_2, self.base_size * 6), None)
         self.touch_text_manager.set_touch_object("next", button)
-        size_2 = button.get_right_pos()
-        button.pos = (self.size[0] - size_2, self.base_size * 6)
 
         #Progress
         progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(size_1, self.base_size*6), (self.size[0] - size_1- size_2,self.base_size),track.length/1000, False)

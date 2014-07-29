@@ -103,7 +103,7 @@ class ScreenManager():
         x = button.get_right_pos()
 
         #Down bar
-        self.down_bar = pygame.Surface((self.size[0], self.base_size), pygame.SRCALPHA)
+        self.down_bar = pygame.Surface((self.size[0], self.size[1] - self.base_size * 7), pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 128))
 
         self.options_changed()
@@ -116,7 +116,7 @@ class ScreenManager():
         self.background.draw_background(surface)
         self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar, (0, 0))
-        surface.blit(self.top_bar, (0, self.base_size * 7))
+        surface.blit(self.down_bar, (0, self.base_size * 7))
         self.screen_objects_manager.render(surface)
         return surface
 
