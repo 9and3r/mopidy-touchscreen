@@ -28,3 +28,4 @@ class PlaylistScreen():
         if clicked is not None:
             self.manager.core.tracklist.clear()
             self.manager.core.tracklist.add(uri=self.playlists[clicked].uri)
+            self.manager.core.playback.play()

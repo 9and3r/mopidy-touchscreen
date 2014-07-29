@@ -48,7 +48,7 @@ class ListView():
         else:
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
-            item = TouchAndTextItem(self.fonts['dejavusans'], self.list[i], (self.pos[0], self.pos[1]+self.base_size*z), (width, -1))
+            item = TouchAndTextItem(self.fonts['base'], self.list[i], (self.pos[0], self.pos[1]+self.base_size*z), (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1

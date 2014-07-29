@@ -14,12 +14,13 @@ class TouchManager():
     left = 2
     right = 3
 
-    def __init__(self,size):
+    def __init__(self, size):
         self.down_pos = (0, 0)
         self.up_pos = (0, 0)
         self.screen_size = size
         self.max_move_margin = self.screen_size[1] / 6
         self.min_swipe_move = self.screen_size[1] / 3
+        self.down_button = -1
 
     def event(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
@@ -31,14 +32,17 @@ class TouchManager():
                 touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
                 touch_event.direction = TouchManager.down
                 return touch_event
-            else:
+            elif event.button == 1 and self.down_button == 1:
                 return self.mouse_up(event)
+            else:
+                return None
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self.mouse_down(event)
             return None
 
     def mouse_down(self, event):
         self.down_pos = event.pos
+        self.down_button = event.button
 
     def mouse_up(self, event):
         self.up_pos = event.pos

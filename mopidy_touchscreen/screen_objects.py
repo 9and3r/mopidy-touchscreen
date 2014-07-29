@@ -149,6 +149,10 @@ class TouchAndTextItem(TouchObject, TextItem):
     def update(self):
         TextItem.update(self)
 
+    def set_text(self, text, change_size):
+        TextItem.set_text(self, text, change_size)
+        self.active_box = self.font.render(text, True, self.active_color)
+
     def render(self, surface):
         if self.fit_horizontal:
             pass

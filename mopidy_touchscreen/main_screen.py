@@ -44,19 +44,19 @@ class MainScreen():
         width = self.size[0]-self.base_size / 2-x
 
         #Track name
-        label = TextItem(self.fonts['dejavusans'],track.name,(x,self.base_size*2), (width,self.size[1]))
+        label = TextItem(self.fonts['base'],track.name,(x,self.base_size*2), (width,self.size[1]))
         self.touch_text_manager.set_object("track_name", label)
 
         #Album name
-        label = TextItem(self.fonts['dejavusans'],track.album.name,(x,self.base_size*3), (width,self.size[1]))
+        label = TextItem(self.fonts['base'],track.album.name,(x,self.base_size*3), (width,self.size[1]))
         self.touch_text_manager.set_object("album_name",label)
 
         #Artist
-        label = TextItem(self.fonts['dejavusans'],self.getFirstArtist(track),(x,self.base_size*4), (width,self.size[1]))
+        label = TextItem(self.fonts['base'],self.getFirstArtist(track),(x,self.base_size*4), (width,self.size[1]))
         self.touch_text_manager.set_object("artist_name",label)
 
         #Progress
-        progress = Progressbar(self.fonts['dejavusans'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(0,self.base_size*6), (self.size[0],self.base_size),track.length/1000, False)
+        progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0))+"/"+time.strftime('%M:%S', time.gmtime(0)),(0,self.base_size*6), (self.size[0],self.base_size),track.length/1000, False)
         self.touch_text_manager.set_touch_object("time_progress", progress)
 
         self.track = track
@@ -105,13 +105,13 @@ class MainScreen():
             logger.error(self.track.name)
             width = self.size[0] -self.base_size
 
-            current = TextItem(self.fonts['dejavusans'],self.track.name,(self.base_size/2,self.base_size*2),(width, self.base_size))
+            current = TextItem(self.fonts['base'],self.track.name,(self.base_size/2,self.base_size*2),(width, self.base_size))
             self.touch_text_manager.set_object("track_name", current)
 
-            current = TextItem(self.fonts['dejavusans'],self.track.album.name,(self.base_size/2,self.base_size*3),(width, self.base_size))
+            current = TextItem(self.fonts['base'],self.track.album.name,(self.base_size/2,self.base_size*3),(width, self.base_size))
             self.touch_text_manager.set_object("album_name", current)
 
-            current = TextItem(self.fonts['dejavusans'],self.getFirstArtist(self.track),(self.base_size/2,self.base_size*4),(width, self.base_size))
+            current = TextItem(self.fonts['base'],self.getFirstArtist(self.track),(self.base_size/2,self.base_size*4),(width, self.base_size))
             self.touch_text_manager.set_object("artist_name", current)
 
             #self.touch_text_manager.set_object("album_name",), (self.size[0]-self.base_size,self.size[1]), (255, 255, 255))
