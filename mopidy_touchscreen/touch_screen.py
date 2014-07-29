@@ -24,7 +24,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.fullscreen = config['touchscreen']['fullscreen']
         pygame.init()
         pygame.mouse.set_visible(config['touchscreen']['cursor'])
-        self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend)
+        self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend, self.cache_dir)
 
     def start_thread(self):
         clock = pygame.time.Clock()

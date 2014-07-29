@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class ScreenManager():
-    def __init__(self, size, core, backend):
+    def __init__(self, size, core, backend, cache):
         self.size = size
         self.core = core
         self.backend = backend
@@ -27,7 +27,7 @@ class ScreenManager():
         self.fonts['base'] = pygame.font.SysFont("verdana", self.base_size)
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:
-            self.screens = [MainScreen(size, self, "/home/ander", core, self.fonts),
+            self.screens = [MainScreen(size, self, cache, core, self.fonts),
                             Tracklist(size, self.base_size, self),
                             PlaylistScreen(size, self.base_size, self),
                             MenuScreen(size, self.base_size, self)]
