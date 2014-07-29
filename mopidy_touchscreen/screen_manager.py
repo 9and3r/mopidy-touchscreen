@@ -63,6 +63,11 @@ class ScreenManager():
         self.screen_objects_manager.set_touch_object("single", button)
         x = button.get_right_pos()
 
+        #Internet
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ", (x, 0), None)
+        self.screen_objects_manager.set_touch_object("internet", button)
+        x = button.get_right_pos()
+
         #Mute
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("mute", button)
@@ -109,6 +114,7 @@ class ScreenManager():
         self.options_changed()
         self.mute_changed(self.core.playback.mute.get())
         self.playback_state_changed(self.core.playback.state.get(), self.core.playback.state.get())
+        self.screens[4].check_connection()
         self.change_screen(self.current_screen)
 
     def update(self):
@@ -156,6 +162,8 @@ class ScreenManager():
                             self.core.tracklist.set_repeat(not self.core.tracklist.repeat.get())
                         elif key == "single":
                             self.core.tracklist.set_single(not self.core.tracklist.single.get())
+                        elif key == "internet":
+                            self.screens[4].check_connection()
                         elif key[:-1] == "menu_":
                             self.change_screen(int(key[-1:]))
             self.screens[self.current_screen].touch_event(touch_event)
@@ -201,3 +209,14 @@ class ScreenManager():
 
     def playlists_loaded(self):
         self.screens[3].playlists_loaded()
+
+    def set_connection(self, connection, loading):
+        internet = self.screen_objects_manager.get_touch_object("internet")
+        if loading:
+            internet.set_text(u"\ue627",None)
+            internet.set_active(False)
+        else:
+            internet.set_text(u"\ue602",None)
+            internet.set_active(connection)
+
+
