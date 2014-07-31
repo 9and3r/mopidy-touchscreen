@@ -89,7 +89,7 @@ class MainScreen():
 
     def get_image_file_name(self):
         name = self.track.album.name + '-' + self.get_artist_string()
-        md5name = hashlib.md5(name).hexdigest()
+        md5name = hashlib.md5(name.encode('utf-8')).hexdigest()
         return md5name
 
     def get_cover_folder(self):
