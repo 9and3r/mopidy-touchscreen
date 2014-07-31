@@ -28,7 +28,9 @@ class TouchManager():
         self.down_time = -1
 
     def event(self, event):
+
         if event.type == pygame.MOUSEBUTTONUP:
+            logger.error(event.button)
             if event.button == 4:
                 touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
                 touch_event.direction = TouchManager.up
@@ -40,9 +42,9 @@ class TouchManager():
             elif event.button == 1 and self.down_button == 1:
                 touch_event = self.mouse_up(event)
                 return touch_event
-            elif event.button == 2 and self.down_button == 2:
+            elif event.button == 3 and self.down_button == 3:
                 touch_event = TouchEvent(TouchManager.long_click, self.down_pos, self.up_pos, None)
-                return TouchEvent
+                return touch_event
             else:
                 return None
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -55,13 +57,11 @@ class TouchManager():
         self.down_time = time.time()
 
     def mouse_up(self, event):
+        logger.error(event.button)
         self.up_pos = event.pos
         if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
             if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:
-                logger.error(time.time())
-                logger.error(self.down_time)
                 if time.time() - TouchManager.long_click_min_time > self.down_time:
-                    logger.error("longpress")
                     return TouchEvent(TouchManager.long_click, self.down_pos, self.up_pos, None)
                 else:
                     return TouchEvent(TouchManager.click, self.down_pos, self.up_pos, None)

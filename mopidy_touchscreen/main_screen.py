@@ -45,11 +45,11 @@ class MainScreen():
             self.artists.append(artist)
 
         #Track name
-        label = TextItem(self.fonts['base'], track.name, (x, self.base_size * 2), (width, self.size[1]))
+        label = TextItem(self.fonts['base'], MainScreen.get_track_name(track), (x, self.base_size * 2), (width, self.size[1]))
         self.touch_text_manager.set_object("track_name", label)
 
         #Album name
-        label = TextItem(self.fonts['base'], track.album.name, (x, self.base_size * 3), (width, self.size[1]))
+        label = TextItem(self.fonts['base'], MainScreen.get_track_album_name(track), (x, self.base_size * 3), (width, self.size[1]))
         self.touch_text_manager.set_object("album_name", label)
 
         #Artist
@@ -80,15 +80,17 @@ class MainScreen():
             self.load_image()
 
     def get_artist_string(self):
-        artists_strign = ''
+        artists_string = ''
         for artist in self.artists:
-            artists_strign += artist.name + ', '
-        if len(artists_strign) > 2:
-            artists_strign = artists_strign[:-2]
-        return artists_strign
+            artists_string += artist.name + ', '
+        if len(artists_string) > 2:
+            artists_string = artists_string[:-2]
+        elif len(artists_string) == 0:
+            artists_string = "Unknow Artist"
+        return artists_string
 
     def get_image_file_name(self):
-        name = self.track.album.name + '-' + self.get_artist_string()
+        name = MainScreen.get_track_album_name(self.track) + '-' + self.get_artist_string()
         md5name = hashlib.md5(name.encode('utf-8')).hexdigest()
         return md5name
 
@@ -105,7 +107,7 @@ class MainScreen():
         if artist_index < len(self.artists):
             try:
                 safe_artist = urllib.quote_plus(self.artists[artist_index].name)
-                safe_album = urllib.quote_plus(self.track.album.name)
+                safe_album = urllib.quote_plus(MainScreen.get_track_album_name(self.track))
                 url = "http://ws.audioscrobbler.com/2.0/?"
                 params = "method=album.getinfo&api_key=59a04c6a73fb99d6e8996e01db306829&artist=" + safe_artist + "&album=" + safe_album + "&format=json"
                 response = urllib2.urlopen(url + params)
@@ -122,11 +124,11 @@ class MainScreen():
             # There is no cover so it will use all the screen size for the text
             width = self.size[0] - self.base_size
 
-            current = TextItem(self.fonts['base'], self.track.name, (self.base_size / 2, self.base_size * 2),
+            current = TextItem(self.fonts['base'], MainScreen.get_track_name(self.track), (self.base_size / 2, self.base_size * 2),
                                (width, self.base_size))
             self.touch_text_manager.set_object("track_name", current)
 
-            current = TextItem(self.fonts['base'], self.track.album.name, (self.base_size / 2, self.base_size * 3),
+            current = TextItem(self.fonts['base'], MainScreen.get_track_album_name(self.track), (self.base_size / 2, self.base_size * 3),
                                (width, self.base_size))
             self.touch_text_manager.set_object("album_name", current)
 
@@ -168,3 +170,18 @@ class MainScreen():
                     volume = 0
                 self.manager.backend.tell({'action': 'volume', 'value': volume})
                 self.manager.volume_changed(volume)
+
+    @staticmethod
+    def get_track_name(track):
+        if track.name is None:
+            return track.uri
+        else:
+            return track.name
+
+    @staticmethod
+    def get_track_album_name(track):
+        if track.album is not None and track.album.name is not None and len(track.album.name)>0:
+            return track.album.name
+        else:
+            return "Unknow Album"
+

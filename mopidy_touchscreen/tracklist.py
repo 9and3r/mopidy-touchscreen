@@ -1,5 +1,5 @@
 from .list_view import ListView
-
+from .main_screen import MainScreen
 
 class Tracklist():
 
@@ -22,7 +22,7 @@ class Tracklist():
         self.tracks = self.manager.core.tracklist.tl_tracks.get()
         self.tracks_strings = []
         for tl_track in self.tracks:
-            self.tracks_strings.append(tl_track.track.name)
+            self.tracks_strings.append(MainScreen.get_track_name(tl_track.track))
         self.list_view.set_list(self.tracks_strings)
 
     def touch_event(self, touch_event):

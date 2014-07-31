@@ -57,7 +57,7 @@ class ListView():
         self.screen_objects.render(surface)
 
     def touch_event(self, touch_event):
-        if touch_event.type == TouchManager.click:
+        if touch_event.type == TouchManager.click or touch_event.type == TouchManager.long_click:
             objects = self.screen_objects.get_touch_objects_in_pos(touch_event.current_pos)
             if objects is not None:
                 for key in objects:

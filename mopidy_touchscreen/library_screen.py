@@ -1,4 +1,5 @@
 from .list_view import ListView
+from .touch_manager import TouchManager
 import logging
 import mopidy.models
 
@@ -44,19 +45,28 @@ class LibraryScreen():
     def touch_event(self, touch_event):
         clicked = self.list_view.touch_event(touch_event)
         if clicked is not None:
-            if self.current_directory is not None:
-                if clicked == 0:
-                    self.go_up_directory()
-                else:
-                    if self.library[clicked-1].type == mopidy.models.Ref.TRACK:
-                        self.play_uri(self.library[clicked-1].uri)
+            if touch_event.type == TouchManager.long_click:
+                if self.current_directory is not None:
+                    if clicked == 0:
+                        self.go_up_directory()
                     else:
-                        self.go_inside_directory(self.library[clicked-1].uri)
-            else:
-                if self.library[clicked].type == mopidy.models.Track:
-                    self.play_uri(self.library[clicked].uri)
+                        self.play_uri(self.library[clicked-1].uri)
                 else:
-                    self.go_inside_directory(self.library[clicked].uri)
+                    self.play_uri(self.library[clicked].uri)
+            else:
+                if self.current_directory is not None:
+                    if clicked == 0:
+                        self.go_up_directory()
+                    else:
+                        if self.library[clicked-1].type == mopidy.models.Ref.TRACK:
+                            self.play_uri(self.library[clicked-1].uri)
+                        else:
+                            self.go_inside_directory(self.library[clicked-1].uri)
+                else:
+                    if self.library[clicked].type == mopidy.models.Track:
+                        self.play_uri(self.library[clicked].uri)
+                    else:
+                        self.go_inside_directory(self.library[clicked].uri)
 
     def play_uri(self, uri):
         self.manager.core.tracklist.clear()

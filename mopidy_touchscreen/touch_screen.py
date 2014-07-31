@@ -39,9 +39,10 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                if event.type == pygame.KEYUP and event.key == pygame.K_q:
+                elif event.type == pygame.KEYUP and event.key == pygame.K_q:
                     self.running = False
-                self.screen_manager.event(event)
+                else:
+                    self.screen_manager.event(event)
         pygame.quit()
 
     def on_start(self):
