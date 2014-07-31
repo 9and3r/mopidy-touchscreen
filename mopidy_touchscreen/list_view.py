@@ -74,19 +74,20 @@ class ListView():
                 self.move_to(1)
 
     def move_to(self, direction):
-        if direction == 1:
-            self.current_item += self.max_rows
-            if self.current_item + self.max_rows > self.list_size:
-                self.current_item = self.list_size - self.max_rows
-            self.load_new_item_position(self.current_item)
-            self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
-        elif direction == -1:
-            self.current_item -= self.max_rows
-            if self.current_item < 0:
-                self.current_item = 0
-            self.load_new_item_position(self.current_item)
-            self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
-        self.set_selected(self.selected)
+        if self.scrollbar:
+            if direction == 1:
+                self.current_item += self.max_rows
+                if self.current_item + self.max_rows > self.list_size:
+                    self.current_item = self.list_size - self.max_rows
+                self.load_new_item_position(self.current_item)
+                self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
+            elif direction == -1:
+                self.current_item -= self.max_rows
+                if self.current_item < 0:
+                    self.current_item = 0
+                self.load_new_item_position(self.current_item)
+                self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
+            self.set_selected(self.selected)
 
     def set_selected(self, selected):
         for number in self.selected:
