@@ -74,6 +74,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         except:
             traceback.print_exc()
 
+    def track_playback_ended(self, tl_track, time_position):
+        self.screen_manager.track_playback_ended(tl_track, time_position)
+
     def options_changed(self):
          try:
             self.screen_manager.options_changed()

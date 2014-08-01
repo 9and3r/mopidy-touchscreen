@@ -131,6 +131,9 @@ class ScreenManager():
         self.screens[0].track_started(track.track)
         self.screens[1].track_started(track)
 
+    def track_playback_ended(self, tl_track, time_position):
+        self.screens[0].track_playback_ended(tl_track, time_position)
+
     def event(self, event):
         touch_event = self.touch_manager.event(event)
         if touch_event is not None:

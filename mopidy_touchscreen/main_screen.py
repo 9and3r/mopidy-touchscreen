@@ -24,6 +24,11 @@ class MainScreen():
         self.image = None
         self.artists = None
         self.touch_text_manager = ScreenObjectsManager()
+        current_track = self.core.playback.current_track.get()
+        if current_track is None:
+            self.track_playback_ended(None, None)
+        else:
+            self.track_started(current_track)
 
     def update(self, screen):
         if self.track is not None:
@@ -125,16 +130,35 @@ class MainScreen():
             width = self.size[0] - self.base_size
 
             current = TextItem(self.fonts['base'], MainScreen.get_track_name(self.track), (self.base_size / 2, self.base_size * 2),
-                               (width, self.base_size))
+                               (width, -1))
             self.touch_text_manager.set_object("track_name", current)
 
             current = TextItem(self.fonts['base'], MainScreen.get_track_album_name(self.track), (self.base_size / 2, self.base_size * 3),
-                               (width, self.base_size))
+                               (width, -1))
             self.touch_text_manager.set_object("album_name", current)
 
             current = TextItem(self.fonts['base'], self.get_artist_string(), (self.base_size / 2, self.base_size * 4),
-                               (width, self.base_size))
+                               (width, -1))
             self.touch_text_manager.set_object("artist_name", current)
+
+    def track_playback_ended(self, tl_track, time_position):
+
+        self.image = None
+
+        # There is no cover so it will use all the screen size for the text
+        width = self.size[0] - self.base_size
+
+        current = TextItem(self.fonts['base'], "Stopped", (self.base_size / 2, self.base_size * 2),
+                               (width, -1))
+        self.touch_text_manager.set_object("track_name", current)
+
+        current = TextItem(self.fonts['base'], "", (self.base_size / 2, self.base_size * 3),
+                               (width, -1))
+        self.touch_text_manager.set_object("album_name", current)
+
+        current = TextItem(self.fonts['base'], "", (self.base_size / 2, self.base_size * 4),
+                               (width, -1))
+        self.touch_text_manager.set_object("artist_name", current)
 
     def load_image(self):
         size = self.base_size * 4

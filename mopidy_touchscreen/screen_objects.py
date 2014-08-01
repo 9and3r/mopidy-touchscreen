@@ -162,6 +162,7 @@ class TouchAndTextItem(TouchObject, TextItem):
             else:
                 self.box = self.font.render(self.text, True, self.color)
         if self.active:
+            #Area h*2 to render letters like g, j, y...
             surface.blit(self.active_box, self.pos, area=self.rect)
         else:
             surface.blit(self.box, self.pos, area=self.rect)

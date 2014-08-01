@@ -30,7 +30,6 @@ class TouchManager():
     def event(self, event):
 
         if event.type == pygame.MOUSEBUTTONUP:
-            logger.error(event.button)
             if event.button == 4:
                 touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
                 touch_event.direction = TouchManager.up
