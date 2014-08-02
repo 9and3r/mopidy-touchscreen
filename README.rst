@@ -18,7 +18,14 @@ Mopidy-Touchscreen
    :target: https://coveralls.io/r/9and3r/modipy-touchscreen?branch=master
    :alt: Test coverage
 
-Mopidy extension to show info on a display and control from it
+Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
+
+Dependencies
+============
+
+- ``Mopidy`` >= 0.18
+- ``Pykka`` >= 1.1
+- ``pygame``
 
 Installation
 ============
@@ -45,38 +52,49 @@ Mopidy-Touchscreen to your Mopidy configuration file::
     fullscreen = False
     cache_dir = $XDG_CACHE_DIR/mopidy/touchscreen
 
+The following configuration values are available:
+    
+- ``touchscreen/enabled``: If the Touchscreen extension should be enabled or not.
+- ``touchscreen/screen_width``: The width of the resolution you want to use in pixels.
+- ``touchscreen/screen_height``: The width of the resolution you want to use in pixels.
+- ``touchscreen/cursor``: If the mouse cursor should be shown. (If you use a touchscreen it should be false)
+- ``touchscreen/fullscreen``: If you want to be shown as a window or in fullscreen.
+- ``touchscreen/screen_width``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
+  ``~/.cache/mopidy/spotify``
+
 Features
 =============
 
 Working
 -------
 
+* See track info (track name, album, artist, cover image)
 * Seek Track
 * Play/Pause
 * Mute/Unmute
 * Change volume
 * Next/Previous track
-* See track info (track name, album, artist, cover image)
+* Library
+* Menu (exit mopidy, restart...)
 * Shuffle on/off
 * Repeat one/on/off
-* Playback list and control
+* Playback list and song selection
 * Playlists
 
 Planned
 -------
 
-* Library
-* Menu (exit mopidy, restart...)
 * Use keyboard or GPIO buttons instead of touchscreen
 
 Screenshots
 ===========
 
-.. image:: http://i60.tinypic.com/i4l0fq.jpg
+.. image:: http://i60.tinypic.com/qqsait.jpg
 
-.. image:: http://i62.tinypic.com/nd7vk1.jpg
-Extension running on 
-`Texy's display <http://www.raspberrypi.org/forums/viewtopic.php?f=93&t=65566>`_
+Video
+=====
+
+`Example video running the extension <https://www.youtube.com/watch?v=KuYoIb8Q2LI>`_
 
 Project resources
 =================
@@ -88,6 +106,11 @@ Project resources
 
 Changelog
 =========
+
+v0.2.0
+----------------------------------------
+
+- First working version
 
 v0.1.0 (UNRELEASED)
 ----------------------------------------
