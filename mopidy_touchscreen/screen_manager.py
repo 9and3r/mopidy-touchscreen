@@ -14,6 +14,7 @@ from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
 from .menu_screen import MenuScreen
 
+from pkg_resources import Requirement, resource_filename
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ class ScreenManager():
         self.background = DynamicBackground()
         self.current_screen = 0
         self.base_size = self.size[1] / 8
-        font = os.path.join(os.path.dirname(os.path.realpath(__file__)), "fonts", "icomoon", "fonts", "icomoon.ttf")
+        font = resource_filename(Requirement.parse("mopidy-touchscreen"),"mopidy_touchscreen/icomoon.ttf")
         self.fonts['base'] = pygame.font.SysFont("verdana", self.base_size)
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:

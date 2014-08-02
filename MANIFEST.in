@@ -4,5 +4,6 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 include mopidy_touchscreen/ext.conf
+include mopidy_touchscreen/icomoon.ttf
 
 recursive-include tests *.py
