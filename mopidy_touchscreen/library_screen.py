@@ -1,18 +1,21 @@
+import logging
+
+import mopidy.models
+
 from .list_view import ListView
 from .touch_manager import TouchManager
-import logging
-import mopidy.models
+
 
 logger = logging.getLogger(__name__)
 
 
 class LibraryScreen():
-
     def __init__(self, size, base_size, manager):
         self.size = size
         self.base_size = base_size
         self.manager = manager
-        self.list_view = ListView((0,self.base_size),(self.size[0],self.size[1]-2*self.base_size), self.base_size, manager.fonts)
+        self.list_view = ListView((0, self.base_size), (self.size[0], self.size[1] - 2 * self.base_size),
+                                  self.base_size, manager.fonts['base'])
         self.directory_list = []
         self.current_directory = None
         self.library = None
@@ -50,7 +53,7 @@ class LibraryScreen():
                     if clicked == 0:
                         self.go_up_directory()
                     else:
-                        self.play_uri(self.library[clicked-1].uri, False)
+                        self.play_uri(self.library[clicked - 1].uri, False)
                 else:
                     self.play_uri(self.library[clicked].uri, False)
             else:
@@ -58,10 +61,10 @@ class LibraryScreen():
                     if clicked == 0:
                         self.go_up_directory()
                     else:
-                        if self.library[clicked-1].type == mopidy.models.Ref.TRACK:
-                            self.play_uri(self.library[clicked-1].uri, True)
+                        if self.library[clicked - 1].type == mopidy.models.Ref.TRACK:
+                            self.play_uri(self.library[clicked - 1].uri, True)
                         else:
-                            self.go_inside_directory(self.library[clicked-1].uri)
+                            self.go_inside_directory(self.library[clicked - 1].uri)
                 else:
                     if self.library[clicked].type == mopidy.models.Track:
                         self.play_uri(self.library[clicked].uri, True)
@@ -72,7 +75,8 @@ class LibraryScreen():
         self.manager.core.tracklist.clear()
         if track:
             self.manager.core.tracklist.add(uri=uri)
+            self.manager.core.playback.play()
         else:
-            logger.error(uri)
-            self.manager.core.tracklist.add(tracks=self.manager.core.library.search(query={'any':'*'}, uris=[uri]).get()[0].tracks)
-        self.manager.core.playback.play()
+            #TODO: add folder to tracks to play
+            pass
+

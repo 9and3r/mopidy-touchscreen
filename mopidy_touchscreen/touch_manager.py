@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class TouchManager():
-
     click = 1
     swipe = 2
     long_click = 3
@@ -56,7 +55,6 @@ class TouchManager():
         self.down_time = time.time()
 
     def mouse_up(self, event):
-        logger.error(event.button)
         self.up_pos = event.pos
         if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
             if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:
@@ -72,7 +70,6 @@ class TouchManager():
 
 
 class TouchEvent():
-
     def __init__(self, event_type, down_pos, current_pos, vertical):
         self.type = event_type
         self.down_pos = down_pos

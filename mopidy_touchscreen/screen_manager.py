@@ -1,3 +1,10 @@
+import logging
+import traceback
+import os
+import pygame
+
+import mopidy
+
 from .main_screen import MainScreen
 from .touch_manager import TouchManager
 from .screen_objects import *
@@ -5,12 +12,8 @@ from .tracklist import Tracklist
 from .playlist_screen import PlaylistScreen
 from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
-import logging
-import mopidy
-import traceback
-import os
 from .menu_screen import MenuScreen
-import pygame
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +27,7 @@ class ScreenManager():
         self.background = DynamicBackground()
         self.current_screen = 0
         self.base_size = self.size[1] / 8
-        font = os.path.join(os.path.dirname(os.path.realpath(__file__)),"fonts","icomoon","fonts", "icomoon.ttf")
+        font = os.path.join(os.path.dirname(os.path.realpath(__file__)), "fonts", "icomoon", "fonts", "icomoon.ttf")
         self.fonts['base'] = pygame.font.SysFont("verdana", self.base_size)
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:
@@ -43,7 +46,7 @@ class ScreenManager():
         self.top_bar = pygame.Surface((self.size[0], self.base_size), pygame.SRCALPHA)
         self.top_bar.fill((0, 0, 0, 128))
 
-        #Play/pause
+        # Play/pause
         button = TouchAndTextItem(self.fonts['icon'], u"\ue615 ", (0, 0), None)
         self.screen_objects_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos()
@@ -80,7 +83,7 @@ class ScreenManager():
 
         #Menu buttons
 
-        button_size = (self.size[0]/5, self.base_size)
+        button_size = (self.size[0] / 5, self.base_size)
 
         #Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600", (0, self.base_size * 7), button_size)
@@ -206,9 +209,9 @@ class ScreenManager():
         self.screen_objects_manager.get_touch_object("single").set_active(self.core.tracklist.single.get())
 
     def change_screen(self, new_screen):
-        self.screen_objects_manager.get_touch_object("menu_"+str(self.current_screen)).set_active(False)
+        self.screen_objects_manager.get_touch_object("menu_" + str(self.current_screen)).set_active(False)
         self.current_screen = new_screen
-        self.screen_objects_manager.get_touch_object("menu_"+str(new_screen)).set_active(True)
+        self.screen_objects_manager.get_touch_object("menu_" + str(new_screen)).set_active(True)
 
     def playlists_loaded(self):
         self.screens[3].playlists_loaded()
@@ -216,10 +219,10 @@ class ScreenManager():
     def set_connection(self, connection, loading):
         internet = self.screen_objects_manager.get_touch_object("internet")
         if loading:
-            internet.set_text(u"\ue627",None)
+            internet.set_text(u"\ue627", None)
             internet.set_active(False)
         else:
-            internet.set_text(u"\ue602",None)
+            internet.set_text(u"\ue602", None)
             internet.set_active(connection)
 
 

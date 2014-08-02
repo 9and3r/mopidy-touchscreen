@@ -1,12 +1,12 @@
-from .list_view import ListView
-from .screen_objects import *
-import mopidy
 import os
 import socket
 
+import mopidy
+
+from .screen_objects import *
+
 
 class MenuScreen():
-
     def __init__(self, size, base_size, manager):
         self.size = size
         self.base_size = base_size
@@ -14,22 +14,25 @@ class MenuScreen():
         self.ip = None
         self.screen_objects = ScreenObjectsManager()
 
-        #Exit mopidy button
+        # Exit mopidy button
         button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue611", (0, self.base_size), None)
         self.screen_objects.set_touch_object("exit_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Exit Mopidy", (button.get_right_pos(), self.base_size), None)
+        button = TouchAndTextItem(self.manager.fonts['base'], "Exit Mopidy", (button.get_right_pos(), self.base_size),
+                                  None)
         self.screen_objects.set_touch_object("exit", button)
 
         #Shutdown button
         button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue60b", (0, self.base_size * 2), None)
         self.screen_objects.set_touch_object("shutdown_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown", (button.get_right_pos(), self.base_size * 2), None)
+        button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown", (button.get_right_pos(), self.base_size * 2),
+                                  None)
         self.screen_objects.set_touch_object("shutdown", button)
 
         #Restart button
         button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue609", (0, self.base_size * 3), None)
         self.screen_objects.set_touch_object("restart_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Restart", (button.get_right_pos(), self.base_size * 3), None)
+        button = TouchAndTextItem(self.manager.fonts['base'], "Restart", (button.get_right_pos(), self.base_size * 3),
+                                  None)
         self.screen_objects.set_touch_object("restart", button)
 
         #IP addres
@@ -40,22 +43,26 @@ class MenuScreen():
         #self.list_view.set_list(["Exit mopidy", "Shutdown", "Restart"])
 
 
-
     def update(self, screen):
         self.screen_objects.render(screen)
-        #self.list_view.render(screen)
+        # self.list_view.render(screen)
 
     def touch_event(self, touch_event):
-        #clicked = self.list_view.touch_event(touch_event)
+        # clicked = self.list_view.touch_event(touch_event)
         clicked = self.screen_objects.get_touch_objects_in_pos(touch_event.current_pos)
         for key in clicked:
             if key == "exit_icon" or key == "exit":
                 mopidy.utils.process.exit_process()
             elif key == "shutdown_icon" or key == "shutdown":
-                os.system("shutdown now -h")
+                if os.system("gksu -- shutdown now -h") != 0:
+                    os.system("shutdown now -h")
+            elif key == "restart_icon" or key == "restart":
+                if os.system("gksu -- shutdown -r now") != 0:
+                    os.system("shutdown -r now")
             elif key == "ip":
                 self.check_connection()
 
+    #Will check internet connection
     def check_connection(self):
         try:
             self.manager.set_connection(False, True)

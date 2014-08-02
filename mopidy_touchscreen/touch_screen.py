@@ -3,20 +3,19 @@ import traceback
 import logging
 from threading import Thread
 import pygame
-from .screen_manager import ScreenManager
 
 from mopidy import core
+
+from .screen_manager import ScreenManager
 
 
 logger = logging.getLogger(__name__)
 
 
 class TouchScreen(pykka.ThreadingActor, core.CoreListener):
-
     def __init__(self, config, core):
         super(TouchScreen, self).__init__()
         self.backend = pykka.ActorRegistry.get_by_class_name("TouchScreenBackend")[0]
-        logger.error(self.backend)
         self.core = core
         self.running = False
         self.screen_size = (config['touchscreen']['screen_width'], config['touchscreen']['screen_height'])
@@ -24,7 +23,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.fullscreen = config['touchscreen']['fullscreen']
         pygame.init()
         pygame.mouse.set_visible(config['touchscreen']['cursor'])
-        self.screen_manager = ScreenManager(self.screen_size,self.core, self.backend, self.cache_dir)
+        self.screen_manager = ScreenManager(self.screen_size, self.core, self.backend, self.cache_dir)
 
     def start_thread(self):
         clock = pygame.time.Clock()
@@ -65,7 +64,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
     def volume_changed(self, volume):
         self.screen_manager.volume_changed(volume)
 
-    def playback_state_changed(self,old_state, new_state):
+    def playback_state_changed(self, old_state, new_state):
         self.screen_manager.playback_state_changed(old_state, new_state)
 
     def tracklist_changed(self):
@@ -78,9 +77,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.screen_manager.track_playback_ended(tl_track, time_position)
 
     def options_changed(self):
-         try:
+        try:
             self.screen_manager.options_changed()
-         except:
+        except:
             traceback.print_exc()
 
     def playlists_loaded(self):

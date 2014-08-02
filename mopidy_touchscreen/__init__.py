@@ -3,10 +3,11 @@ from __future__ import unicode_literals
 import logging
 import os
 
-
 from mopidy import config, ext
+
 from .touch_screen import TouchScreen
 from .touch_screen_backend import TouchScreenBackend
+
 
 __version__ = '0.1.0'
 
@@ -15,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 class Extension(ext.Extension):
-
     dist_name = 'Mopidy-Touchscreen'
     ext_name = 'touchscreen'
     version = __version__
@@ -35,4 +35,6 @@ class Extension(ext.Extension):
 
     def setup(self, registry):
         registry.add('frontend', TouchScreen)
+
+        #Backend used for controling volume
         registry.add('backend', TouchScreenBackend)

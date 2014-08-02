@@ -1,13 +1,14 @@
 from .list_view import ListView
 from .main_screen import MainScreen
 
-class Tracklist():
 
+class Tracklist():
     def __init__(self, size, base_size, manager):
         self.size = size
         self.base_size = base_size
         self.manager = manager
-        self.list_view = ListView((0, self.base_size),(self.size[0],self.size[1]-2*self.base_size), self.base_size, manager.fonts)
+        self.list_view = ListView((0, self.base_size), (self.size[0], self.size[1] - 2 * self.base_size),
+                                  self.base_size, manager.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
         self.update_list()

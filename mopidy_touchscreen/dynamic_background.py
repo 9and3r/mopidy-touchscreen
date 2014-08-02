@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class DynamicBackground():
-
     def __init__(self):
         self.current = get_valid_color()
         self.target = get_valid_color()
@@ -23,7 +22,8 @@ class DynamicBackground():
             self.target = get_valid_color()
         surface.fill(self.current)
 
-#Returns an array with 3 integers in range of 0-255
+
+# Returns an array with 3 integers in range of 0-255
 #The sum of the three integers will be lower than 255*2 (510) to avoid very bright colors
 #White text should be seen ok with this background color
 

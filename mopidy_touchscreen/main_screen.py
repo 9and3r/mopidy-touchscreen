@@ -5,6 +5,7 @@ from threading import Thread
 import urllib
 import urllib2
 import json
+
 from .touch_manager import TouchManager
 from .screen_objects import *
 
@@ -34,8 +35,11 @@ class MainScreen():
         if self.track is not None:
             if self.image is not None:
                 screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
-            self.touch_text_manager.get_touch_object("time_progress").set_value(self.core.playback.time_position.get() / 1000)
-            self.touch_text_manager.get_touch_object("time_progress").set_text(time.strftime('%M:%S', time.gmtime(self.core.playback.time_position.get() / 1000)) + "/" + time.strftime('%M:%S', time.gmtime(self.track.length / 1000)))
+            self.touch_text_manager.get_touch_object("time_progress").set_value(
+                self.core.playback.time_position.get() / 1000)
+            self.touch_text_manager.get_touch_object("time_progress").set_text(time.strftime('%M:%S', time.gmtime(
+                self.core.playback.time_position.get() / 1000)) + "/" + time.strftime('%M:%S', time.gmtime(
+                self.track.length / 1000)))
         self.touch_text_manager.render(screen)
         return screen
 
@@ -49,12 +53,14 @@ class MainScreen():
         for artist in track.artists:
             self.artists.append(artist)
 
-        #Track name
-        label = TextItem(self.fonts['base'], MainScreen.get_track_name(track), (x, self.base_size * 2), (width, self.size[1]))
+        # Track name
+        label = TextItem(self.fonts['base'], MainScreen.get_track_name(track), (x, self.base_size * 2),
+                         (width, self.size[1]))
         self.touch_text_manager.set_object("track_name", label)
 
         #Album name
-        label = TextItem(self.fonts['base'], MainScreen.get_track_album_name(track), (x, self.base_size * 3), (width, self.size[1]))
+        label = TextItem(self.fonts['base'], MainScreen.get_track_album_name(track), (x, self.base_size * 3),
+                         (width, self.size[1]))
         self.touch_text_manager.set_object("album_name", label)
 
         #Artist
@@ -129,11 +135,13 @@ class MainScreen():
             # There is no cover so it will use all the screen size for the text
             width = self.size[0] - self.base_size
 
-            current = TextItem(self.fonts['base'], MainScreen.get_track_name(self.track), (self.base_size / 2, self.base_size * 2),
+            current = TextItem(self.fonts['base'], MainScreen.get_track_name(self.track),
+                               (self.base_size / 2, self.base_size * 2),
                                (width, -1))
             self.touch_text_manager.set_object("track_name", current)
 
-            current = TextItem(self.fonts['base'], MainScreen.get_track_album_name(self.track), (self.base_size / 2, self.base_size * 3),
+            current = TextItem(self.fonts['base'], MainScreen.get_track_album_name(self.track),
+                               (self.base_size / 2, self.base_size * 3),
                                (width, -1))
             self.touch_text_manager.set_object("album_name", current)
 
@@ -149,15 +157,15 @@ class MainScreen():
         width = self.size[0] - self.base_size
 
         current = TextItem(self.fonts['base'], "Stopped", (self.base_size / 2, self.base_size * 2),
-                               (width, -1))
+                           (width, -1))
         self.touch_text_manager.set_object("track_name", current)
 
         current = TextItem(self.fonts['base'], "", (self.base_size / 2, self.base_size * 3),
-                               (width, -1))
+                           (width, -1))
         self.touch_text_manager.set_object("album_name", current)
 
         current = TextItem(self.fonts['base'], "", (self.base_size / 2, self.base_size * 4),
-                               (width, -1))
+                           (width, -1))
         self.touch_text_manager.set_object("artist_name", current)
 
     def load_image(self):
@@ -204,7 +212,7 @@ class MainScreen():
 
     @staticmethod
     def get_track_album_name(track):
-        if track.album is not None and track.album.name is not None and len(track.album.name)>0:
+        if track.album is not None and track.album.name is not None and len(track.album.name) > 0:
             return track.album.name
         else:
             return "Unknow Album"
