@@ -12,6 +12,7 @@ install:
   - "sudo wget -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list"
   - "sudo apt-get update || true"
   - "sudo apt-get install mopidy"
+  - "sudo apt-get install python-pygame"
   - "pip install tox"
 
 script:
