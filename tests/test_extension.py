@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 import unittest
 
-from mopidy_touchscreen import Extension, frontend as frontend_lib
+from mopidy_touchscreen import Extension, touch_screen as frontend_lib
 
 
 class ExtensionTest(unittest.TestCase):
