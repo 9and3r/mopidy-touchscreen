@@ -20,6 +20,8 @@ Mopidy-Touchscreen
 
 Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
 
+Cover images are downloaded from `last.fm <http://www.last.fm/api>`_
+
 Dependencies
 ============
 
@@ -106,6 +108,11 @@ Project resources
 
 Changelog
 =========
+
+v0.2.1
+----------------------------------------
+
+-Font will be included on instalation
 
 v0.2.0
 ----------------------------------------
