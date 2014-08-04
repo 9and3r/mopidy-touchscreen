@@ -2,6 +2,7 @@ import pykka
 import traceback
 import logging
 from threading import Thread
+
 import pygame
 
 from mopidy import core
@@ -16,7 +17,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
     def __init__(self, config, core):
         super(TouchScreen, self).__init__()
         self.backend = \
-        pykka.ActorRegistry.get_by_class_name("TouchScreenBackend")[0]
+            pykka.ActorRegistry.get_by_class_name("TouchScreenBackend")[0]
         self.core = core
         self.running = False
         self.screen_size = (config['touchscreen']['screen_width'],

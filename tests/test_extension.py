@@ -3,7 +3,8 @@
 import unittest
 
 
-from mopidy_touchscreen import Extension, touch_screen as frontend_lib
+from mopidy_touchscreen import Extension
+# ,touch_screen as frontend_lib
 
 
 class ExtensionTest(unittest.TestCase):
