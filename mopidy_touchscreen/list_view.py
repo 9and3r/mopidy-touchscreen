@@ -1,6 +1,6 @@
 import logging
 
-from .screen_objects import ScreenObjectsManager, TouchAndTextItem, ScrollBar
+from .screen_objects import ScreenObjectsManager, ScrollBar, TouchAndTextItem
 from .touch_manager import TouchManager
 
 

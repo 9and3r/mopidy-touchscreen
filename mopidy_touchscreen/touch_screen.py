@@ -1,9 +1,9 @@
 import logging
-import pykka
 from threading import Thread
 import traceback
 
 import pygame
+import pykka
 
 from mopidy import core
 

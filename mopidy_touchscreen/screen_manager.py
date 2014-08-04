@@ -11,9 +11,9 @@ from .library_screen import LibraryScreen
 from .main_screen import MainScreen
 from .menu_screen import MenuScreen
 from .playlist_screen import PlaylistScreen
-from .screen_objects import ScreenObjectsManager, TouchAndTextItem, Progressbar
-from .tracklist import Tracklist
+from .screen_objects import Progressbar, ScreenObjectsManager, TouchAndTextItem
 from .touch_manager import TouchManager
+from .tracklist import Tracklist
 
 
 logger = logging.getLogger(__name__)
