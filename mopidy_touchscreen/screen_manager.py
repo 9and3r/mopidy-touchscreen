@@ -61,50 +61,50 @@ class ScreenManager():
         self.screen_objects_manager.set_touch_object("repeat", button)
         x = button.get_right_pos()
 
-        #Repeat
+        # Single
         button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("single", button)
         x = button.get_right_pos()
 
-        #Internet
+        # Internet
         button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("internet", button)
         x = button.get_right_pos()
 
-        #Mute
+        # Mute
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("mute", button)
         x = button.get_right_pos()
 
-        #Volume
+        # Volume
         progress = Progressbar(self.fonts['base'], "100", (x, 0),
                                (self.size[0] - x, self.base_size), 100, True)
         self.screen_objects_manager.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
 
-        #Menu buttons
+        # Menu buttons
 
         button_size = (self.size[0] / 5, self.base_size)
 
-        #Main button
+        # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
                                   (0, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
-        #Tracklist button
+        # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
                                   (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
-        #Library button
+        # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
                                   (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
-        #Playlist button
+        # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
                                   (x, self.base_size * 7), button_size)
         self.screen_objects_manager.set_touch_object("menu_3", button)

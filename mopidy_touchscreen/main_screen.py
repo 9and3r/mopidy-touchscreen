@@ -7,8 +7,10 @@ import urllib2
 import json
 import pygame
 import logging
+
 from .touch_manager import TouchManager
-from .screen_objects import ScreenObjectsManager, Progressbar, TouchAndTextItem, TextItem
+from .screen_objects import ScreenObjectsManager, Progressbar, \
+    TouchAndTextItem, TextItem
 
 
 logger = logging.getLogger(__name__)
@@ -37,7 +39,8 @@ class MainScreen():
             if self.image is not None:
                 screen.blit(self.image, (
                     self.base_size / 2, self.base_size + self.base_size / 2))
-            self.touch_text_manager.get_touch_object("time_progress").set_value(
+            self.touch_text_manager.get_touch_object(
+                "time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
             self.touch_text_manager.get_touch_object("time_progress").set_text(
                 time.strftime('%M:%S', time.gmtime(
@@ -75,7 +78,7 @@ class MainScreen():
                          (x, self.base_size * 4), (width, self.size[1]))
         self.touch_text_manager.set_object("artist_name", label)
 
-        #Previous track button
+        # Previous track button
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61c",
                                   (0, self.base_size * 6), None)
         self.touch_text_manager.set_touch_object("previous", button)
@@ -93,7 +96,8 @@ class MainScreen():
                                    0)) + "/" + time.strftime('%M:%S',
                                                              time.gmtime(0)),
                                (size_1, self.base_size * 6),
-                               (self.size[0] - size_1 - size_2, self.base_size),
+                               (
+                               self.size[0] - size_1 - size_2, self.base_size),
                                track.length / 1000, False)
         self.touch_text_manager.set_touch_object("time_progress", progress)
 
@@ -133,13 +137,14 @@ class MainScreen():
     def download_image(self, artist_index):
         if artist_index < len(self.artists):
             try:
-                safe_artist = urllib.quote_plus(self.artists[artist_index].name)
+                safe_artist = urllib.quote_plus(
+                    self.artists[artist_index].name)
                 safe_album = urllib.quote_plus(
                     MainScreen.get_track_album_name(self.track))
                 url = "http://ws.audioscrobbler.com/2.0/?"
                 params = "method=album.getinfo&" + \
-                    "api_key=59a04c6a73fb99d6e8996e01db306829&artist=" \
-                    + safe_artist + "&album=" + safe_album + "&format=json"
+                         "api_key=59a04c6a73fb99d6e8996e01db306829&artist=" \
+                         + safe_artist + "&album=" + safe_album + "&format=json"
                 response = urllib2.urlopen(url + params)
                 data = json.load(response)
                 image = data['album']['image'][-1]['#text']
@@ -225,13 +230,15 @@ class MainScreen():
                 volume = self.core.playback.volume.get() + 10
                 if volume > 100:
                     volume = 100
-                self.manager.backend.tell({'action': 'volume', 'value': volume})
+                self.manager.backend.tell(
+                    {'action': 'volume', 'value': volume})
                 self.manager.volume_changed(volume)
             elif event.direction == TouchManager.down:
                 volume = self.core.playback.volume.get() - 10
                 if volume < 0:
                     volume = 0
-                self.manager.backend.tell({'action': 'volume', 'value': volume})
+                self.manager.backend.tell(
+                    {'action': 'volume', 'value': volume})
                 self.manager.volume_changed(volume)
 
     @staticmethod

@@ -37,7 +37,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-#source_encoding = 'utf-8-sig'
+# source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -196,7 +196,8 @@ latex_elements = {}
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Mopidy-Touchscreen.tex', u'Mopidy-Touchscreen Documentation',
+  ('index', 'Mopidy-Touchscreen.tex',
+   u'Mopidy-Touchscreen Documentation',
    u'9and3r', 'manual'),
 ]
 
@@ -241,8 +242,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'Mopidy-Touchscreen', u'Mopidy-Touchscreen Documentation',
-    u'9and3r', 'Mopidy-Touchscreen', 'One line description of project.',
-    'Miscellaneous'),
+        u'9and3r', 'Mopidy-Touchscreen', 'One line description of project.',
+        'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
