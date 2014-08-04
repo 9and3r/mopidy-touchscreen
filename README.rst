@@ -10,12 +10,12 @@ Mopidy-Touchscreen
     :target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
     :alt: Number of PyPI downloads
 
-.. image:: https://img.shields.io/travis/9and3r/modipy-touchscreen/master.png?style=flat
-    :target: https://travis-ci.org/9and3r/modipy-touchscreen
+.. image:: https://img.shields.io/travis/9and3r/mopidy-touchscreen/master.png?style=flat
+    :target: https://travis-ci.org/9and3r/mopidy-touchscreen
     :alt: Travis CI build status
 
-.. image:: https://img.shields.io/coveralls/9and3r/modipy-touchscreen/master.svg?style=flat
-   :target: https://coveralls.io/r/9and3r/modipy-touchscreen?branch=master
+.. image:: https://img.shields.io/coveralls/9and3r/mopidy-touchscreen/master.svg?style=flat
+   :target: https://coveralls.io/r/9and3r/mopidy-touchscreen?branch=master
    :alt: Test coverage
 
 Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
