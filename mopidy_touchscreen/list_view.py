@@ -1,5 +1,6 @@
+import logging
+from .screen_objects import ScrollBar, ScreenObjectsManager, TouchAndTextItem
 from .touch_manager import TouchManager
-from .screen_objects import *
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,8 @@ class ListView():
         self.screen_objects.render(surface)
 
     def touch_event(self, touch_event):
-        if touch_event.type == TouchManager.click or touch_event.type == TouchManager.long_click:
+        if touch_event.type == TouchManager.click \
+                or touch_event.type == TouchManager.long_click:
             objects = self.screen_objects.get_touch_objects_in_pos(
                 touch_event.current_pos)
             if objects is not None:
@@ -76,9 +78,9 @@ class ListView():
             elif touch_event.direction == TouchManager.down:
                 self.move_to(1)
 
-    #Scroll to direction
-    #direction == 1 will scroll down
-    #direction == -1 will scroll up
+    # Scroll to direction
+    # direction == 1 will scroll down
+    # direction == -1 will scroll up
     def move_to(self, direction):
         if self.scrollbar:
             if direction == 1:
@@ -97,7 +99,7 @@ class ListView():
                     self.current_item)
             self.set_selected(self.selected)
 
-    #Set selected items
+    # Set selected items
     def set_selected(self, selected):
         for number in self.selected:
             try:

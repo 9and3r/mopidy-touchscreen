@@ -1,6 +1,6 @@
-import pygame
 import logging
 import math
+import pygame
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,8 @@ class TextItem(BaseItem):
         self.box = self.font.render(text, True, self.color)
         if size is not None:
             if size[1] == -1:
-                BaseItem.__init__(self, pos, (size[0], self.font.size(text)[1]))
+                height = self.font.size(text)[1]
+                BaseItem.__init__(self, pos, (size[0], height))
             else:
                 BaseItem.__init__(self, pos, size)
         else:
@@ -180,8 +181,8 @@ class Progressbar(TouchObject):
             self.text.set_text(str(self.value), True)
         else:
             self.text = TextItem(font, text, pos, None)
-        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] / 2,
-                         self.text.pos[1])
+        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /
+                         2, self.text.pos[1])
 
     def update(self):
         pass

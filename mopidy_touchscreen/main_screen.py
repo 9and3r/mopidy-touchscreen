@@ -5,9 +5,10 @@ from threading import Thread
 import urllib
 import urllib2
 import json
-
+import pygame
+import logging
 from .touch_manager import TouchManager
-from .screen_objects import *
+from .screen_objects import ScreenObjectsManager, Progressbar, TouchAndTextItem, TextItem
 
 
 logger = logging.getLogger(__name__)
@@ -35,14 +36,14 @@ class MainScreen():
         if self.track is not None:
             if self.image is not None:
                 screen.blit(self.image, (
-                self.base_size / 2, self.base_size + self.base_size / 2))
+                    self.base_size / 2, self.base_size + self.base_size / 2))
             self.touch_text_manager.get_touch_object("time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
             self.touch_text_manager.get_touch_object("time_progress").set_text(
                 time.strftime('%M:%S', time.gmtime(
-                    self.core.playback.time_position.get() / 1000)) + "/" + time.strftime(
-                    '%M:%S', time.gmtime(
-                        self.track.length / 1000)))
+                    self.core.playback.time_position.get() / 1000)) + "/" +
+                time.strftime('%M:%S', time.gmtime(
+                    self.track.length / 1000)))
         self.touch_text_manager.render(screen)
         return screen
 
@@ -136,12 +137,15 @@ class MainScreen():
                 safe_album = urllib.quote_plus(
                     MainScreen.get_track_album_name(self.track))
                 url = "http://ws.audioscrobbler.com/2.0/?"
-                params = "method=album.getinfo&api_key=59a04c6a73fb99d6e8996e01db306829&artist=" + safe_artist + "&album=" + safe_album + "&format=json"
+                params = "method=album.getinfo&" + \
+                    "api_key=59a04c6a73fb99d6e8996e01db306829&artist=" \
+                    + safe_artist + "&album=" + safe_album + "&format=json"
                 response = urllib2.urlopen(url + params)
                 data = json.load(response)
                 image = data['album']['image'][-1]['#text']
                 urllib.urlretrieve(image,
-                                   self.get_cover_folder() + self.get_image_file_name())
+                                   self.get_cover_folder() +
+                                   self.get_image_file_name())
                 self.load_image()
             except:
                 self.download_image(artist_index + 1)
@@ -244,4 +248,3 @@ class MainScreen():
             return track.album.name
         else:
             return "Unknow Album"
-

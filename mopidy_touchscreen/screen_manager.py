@@ -1,11 +1,12 @@
 import traceback
-
+import logging
 import mopidy
 from pkg_resources import Requirement, resource_filename
-
+import pygame
+import mopidy.core
 from .main_screen import MainScreen
 from .touch_manager import TouchManager
-from .screen_objects import *
+from .screen_objects import ScreenObjectsManager, TouchAndTextItem, Progressbar
 from .tracklist import Tracklist
 from .playlist_screen import PlaylistScreen
 from .dynamic_background import DynamicBackground
@@ -109,13 +110,12 @@ class ScreenManager():
         self.screen_objects_manager.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
-        #Menu button
+        # Menu button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
                                   (x, self.base_size * 7), None)
         self.screen_objects_manager.set_touch_object("menu_4", button)
-        x = button.get_right_pos()
 
-        #Down bar
+        # Down bar
         self.down_bar = pygame.Surface(
             (self.size[0], self.size[1] - self.base_size * 7), pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 128))
@@ -153,19 +153,19 @@ class ScreenManager():
                 if objects is not None:
                     for key in objects:
                         if key == "volume":
-                            value = self.screen_objects_manager.get_touch_object(
-                                key).get_pos_value(
-                                touch_event.current_pos)
+                            manager = self.screen_objects_manager
+                            volume = manager.get_touch_object(key)
+                            pos = touch_event.current_pos
+                            value = volume.get_pos_value(pos)
                             self.backend.tell(
                                 {'action': 'volume', 'value': value})
                             self.volume_changed(value)
                         elif key == "pause_play":
-                            if self.core.playback.state.get() == mopidy.core.PlaybackState.PLAYING:
+                            if self.core.playback.state.get() == \
+                                    mopidy.core.PlaybackState.PLAYING:
                                 self.core.playback.pause()
-                                logger.error("pausatzen")
                             else:
                                 self.core.playback.play()
-                                logger.error("erreproduzitzen")
                         elif key == "mute":
                             mute = not self.core.playback.mute.get()
                             self.core.playback.set_mute(mute)
@@ -198,7 +198,6 @@ class ScreenManager():
                 self.screen_objects_manager.get_touch_object("mute").set_text(
                     u"\ue621", False)
             else:
-                logger.error("sartu naiz")
                 self.screen_objects_manager.get_touch_object("mute").set_text(
                     u"\ue622", False)
         self.screen_objects_manager.get_touch_object("volume").set_value(volume)

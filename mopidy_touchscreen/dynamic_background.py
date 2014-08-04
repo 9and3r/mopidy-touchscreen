@@ -1,5 +1,5 @@
-import random
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,8 @@ class DynamicBackground():
 
 
 # Returns an array with 3 integers in range of 0-255
-# The sum of the three integers will be lower than 255*2 (510) to avoid very bright colors
+# The sum of the three integers will be lower than 255*2
+# (510) to avoid very bright colors
 # White text should be seen ok with this background color
 
 

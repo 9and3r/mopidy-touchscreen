@@ -15,8 +15,8 @@ class LibraryScreen():
         self.base_size = base_size
         self.manager = manager
         self.list_view = ListView((0, self.base_size), (
-        self.size[0], self.size[1] - 2 * self.base_size),
-                                  self.base_size, manager.fonts['base'])
+            self.size[0], self.size[1] - 2 * self.base_size),
+            self.base_size, manager.fonts['base'])
         self.directory_list = []
         self.current_directory = None
         self.library = None
@@ -63,7 +63,7 @@ class LibraryScreen():
                         self.go_up_directory()
                     else:
                         if self.library[
-                                    clicked - 1].type == mopidy.models.Ref.TRACK:
+                                clicked - 1].type == mopidy.models.Ref.TRACK:
                             self.play_uri(self.library[clicked - 1].uri, True)
                         else:
                             self.go_inside_directory(

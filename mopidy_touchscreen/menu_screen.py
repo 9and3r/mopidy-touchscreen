@@ -3,7 +3,7 @@ import socket
 
 import mopidy
 
-from .screen_objects import *
+from .screen_objects import ScreenObjectsManager, TouchAndTextItem
 
 
 class MenuScreen():
@@ -46,16 +46,10 @@ class MenuScreen():
                                   (0, self.base_size * 4), None)
         self.screen_objects.set_touch_object("ip", button)
 
-        #self.list_view = ListView((0,self.base_size),(self.size[0],self.size[1]-2*self.base_size), self.base_size, manager.fonts)
-        #self.list_view.set_list(["Exit mopidy", "Shutdown", "Restart"])
-
-
     def update(self, screen):
         self.screen_objects.render(screen)
-        # self.list_view.render(screen)
 
     def touch_event(self, touch_event):
-        # clicked = self.list_view.touch_event(touch_event)
         clicked = self.screen_objects.get_touch_objects_in_pos(
             touch_event.current_pos)
         for key in clicked:
