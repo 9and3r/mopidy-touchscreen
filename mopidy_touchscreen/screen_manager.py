@@ -28,7 +28,7 @@ class ScreenManager():
         self.background = DynamicBackground()
         self.current_screen = 0
         self.base_size = self.size[1] / 8
-        font = resource_filename(Requirement.parse("mopidy-touchscreen"),"mopidy_touchscreen/icomoon.ttf")
+        font = resource_filename(Requirement.parse("mopidy-touchscreen"), "mopidy_touchscreen/icomoon.ttf")
         self.fonts['base'] = pygame.font.SysFont("verdana", self.base_size)
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:
@@ -52,7 +52,7 @@ class ScreenManager():
         self.screen_objects_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
-        #Random
+        # Random
         button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ", (x, 0), None)
         self.screen_objects_manager.set_touch_object("random", button)
         x = button.get_right_pos()

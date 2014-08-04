@@ -19,7 +19,7 @@ class ListView():
         self.set_list([])
         self.selected = []
 
-    #Sets the list for the lisview. It should be an iterable of strings
+    # Sets the list for the lisview. It should be an iterable of strings
     def set_list(self, item_list):
         self.list = item_list
         self.list_size = len(item_list)

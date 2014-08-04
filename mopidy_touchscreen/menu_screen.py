@@ -21,7 +21,7 @@ class MenuScreen():
                                   None)
         self.screen_objects.set_touch_object("exit", button)
 
-        #Shutdown button
+        # Shutdown button
         button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue60b", (0, self.base_size * 2), None)
         self.screen_objects.set_touch_object("shutdown_icon", button)
         button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown", (button.get_right_pos(), self.base_size * 2),
@@ -62,7 +62,7 @@ class MenuScreen():
             elif key == "ip":
                 self.check_connection()
 
-    #Will check internet connection
+    # Will check internet connection
     def check_connection(self):
         try:
             self.manager.set_connection(False, True)

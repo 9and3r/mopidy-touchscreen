@@ -77,6 +77,6 @@ class LibraryScreen():
             self.manager.core.tracklist.add(uri=uri)
             self.manager.core.playback.play()
         else:
-            #TODO: add folder to tracks to play
+            # TODO: add folder to tracks to play
             pass
 
