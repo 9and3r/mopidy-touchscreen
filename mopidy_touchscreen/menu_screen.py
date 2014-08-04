@@ -41,7 +41,7 @@ class MenuScreen():
                                   None)
         self.screen_objects.set_touch_object("restart", button)
 
-        #IP addres
+        # IP addres
         button = TouchAndTextItem(self.manager.fonts['base'], "IP: ",
                                   (0, self.base_size * 4), None)
         self.screen_objects.set_touch_object("ip", button)
@@ -81,4 +81,3 @@ class MenuScreen():
             self.screen_objects.get_touch_object("ip").set_text(
                 "IP: No internet", "None")
             self.manager.set_connection(False, False)
-

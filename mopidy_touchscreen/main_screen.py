@@ -6,8 +6,8 @@ import urllib2
 import json
 import hashlib
 import logging
-import pygame
 
+import pygame
 
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager, Progressbar, \
