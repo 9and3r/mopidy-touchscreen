@@ -1,7 +1,7 @@
-import pykka
-import traceback
 import logging
+import pykka
 from threading import Thread
+import traceback
 
 import pygame
 

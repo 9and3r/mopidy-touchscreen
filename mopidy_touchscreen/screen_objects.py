@@ -1,6 +1,8 @@
 import logging
 import math
+
 import pygame
+
 
 logger = logging.getLogger(__name__)
 

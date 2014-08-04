@@ -1,19 +1,19 @@
-import traceback
 import logging
 import mopidy
 from pkg_resources import Requirement, resource_filename
+import traceback
 
-import pygame
 import mopidy.core
+import pygame
 
-from .main_screen import MainScreen
-from .touch_manager import TouchManager
-from .screen_objects import ScreenObjectsManager, TouchAndTextItem, Progressbar
-from .tracklist import Tracklist
-from .playlist_screen import PlaylistScreen
 from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
+from .main_screen import MainScreen
 from .menu_screen import MenuScreen
+from .playlist_screen import PlaylistScreen
+from .screen_objects import ScreenObjectsManager, TouchAndTextItem, Progressbar
+from .tracklist import Tracklist
+from .touch_manager import TouchManager
 
 
 logger = logging.getLogger(__name__)
