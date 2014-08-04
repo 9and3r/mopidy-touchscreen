@@ -15,28 +15,35 @@ class MenuScreen():
         self.screen_objects = ScreenObjectsManager()
 
         # Exit mopidy button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue611", (0, self.base_size), None)
+        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue611",
+                                  (0, self.base_size), None)
         self.screen_objects.set_touch_object("exit_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Exit Mopidy", (button.get_right_pos(), self.base_size),
+        button = TouchAndTextItem(self.manager.fonts['base'], "Exit Mopidy",
+                                  (button.get_right_pos(), self.base_size),
                                   None)
         self.screen_objects.set_touch_object("exit", button)
 
-        #Shutdown button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue60b", (0, self.base_size * 2), None)
+        # Shutdown button
+        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue60b",
+                                  (0, self.base_size * 2), None)
         self.screen_objects.set_touch_object("shutdown_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown", (button.get_right_pos(), self.base_size * 2),
+        button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown",
+                                  (button.get_right_pos(), self.base_size * 2),
                                   None)
         self.screen_objects.set_touch_object("shutdown", button)
 
-        #Restart button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue609", (0, self.base_size * 3), None)
+        # Restart button
+        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue609",
+                                  (0, self.base_size * 3), None)
         self.screen_objects.set_touch_object("restart_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Restart", (button.get_right_pos(), self.base_size * 3),
+        button = TouchAndTextItem(self.manager.fonts['base'], "Restart",
+                                  (button.get_right_pos(), self.base_size * 3),
                                   None)
         self.screen_objects.set_touch_object("restart", button)
 
         #IP addres
-        button = TouchAndTextItem(self.manager.fonts['base'], "IP: ", (0, self.base_size * 4), None)
+        button = TouchAndTextItem(self.manager.fonts['base'], "IP: ",
+                                  (0, self.base_size * 4), None)
         self.screen_objects.set_touch_object("ip", button)
 
         #self.list_view = ListView((0,self.base_size),(self.size[0],self.size[1]-2*self.base_size), self.base_size, manager.fonts)
@@ -49,7 +56,8 @@ class MenuScreen():
 
     def touch_event(self, touch_event):
         # clicked = self.list_view.touch_event(touch_event)
-        clicked = self.screen_objects.get_touch_objects_in_pos(touch_event.current_pos)
+        clicked = self.screen_objects.get_touch_objects_in_pos(
+            touch_event.current_pos)
         for key in clicked:
             if key == "exit_icon" or key == "exit":
                 mopidy.utils.process.exit_process()
@@ -62,7 +70,7 @@ class MenuScreen():
             elif key == "ip":
                 self.check_connection()
 
-    #Will check internet connection
+    # Will check internet connection
     def check_connection(self):
         try:
             self.manager.set_connection(False, True)
@@ -70,11 +78,13 @@ class MenuScreen():
             s.connect(("8.8.8.8", 80))
             self.ip = s.getsockname()[0]
             s.close()
-            self.screen_objects.get_touch_object("ip").set_text("IP: " + self.ip, "None")
+            self.screen_objects.get_touch_object("ip").set_text(
+                "IP: " + self.ip, "None")
             self.manager.set_connection(True, False)
         except socket.error:
             s.close()
             self.ip = None
-            self.screen_objects.get_touch_object("ip").set_text("IP: No internet", "None")
+            self.screen_objects.get_touch_object("ip").set_text(
+                "IP: No internet", "None")
             self.manager.set_connection(False, False)
 

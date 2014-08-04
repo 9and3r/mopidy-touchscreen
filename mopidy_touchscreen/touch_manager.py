@@ -30,18 +30,21 @@ class TouchManager():
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 4:
-                touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
+                touch_event = TouchEvent(TouchManager.swipe, self.down_pos,
+                                         self.up_pos, True)
                 touch_event.direction = TouchManager.up
                 return touch_event
             elif event.button == 5:
-                touch_event = TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
+                touch_event = TouchEvent(TouchManager.swipe, self.down_pos,
+                                         self.up_pos, True)
                 touch_event.direction = TouchManager.down
                 return touch_event
             elif event.button == 1 and self.down_button == 1:
                 touch_event = self.mouse_up(event)
                 return touch_event
             elif event.button == 3 and self.down_button == 3:
-                touch_event = TouchEvent(TouchManager.long_click, self.down_pos, self.up_pos, None)
+                touch_event = TouchEvent(TouchManager.long_click, self.down_pos,
+                                         self.up_pos, None)
                 return touch_event
             else:
                 return None
@@ -59,14 +62,18 @@ class TouchManager():
         if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
             if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:
                 if time.time() - TouchManager.long_click_min_time > self.down_time:
-                    return TouchEvent(TouchManager.long_click, self.down_pos, self.up_pos, None)
+                    return TouchEvent(TouchManager.long_click, self.down_pos,
+                                      self.up_pos, None)
                 else:
-                    return TouchEvent(TouchManager.click, self.down_pos, self.up_pos, None)
+                    return TouchEvent(TouchManager.click, self.down_pos,
+                                      self.up_pos, None)
             elif abs(self.down_pos[1] - self.up_pos[1]) > self.min_swipe_move:
-                return TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, True)
+                return TouchEvent(TouchManager.swipe, self.down_pos,
+                                  self.up_pos, True)
         elif self.down_pos[1] - self.up_pos[1] < self.max_move_margin:
             if abs(self.down_pos[0] - self.up_pos[0]) > self.min_swipe_move:
-                return TouchEvent(TouchManager.swipe, self.down_pos, self.up_pos, False)
+                return TouchEvent(TouchManager.swipe, self.down_pos,
+                                  self.up_pos, False)
 
 
 class TouchEvent():

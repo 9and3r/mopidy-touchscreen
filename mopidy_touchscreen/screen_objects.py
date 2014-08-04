@@ -52,7 +52,8 @@ class BaseItem():
         self.pos = pos
         self.size = size
         self.rect = pygame.Rect(0, 0, self.size[0], self.size[1])
-        self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+        self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1], self.size[0],
+                                       self.size[1])
 
     def get_right_pos(self):
         return self.pos[0] + self.size[0]
@@ -153,7 +154,8 @@ class TouchAndTextItem(TouchObject, TextItem):
             pass
         else:
             if self.active:
-                self.active_box = self.font.render(self.text, True, self.active_color)
+                self.active_box = self.font.render(self.text, True,
+                                                   self.active_color)
             else:
                 self.box = self.font.render(self.text, True, self.color)
         if self.active:
@@ -178,7 +180,8 @@ class Progressbar(TouchObject):
             self.text.set_text(str(self.value), True)
         else:
             self.text = TextItem(font, text, pos, None)
-        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] / 2, self.text.pos[1])
+        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] / 2,
+                         self.text.pos[1])
 
     def update(self):
         pass
@@ -219,7 +222,9 @@ class ScrollBar(TouchObject):
         if self.max < 1:
             self.bar_size = self.size[1]
         else:
-            self.bar_size = math.ceil(float(self.items_on_screen) / float(self.max) * float(self.size[1]))
+            self.bar_size = math.ceil(
+                float(self.items_on_screen) / float(self.max) * float(
+                    self.size[1]))
         self.bar = pygame.Surface((self.size[0], self.bar_size))
         self.bar.fill((255, 255, 255))
 
@@ -237,4 +242,5 @@ class ScrollBar(TouchObject):
 
     def set_item(self, current_item):
         self.current_item = current_item
-        self.bar_pos = float(self.current_item) / float(self.max) * float(self.size[1])
+        self.bar_pos = float(self.current_item) / float(self.max) * float(
+            self.size[1])

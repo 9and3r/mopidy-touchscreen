@@ -19,20 +19,21 @@ class ListView():
         self.set_list([])
         self.selected = []
 
-    #Sets the list for the lisview. It should be an iterable of strings
+    # Sets the list for the lisview. It should be an iterable of strings
     def set_list(self, item_list):
         self.list = item_list
         self.list_size = len(item_list)
         if self.max_rows < self.list_size:
             self.scrollbar = True
-            scroll_bar = ScrollBar((self.pos[0] + self.size[0] - self.base_size, self.pos[1]),
-                                   (self.base_size, self.size[1]), self.list_size, self.max_rows)
+            scroll_bar = ScrollBar(
+                (self.pos[0] + self.size[0] - self.base_size, self.pos[1]),
+                (self.base_size, self.size[1]), self.list_size, self.max_rows)
             self.screen_objects.set_touch_object("scrollbar", scroll_bar)
         else:
             self.scrollbar = False
         self.load_new_item_position(0)
 
-    #Will load items currently displaying in item_pos
+    # Will load items currently displaying in item_pos
     def load_new_item_position(self, item_pos):
         self.current_item = item_pos
         if self.scrollbar:
@@ -46,7 +47,8 @@ class ListView():
         else:
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
-            item = TouchAndTextItem(self.font, self.list[i], (self.pos[0], self.pos[1] + self.base_size * z),
+            item = TouchAndTextItem(self.font, self.list[i], (
+            self.pos[0], self.pos[1] + self.base_size * z),
                                     (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
@@ -57,11 +59,13 @@ class ListView():
 
     def touch_event(self, touch_event):
         if touch_event.type == TouchManager.click or touch_event.type == TouchManager.long_click:
-            objects = self.screen_objects.get_touch_objects_in_pos(touch_event.current_pos)
+            objects = self.screen_objects.get_touch_objects_in_pos(
+                touch_event.current_pos)
             if objects is not None:
                 for key in objects:
                     if key == "scrollbar":
-                        direction = self.screen_objects.get_touch_object(key).touch(touch_event.current_pos)
+                        direction = self.screen_objects.get_touch_object(
+                            key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
                     else:
@@ -82,25 +86,29 @@ class ListView():
                 if self.current_item + self.max_rows > self.list_size:
                     self.current_item = self.list_size - self.max_rows
                 self.load_new_item_position(self.current_item)
-                self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
+                self.screen_objects.get_touch_object("scrollbar").set_item(
+                    self.current_item)
             elif direction == -1:
                 self.current_item -= self.max_rows
                 if self.current_item < 0:
                     self.current_item = 0
                 self.load_new_item_position(self.current_item)
-                self.screen_objects.get_touch_object("scrollbar").set_item(self.current_item)
+                self.screen_objects.get_touch_object("scrollbar").set_item(
+                    self.current_item)
             self.set_selected(self.selected)
 
     #Set selected items
     def set_selected(self, selected):
         for number in self.selected:
             try:
-                self.screen_objects.get_touch_object(str(number)).set_active(False)
+                self.screen_objects.get_touch_object(str(number)).set_active(
+                    False)
             except KeyError:
                 pass
         for number in selected:
             try:
-                self.screen_objects.get_touch_object(str(number)).set_active(True)
+                self.screen_objects.get_touch_object(str(number)).set_active(
+                    True)
             except KeyError:
                 pass
         self.selected = selected

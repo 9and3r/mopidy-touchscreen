@@ -7,7 +7,8 @@ class Tracklist():
         self.size = size
         self.base_size = base_size
         self.manager = manager
-        self.list_view = ListView((0, self.base_size), (self.size[0], self.size[1] - 2 * self.base_size),
+        self.list_view = ListView((0, self.base_size), (
+        self.size[0], self.size[1] - 2 * self.base_size),
                                   self.base_size, manager.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
@@ -23,13 +24,16 @@ class Tracklist():
         self.tracks = self.manager.core.tracklist.tl_tracks.get()
         self.tracks_strings = []
         for tl_track in self.tracks:
-            self.tracks_strings.append(MainScreen.get_track_name(tl_track.track))
+            self.tracks_strings.append(
+                MainScreen.get_track_name(tl_track.track))
         self.list_view.set_list(self.tracks_strings)
 
     def touch_event(self, touch_event):
         pos = self.list_view.touch_event(touch_event)
         if pos is not None:
-            self.manager.core.playback.change_track(self.tracks[pos], on_error_step=1)
+            self.manager.core.playback.change_track(self.tracks[pos],
+                                                    on_error_step=1)
 
     def track_started(self, track):
-        self.list_view.set_selected([self.manager.core.tracklist.index(track).get()])
+        self.list_view.set_selected(
+            [self.manager.core.tracklist.index(track).get()])
