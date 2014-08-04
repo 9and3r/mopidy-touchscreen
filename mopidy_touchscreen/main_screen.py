@@ -7,6 +7,8 @@ import json
 import hashlib
 import logging
 import pygame
+
+
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager, Progressbar, \
     TouchAndTextItem, TextItem
@@ -144,7 +146,8 @@ class MainScreen():
                 params = "method=album.getinfo&" + \
                          "api_key=59a04c6a73fb99d6e8996e01db306829&" \
                          + "artist=" \
-                         + safe_artist + "&album=" + safe_album + "&format=json"
+                         + safe_artist + "&album=" + safe_album + \
+                         "&format=json"
                 response = urllib2.urlopen(url + params)
                 data = json.load(response)
                 image = data['album']['image'][-1]['#text']
@@ -204,7 +207,8 @@ class MainScreen():
         size = self.base_size * 4
         self.image = pygame.transform.scale(
             pygame.image.load(
-                self.get_cover_folder() + self.get_image_file_name()).convert(),
+                self.get_cover_folder() +
+                self.get_image_file_name()).convert(),
             (size, size))
 
     def touch_event(self, event):

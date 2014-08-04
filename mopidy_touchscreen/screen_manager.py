@@ -1,9 +1,15 @@
 import traceback
 import logging
 import mopidy
+
+
 from pkg_resources import Requirement, resource_filename
+
+
 import pygame
 import mopidy.core
+
+
 from .main_screen import MainScreen
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager, TouchAndTextItem, Progressbar
