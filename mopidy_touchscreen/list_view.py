@@ -1,7 +1,6 @@
 import logging
-from .screen_objects import ScreenObjectsManager, TouchAndTextItem, ScrollBar
 from .touch_manager import TouchManager
-
+from .screen_objects import ScreenObjectsManager, TouchAndTextItem, ScrollBar
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +49,8 @@ class ListView():
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
             item = TouchAndTextItem(self.font, self.list[i], (
-            self.pos[0], self.pos[1] + self.base_size * z),
-                                    (width, -1))
+                self.pos[0], self.pos[1] + self.base_size * z),
+                (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1

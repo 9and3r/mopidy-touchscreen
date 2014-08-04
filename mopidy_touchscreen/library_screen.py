@@ -82,4 +82,3 @@ class LibraryScreen():
         else:
             # TODO: add folder to tracks to play
             pass
-

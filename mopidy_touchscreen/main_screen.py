@@ -1,13 +1,12 @@
-import hashlib
 import time
 import os
 from threading import Thread
 import urllib
 import urllib2
 import json
-import pygame
+import hashlib
 import logging
-
+import pygame
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager, Progressbar, \
     TouchAndTextItem, TextItem
@@ -90,7 +89,7 @@ class MainScreen():
                                   None)
         self.touch_text_manager.set_touch_object("next", button)
 
-        #Progress
+        # Progress
         progress = Progressbar(self.fonts['base'],
                                time.strftime('%M:%S', time.gmtime(
                                    0)) + "/" + time.strftime('%M:%S',
@@ -143,7 +142,8 @@ class MainScreen():
                     MainScreen.get_track_album_name(self.track))
                 url = "http://ws.audioscrobbler.com/2.0/?"
                 params = "method=album.getinfo&" + \
-                         "api_key=59a04c6a73fb99d6e8996e01db306829&artist=" \
+                         "api_key=59a04c6a73fb99d6e8996e01db306829&" \
+                         + "artist=" \
                          + safe_artist + "&album=" + safe_album + "&format=json"
                 response = urllib2.urlopen(url + params)
                 data = json.load(response)

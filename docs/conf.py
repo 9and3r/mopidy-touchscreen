@@ -196,9 +196,9 @@ latex_elements = {}
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Mopidy-Touchscreen.tex',
-   u'Mopidy-Touchscreen Documentation',
-   u'9and3r', 'manual'),
+    ('index', 'Mopidy-Touchscreen.tex',
+        u'Mopidy-Touchscreen Documentation',
+        u'9and3r', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
