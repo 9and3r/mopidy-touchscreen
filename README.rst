@@ -3,22 +3,22 @@ Mopidy-Touchscreen
 ****************************
 
 .. image:: https://img.shields.io/pypi/v/Mopidy-Touchscreen.svg?style=flat
-:target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
+    :target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
     :alt: Latest PyPI version
 
 .. image:: https://img.shields.io/pypi/dm/Mopidy-Touchscreen.svg?style=flat
-:target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
+    :target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
     :alt: Number of PyPI downloads
 
 .. image:: https://img.shields.io/travis/9and3r/modipy-touchscreen/master.png?style=flat
-:target: https://travis-ci.org/9and3r/modipy-touchscreen
+    :target: https://travis-ci.org/9and3r/modipy-touchscreen
     :alt: Travis CI build status
 
 .. image:: https://img.shields.io/coveralls/9and3r/modipy-touchscreen/master.svg?style=flat
-:target: https://coveralls.io/r/9and3r/modipy-touchscreen?branch=master
+   :target: https://coveralls.io/r/9and3r/modipy-touchscreen?branch=master
    :alt: Test coverage
 
-    Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
+Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
 
 Cover images are downloaded from `last.fm <http://www.last.fm/api>`_
 

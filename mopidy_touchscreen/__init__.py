@@ -36,5 +36,5 @@ class Extension(ext.Extension):
     def setup(self, registry):
         registry.add('frontend', TouchScreen)
 
-        # Backend used for controling volume
+        #Backend used for controling volume
         registry.add('backend', TouchScreenBackend)

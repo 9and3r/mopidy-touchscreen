@@ -58,7 +58,7 @@ class MainScreen():
                          (width, self.size[1]))
         self.touch_text_manager.set_object("track_name", label)
 
-        # Album name
+        #Album name
         label = TextItem(self.fonts['base'], MainScreen.get_track_album_name(track), (x, self.base_size * 3),
                          (width, self.size[1]))
         self.touch_text_manager.set_object("album_name", label)
