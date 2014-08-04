@@ -2,6 +2,7 @@ import logging
 from .touch_manager import TouchManager
 from .screen_objects import ScreenObjectsManager, TouchAndTextItem, ScrollBar
 
+
 logger = logging.getLogger(__name__)
 
 

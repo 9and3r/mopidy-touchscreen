@@ -13,6 +13,7 @@ from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
 from .menu_screen import MenuScreen
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -200,15 +201,16 @@ class ScreenManager():
             else:
                 self.screen_objects_manager.get_touch_object("mute").set_text(
                     u"\ue622", False)
-        self.screen_objects_manager.get_touch_object("volume").set_value(volume)
+        self.screen_objects_manager.get_touch_object("volume").set_value(
+            volume)
 
     def playback_state_changed(self, old_state, new_state):
         if new_state == mopidy.core.PlaybackState.PLAYING:
-            self.screen_objects_manager.get_touch_object("pause_play").set_text(
-                u"\ue616", False)
+            self.screen_objects_manager.get_touch_object(
+                "pause_play").set_text(u"\ue616", False)
         else:
-            self.screen_objects_manager.get_touch_object("pause_play").set_text(
-                u"\ue615", False)
+            self.screen_objects_manager.get_touch_object(
+                "pause_play").set_text(u"\ue615", False)
 
     def mute_changed(self, mute):
         self.screen_objects_manager.get_touch_object("mute").set_active(

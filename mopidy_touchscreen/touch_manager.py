@@ -1,6 +1,7 @@
-import pygame
 import logging
 import time
+import pygame
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +44,8 @@ class TouchManager():
                 touch_event = self.mouse_up(event)
                 return touch_event
             elif event.button == 3 and self.down_button == 3:
-                touch_event = TouchEvent(TouchManager.long_click, self.down_pos,
-                                         self.up_pos, None)
+                touch_event = TouchEvent(TouchManager.long_click,
+                                         self.down_pos, self.up_pos, None)
                 return touch_event
             else:
                 return None
@@ -61,7 +62,8 @@ class TouchManager():
         self.up_pos = event.pos
         if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
             if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:
-                if time.time() - TouchManager.long_click_min_time > self.down_time:
+                if time.time() - TouchManager.long_click_min_time > \
+                        self.down_time:
                     return TouchEvent(TouchManager.long_click, self.down_pos,
                                       self.up_pos, None)
                 else:

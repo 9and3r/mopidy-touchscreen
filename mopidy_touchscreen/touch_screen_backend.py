@@ -1,5 +1,6 @@
-import pykka
 import logging
+import pykka
+
 
 from mopidy import backend
 
