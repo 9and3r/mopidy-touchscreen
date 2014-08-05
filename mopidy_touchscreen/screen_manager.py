@@ -1,8 +1,8 @@
 import logging
-import mopidy
 from pkg_resources import Requirement, resource_filename
 import traceback
 
+import mopidy
 import mopidy.core
 import pygame
 
@@ -252,5 +252,3 @@ class ScreenManager():
         else:
             internet.set_text(u"\ue602", None)
             internet.set_active(connection)
-
-

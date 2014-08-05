@@ -9,7 +9,7 @@ import urllib2
 
 import pygame
 
-from .screen_objects import ScreenObjectsManager, Progressbar, \
+from .screen_objects import Progressbar, ScreenObjectsManager, \
     TextItem, TouchAndTextItem
 from .touch_manager import TouchManager
 

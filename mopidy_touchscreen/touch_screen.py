@@ -4,7 +4,6 @@ import traceback
 
 import pygame
 import pykka
-
 from mopidy import core
 
 from .screen_manager import ScreenManager
