@@ -1,10 +1,10 @@
 import logging
-from pkg_resources import Requirement, resource_filename
 import traceback
+import pygame
 
+from pkg_resources import Requirement, resource_filename
 import mopidy
 import mopidy.core
-import pygame
 
 from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen

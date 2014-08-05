@@ -6,7 +6,6 @@ from threading import Thread
 import time
 import urllib
 import urllib2
-
 import pygame
 
 from .screen_objects import Progressbar, ScreenObjectsManager, \
