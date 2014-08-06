@@ -1,10 +1,10 @@
 import logging
 from threading import Thread
 import traceback
-import pygame
 import pykka
 
 from mopidy import core
+import pygame
 
 from .screen_manager import ScreenManager
 

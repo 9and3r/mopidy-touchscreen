@@ -1,8 +1,8 @@
 import logging
 import traceback
-import pygame
 
-from pkg_resources import Requirement, resource_filename
+import pygame
+from pkg_resources import resource_filename, Requirement
 import mopidy
 import mopidy.core
 
