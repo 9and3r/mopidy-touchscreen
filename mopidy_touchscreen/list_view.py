@@ -3,7 +3,6 @@ import logging
 from .screen_objects import ScreenObjectsManager, ScrollBar, TouchAndTextItem
 from .touch_manager import TouchManager
 
-
 logger = logging.getLogger(__name__)
 
 

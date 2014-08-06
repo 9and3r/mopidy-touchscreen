@@ -2,17 +2,16 @@ import hashlib
 import json
 import logging
 import os
-from threading import Thread
 import time
 import urllib
 import urllib2
+from threading import Thread
 
 import pygame
 
-from .screen_objects import Progressbar, ScreenObjectsManager, \
-    TextItem, TouchAndTextItem
+from .screen_objects import (Progressbar, ScreenObjectsManager, TextItem,
+                             TouchAndTextItem)
 from .touch_manager import TouchManager
-
 
 logger = logging.getLogger(__name__)
 

@@ -5,7 +5,6 @@ import mopidy.models
 from .list_view import ListView
 from .touch_manager import TouchManager
 
-
 logger = logging.getLogger(__name__)
 
 

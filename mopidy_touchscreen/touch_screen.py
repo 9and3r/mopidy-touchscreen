@@ -1,13 +1,12 @@
 import logging
-from threading import Thread
 import traceback
-import pykka
+from threading import Thread
 
-from mopidy import core
 import pygame
+import pykka
+from mopidy import core
 
 from .screen_manager import ScreenManager
-
 
 logger = logging.getLogger(__name__)
 

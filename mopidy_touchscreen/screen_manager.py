@@ -1,10 +1,10 @@
 import logging
 import traceback
 
-import pygame
-from pkg_resources import resource_filename, Requirement
 import mopidy
 import mopidy.core
+import pygame
+from pkg_resources import Requirement, resource_filename
 
 from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
@@ -14,7 +14,6 @@ from .playlist_screen import PlaylistScreen
 from .screen_objects import Progressbar, ScreenObjectsManager, TouchAndTextItem
 from .touch_manager import TouchManager
 from .tracklist import Tracklist
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,9 +1,7 @@
 import logging
+
 import pykka
-
 from mopidy import backend
-
-
 
 logger = logging.getLogger(__name__)
 

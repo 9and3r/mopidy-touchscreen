@@ -3,7 +3,6 @@ import time
 
 import pygame
 
-
 logger = logging.getLogger(__name__)
 
 
