@@ -129,6 +129,8 @@ class ScreenManager():
         self.screens[4].check_connection()
         self.change_screen(self.current_screen)
 
+        self.screen_objects_manager.set_selected("pause_play")
+
     def update(self):
         surface = pygame.Surface(self.size)
         self.background.draw_background(surface)
@@ -186,6 +188,8 @@ class ScreenManager():
                             self.screens[4].check_connection()
                         elif key[:-1] == "menu_":
                             self.change_screen(int(key[-1:]))
+            elif event.type == InputManager.key:
+                self.screen_objects_manager.change_selected((0,0), InputManager.down)
             self.screens[self.current_screen].touch_event(event)
 
     def volume_changed(self, volume):

@@ -3,6 +3,9 @@ import math
 
 import pygame
 
+from .input_manager import InputManager
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -10,6 +13,7 @@ class ScreenObjectsManager():
     def __init__(self):
         self.touch_objects = {}
         self.text_objects = {}
+        self.selected = None
 
     def set_object(self, key, add_object):
         self.text_objects[key] = add_object
@@ -46,6 +50,37 @@ class ScreenObjectsManager():
             self.touch_objects = new_touch
         else:
             self.touch_objects = {}
+
+    def set_selected(self, key):
+        if self.selected is not None:
+            self.selected.set_selected(False)
+        if key is not None:
+            self.selected = self.touch_objects[key]
+            self.selected.set_selected(True)
+
+    def change_selected(self, pos, direction):
+        if direction == InputManager.up:
+            pass
+        elif direction == InputManager.down:
+            best = None
+            for key in self.touch_objects:
+                if self.touch_objects[key].pos[1] > pos[1]:
+                    if best is None:
+                        best = self.touch_objects[key].pos[1]
+                    elif best > self.touch_objects[key].pos[1]:
+                        best = self.touch_objects[key].pos[1]
+            self.set_selected(self.find_best(pos, True, best))
+
+    def find_best(self, pos, horizontal, best):
+        if horizontal:
+            keys = []
+            for key in self.touch_objects:
+                if self.touch_objects[key].pos[1] == best:
+                    keys.append(key)
+            logger.error(keys)
+            return keys[0]
+
+
 
 
 class BaseItem():
@@ -129,6 +164,7 @@ class TouchObject(BaseItem):
     def __init__(self, pos, size):
         BaseItem.__init__(self, pos, size)
         self.active = False
+        self.selected = False
 
     def is_pos_inside(self, pos):
         return self.rect_in_pos.collidepoint(pos)
@@ -136,13 +172,18 @@ class TouchObject(BaseItem):
     def set_active(self, active):
         self.active = active
 
+    def set_selected(self, selected):
+        self.selected = selected
+
 
 class TouchAndTextItem(TouchObject, TextItem):
     def __init__(self, font, text, pos, size):
         TextItem.__init__(self, font, text, pos, size)
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
+        self.selected_color = (150, 0, 255)
         self.active_box = self.font.render(text, True, self.active_color)
+        self.selected_box = self.font.render(text, True, self.selected_color)
 
     def update(self):
         TextItem.update(self)
@@ -150,6 +191,7 @@ class TouchAndTextItem(TouchObject, TextItem):
     def set_text(self, text, change_size):
         TextItem.set_text(self, text, change_size)
         self.active_box = self.font.render(text, True, self.active_color)
+        self.selected_box = self.font.render(text, True, self.selected_color)
 
     def render(self, surface):
         if self.fit_horizontal:
@@ -160,8 +202,9 @@ class TouchAndTextItem(TouchObject, TextItem):
                                                    self.active_color)
             else:
                 self.box = self.font.render(self.text, True, self.color)
-        if self.active:
-            # Area h*2 to render letters like g, j, y...
+        if self.selected:
+            surface.blit(self.selected_box, self.pos, area=self.rect)
+        elif self.active:
             surface.blit(self.active_box, self.pos, area=self.rect)
         else:
             surface.blit(self.box, self.pos, area=self.rect)
