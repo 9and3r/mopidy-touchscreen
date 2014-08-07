@@ -11,7 +11,7 @@ import pygame
 
 from .screen_objects import (Progressbar, ScreenObjectsManager, TextItem,
                              TouchAndTextItem)
-from .touch_manager import TouchManager
+from .input_manager import InputManager
 
 logger = logging.getLogger(__name__)
 
@@ -211,7 +211,7 @@ class MainScreen():
             (size, size))
 
     def touch_event(self, event):
-        if event.type == TouchManager.click:
+        if event.type == InputManager.click:
             objects = self.touch_text_manager.get_touch_objects_in_pos(
                 event.current_pos)
             if objects is not None:
@@ -224,19 +224,19 @@ class MainScreen():
                         self.core.playback.previous()
                     elif key == "next":
                         self.core.playback.next()
-        elif event.type == TouchManager.swipe:
-            if event.direction == TouchManager.left:
+        elif event.type == InputManager.swipe:
+            if event.direction == InputManager.left:
                 self.core.playback.next()
-            elif event.direction == TouchManager.right:
+            elif event.direction == InputManager.right:
                 self.core.playback.previous()
-            elif event.direction == TouchManager.up:
+            elif event.direction == InputManager.up:
                 volume = self.core.playback.volume.get() + 10
                 if volume > 100:
                     volume = 100
                 self.manager.backend.tell(
                     {'action': 'volume', 'value': volume})
                 self.manager.volume_changed(volume)
-            elif event.direction == TouchManager.down:
+            elif event.direction == InputManager.down:
                 volume = self.core.playback.volume.get() - 10
                 if volume < 0:
                     volume = 0

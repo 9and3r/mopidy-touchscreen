@@ -12,7 +12,7 @@ from .main_screen import MainScreen
 from .menu_screen import MenuScreen
 from .playlist_screen import PlaylistScreen
 from .screen_objects import Progressbar, ScreenObjectsManager, TouchAndTextItem
-from .touch_manager import TouchManager
+from .input_manager import InputManager
 from .tracklist import Tracklist
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class ScreenManager():
         except:
             traceback.print_exc()
         self.track = None
-        self.touch_manager = TouchManager(size)
+        self.input_manager = InputManager(size)
         self.screen_objects_manager = ScreenObjectsManager()
 
         # Top bar
@@ -147,17 +147,17 @@ class ScreenManager():
         self.screens[0].track_playback_ended(tl_track, time_position)
 
     def event(self, event):
-        touch_event = self.touch_manager.event(event)
-        if touch_event is not None:
-            if touch_event.type == TouchManager.click:
+        event = self.input_manager.event(event)
+        if event is not None:
+            if event.type == InputManager.click:
                 objects = self.screen_objects_manager.get_touch_objects_in_pos(
-                    touch_event.current_pos)
+                    event.current_pos)
                 if objects is not None:
                     for key in objects:
                         if key == "volume":
                             manager = self.screen_objects_manager
                             volume = manager.get_touch_object(key)
-                            pos = touch_event.current_pos
+                            pos = event.current_pos
                             value = volume.get_pos_value(pos)
                             self.backend.tell(
                                 {'action': 'volume', 'value': value})
@@ -186,7 +186,7 @@ class ScreenManager():
                             self.screens[4].check_connection()
                         elif key[:-1] == "menu_":
                             self.change_screen(int(key[-1:]))
-            self.screens[self.current_screen].touch_event(touch_event)
+            self.screens[self.current_screen].touch_event(event)
 
     def volume_changed(self, volume):
         if not self.core.playback.mute.get():

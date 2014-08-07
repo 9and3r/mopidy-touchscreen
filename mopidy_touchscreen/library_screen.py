@@ -3,7 +3,7 @@ import logging
 import mopidy.models
 
 from .list_view import ListView
-from .touch_manager import TouchManager
+from .input_manager import InputManager
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class LibraryScreen():
     def touch_event(self, touch_event):
         clicked = self.list_view.touch_event(touch_event)
         if clicked is not None:
-            if touch_event.type == TouchManager.long_click:
+            if touch_event.type == InputManager.long_click:
                 if self.current_directory is not None:
                     if clicked == 0:
                         self.go_up_directory()
