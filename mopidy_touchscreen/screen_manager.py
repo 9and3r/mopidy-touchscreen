@@ -154,42 +154,12 @@ class ScreenManager():
             if event.type == InputManager.click:
                 objects = self.screen_objects_manager.get_touch_objects_in_pos(
                     event.current_pos)
-                if objects is not None:
-                    for key in objects:
-                        if key == "volume":
-                            manager = self.screen_objects_manager
-                            volume = manager.get_touch_object(key)
-                            pos = event.current_pos
-                            value = volume.get_pos_value(pos)
-                            self.backend.tell(
-                                {'action': 'volume', 'value': value})
-                            self.volume_changed(value)
-                        elif key == "pause_play":
-                            if self.core.playback.state.get() == \
-                                    mopidy.core.PlaybackState.PLAYING:
-                                self.core.playback.pause()
-                            else:
-                                self.core.playback.play()
-                        elif key == "mute":
-                            mute = not self.core.playback.mute.get()
-                            self.core.playback.set_mute(mute)
-                            self.mute_changed(mute)
-                        elif key == "random":
-                            random = not self.core.tracklist.random.get()
-                            self.core.tracklist.set_random(random)
-                            self.options_changed()
-                        elif key == "repeat":
-                            self.core.tracklist.set_repeat(
-                                not self.core.tracklist.repeat.get())
-                        elif key == "single":
-                            self.core.tracklist.set_single(
-                                not self.core.tracklist.single.get())
-                        elif key == "internet":
-                            self.screens[4].check_connection()
-                        elif key[:-1] == "menu_":
-                            self.change_screen(int(key[-1:]))
+                self.click_on_objects(objects, event)
+            elif event.type == InputManager.key and event.direction == InputManager.enter:
+                objects = [self.screen_objects_manager.selected_key]
+                self.click_on_objects(objects, event)
             elif event.type == InputManager.key:
-                self.screen_objects_manager.change_selected((0,0), InputManager.down)
+                self.screen_objects_manager.change_selected(event.direction)
             self.screens[self.current_screen].touch_event(event)
 
     def volume_changed(self, volume):
@@ -208,6 +178,45 @@ class ScreenManager():
                     u"\ue622", False)
         self.screen_objects_manager.get_touch_object("volume").set_value(
             volume)
+
+    def click_on_objects(self, objects, event):
+        if objects is not None:
+            for key in objects:
+                if key == "volume":
+                    self.change_volume(event)
+                elif key == "pause_play":
+                    if self.core.playback.state.get() == \
+                            mopidy.core.PlaybackState.PLAYING:
+                        self.core.playback.pause()
+                    else:
+                        self.core.playback.play()
+                elif key == "mute":
+                    mute = not self.core.playback.mute.get()
+                    self.core.playback.set_mute(mute)
+                    self.mute_changed(mute)
+                elif key == "random":
+                    random = not self.core.tracklist.random.get()
+                    self.core.tracklist.set_random(random)
+                    self.options_changed()
+                elif key == "repeat":
+                    self.core.tracklist.set_repeat(
+                        not self.core.tracklist.repeat.get())
+                elif key == "single":
+                    self.core.tracklist.set_single(
+                        not self.core.tracklist.single.get())
+                elif key == "internet":
+                    self.screens[4].check_connection()
+                elif key[:-1] == "menu_":
+                    self.change_screen(int(key[-1:]))
+
+    def change_volume(self,event):
+        manager = self.screen_objects_manager
+        volume = manager.get_touch_object("volume")
+        pos = event.current_pos
+        value = volume.get_pos_value(pos)
+        self.backend.tell(
+            {'action': 'volume', 'value': value})
+        self.volume_changed(value)
 
     def playback_state_changed(self, old_state, new_state):
         if new_state == mopidy.core.PlaybackState.PLAYING:

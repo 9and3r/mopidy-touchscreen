@@ -14,6 +14,7 @@ class ScreenObjectsManager():
         self.touch_objects = {}
         self.text_objects = {}
         self.selected = None
+        self.selected_key = None
 
     def set_object(self, key, add_object):
         self.text_objects[key] = add_object
@@ -57,28 +58,135 @@ class ScreenObjectsManager():
         if key is not None:
             self.selected = self.touch_objects[key]
             self.selected.set_selected(True)
+            self.selected_key = key
+        else:
+            self.selected = None
+            self.selected.set_selected(False)
+            self.selected_key = None
 
-    def change_selected(self, pos, direction):
-        if direction == InputManager.up:
-            pass
+    def change_selected(self, direction):
+        pos = self.selected.pos
+        if direction == InputManager.right:
+            bests = self.find_nearest_objects(self.find_in_quadrant(False, True), True)
+            best_key = self.find_best_object(bests, False, True)
+        elif direction == InputManager.left:
+            bests = self.find_nearest_objects(self.find_in_quadrant(False, False), True)
+            best_key = self.find_best_object(bests, False, False)
         elif direction == InputManager.down:
-            best = None
-            for key in self.touch_objects:
-                if self.touch_objects[key].pos[1] > pos[1]:
-                    if best is None:
-                        best = self.touch_objects[key].pos[1]
-                    elif best > self.touch_objects[key].pos[1]:
-                        best = self.touch_objects[key].pos[1]
-            self.set_selected(self.find_best(pos, True, best))
+            bests = self.find_nearest_objects(self.find_in_quadrant(True, True), False)
+            best_key = self.find_best_object(bests, True, True)
+        elif direction == InputManager.up:
+            bests = self.find_nearest_objects(self.find_in_quadrant(True, False), False)
+            best_key = self.find_best_object(bests, True, False)
+        if best_key is None:
+            return False
+        else:
+            self.set_selected(best_key)
+            return True
 
-    def find_best(self, pos, horizontal, best):
-        if horizontal:
-            keys = []
-            for key in self.touch_objects:
-                if self.touch_objects[key].pos[1] == best:
-                    keys.append(key)
-            logger.error(keys)
-            return keys[0]
+    # Find touch objects on specified quadrant
+    # The quadrant is the normal math one with x and y
+    # x is positive on the bottom as pygame x
+    # The quadrant origin (0,0) is the selected pos
+    def find_in_quadrant(self, vertical, positive):
+        pos = self.selected.pos
+        objects = {}
+        if vertical:
+            if positive:
+                for key in self.touch_objects:
+                    current = self.touch_objects[key]
+                    if current.pos[1] > pos[1]:
+                        objects[key] = current
+            else:
+                for key in self.touch_objects:
+                    current = self.touch_objects[key]
+                    if current.pos[1] < pos[1]:
+                        objects[key] = current
+        else:
+            if positive:
+                for key in self.touch_objects:
+                    current = self.touch_objects[key]
+                    if current.pos[0] > pos[0]:
+                        objects[key] = current
+            else:
+                for key in self.touch_objects:
+                    current = self.touch_objects[key]
+                    if current.pos[0] < pos[0]:
+                        objects[key] = current
+        return objects
+
+    # Find the objects that are nearest
+    def find_nearest_objects(self, objects, vertical):
+        pos = self.selected.pos
+        best_pos = None
+        min_value = None
+        best_objects = {}
+        if vertical:
+            for key in objects:
+                if min_value is None:
+                    best_pos = objects[key].pos[1]
+                    min_value = abs(objects[key].pos[1] - pos[1])
+                elif abs(objects[key].pos[1] - pos[1]) < min_value:
+                    min_value = abs(objects[key].pos[1] - pos[1])
+                    best_pos = objects[key].pos[1]
+            for key in objects:
+                if objects[key].pos[1] == best_pos:
+                    best_objects[key] = objects[key]
+            return best_objects
+        else:
+            for key in objects:
+                if min_value is None:
+                    best_pos = objects[key].pos[0]
+                    min_value = abs(objects[key].pos[0] - pos[0])
+                elif abs(objects[key].pos[0] - pos[0]) < min_value:
+                    min_value = abs(objects[key].pos[0] - pos[0])
+                    best_pos = objects[key].pos[0]
+            for key in objects:
+                if objects[key].pos[0] == best_pos:
+                    best_objects[key] = objects[key]
+            return best_objects
+
+    def find_best_object(self, objects, vertical, positive):
+        pos = self.selected.pos
+        best_key = None
+        best_pos = None
+        if vertical:
+            if positive:
+                for key in objects:
+                    if best_pos is None:
+                        best_pos = objects[key].pos[1]
+                        best_key = key
+                    elif objects[key].pos[1] >= pos[1] and objects[key].pos[1] < best_pos:
+                        best_pos = objects[key].pos[1]
+                        best_key = key
+            else:
+                for key in objects:
+                    if best_pos is None:
+                        best_pos = objects[key].pos[1]
+                        best_key = key
+                    elif objects[key].pos[1] <= pos[1] and objects[key].pos[1] > best_pos:
+                        best_pos = objects[key].pos[1]
+                        best_key = key
+        else:
+            if positive:
+                for key in objects:
+                    if best_pos is None:
+                        best_pos = objects[key].pos[0]
+                        best_key = key
+                    elif objects[key].pos[0] >= pos[0] and objects[key].pos[0] < best_pos:
+                        best_pos = objects[key].pos[0]
+                        best_key = key
+            else:
+                for key in objects:
+                    if best_pos is None:
+                        best_pos = objects[key].pos[0]
+                        best_key = key
+                    elif objects[key].pos[0] <= pos[0] and objects[key].pos[0] > best_pos:
+                        best_pos = objects[key].pos[0]
+                        best_key = key
+        return best_key
+
+
 
 
 
