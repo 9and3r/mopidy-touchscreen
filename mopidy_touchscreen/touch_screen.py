@@ -31,7 +31,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
-            import GPIOManager
+            from .gpio_inpput_manager import GPIOManager
+            self.gpio_manager = GPIOManager()
 
     def start_thread(self):
         clock = pygame.time.Clock()
