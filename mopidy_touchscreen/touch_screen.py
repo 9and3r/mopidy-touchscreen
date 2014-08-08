@@ -32,7 +32,13 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
             from .gpio_inpput_manager import GPIOManager
-            self.gpio_manager = GPIOManager()
+            pins = {}
+            pins['left'] = config['touchscreen']['gpio_left']
+            pins['right'] = config['touchscreen']['gpio_right']
+            pins['up'] = config['touchscreen']['gpio_up']
+            pins['down'] = config['touchscreen']['gpio_down']
+            pins['enter'] = config['touchscreen']['gpio_enter']
+            self.gpio_manager = GPIOManager(pins)
 
     def start_thread(self):
         clock = pygame.time.Clock()
