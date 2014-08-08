@@ -61,23 +61,23 @@ class ScreenObjectsManager():
             self.selected_key = key
         else:
             self.selected = None
-            self.selected.set_selected(False)
             self.selected_key = None
 
-    def change_selected(self, direction):
-        pos = self.selected.pos
+    def change_selected(self, direction, pos):
+        if pos is None:
+            pos = self.selected.pos
         if direction == InputManager.right:
-            bests = self.find_nearest_objects(self.find_in_quadrant(False, True), True)
-            best_key = self.find_best_object(bests, False, True)
+            bests = self.find_nearest_objects(self.find_in_quadrant(False, True, pos), True, pos)
+            best_key = self.find_best_object(bests, False, True, pos)
         elif direction == InputManager.left:
-            bests = self.find_nearest_objects(self.find_in_quadrant(False, False), True)
-            best_key = self.find_best_object(bests, False, False)
+            bests = self.find_nearest_objects(self.find_in_quadrant(False, False, pos), True, pos)
+            best_key = self.find_best_object(bests, False, False, pos)
         elif direction == InputManager.down:
-            bests = self.find_nearest_objects(self.find_in_quadrant(True, True), False)
-            best_key = self.find_best_object(bests, True, True)
+            bests = self.find_nearest_objects(self.find_in_quadrant(True, True, pos), False, pos)
+            best_key = self.find_best_object(bests, True, True, pos)
         elif direction == InputManager.up:
-            bests = self.find_nearest_objects(self.find_in_quadrant(True, False), False)
-            best_key = self.find_best_object(bests, True, False)
+            bests = self.find_nearest_objects(self.find_in_quadrant(True, False, pos), False, pos)
+            best_key = self.find_best_object(bests, True, False, pos)
         if best_key is None:
             return False
         else:
@@ -88,8 +88,7 @@ class ScreenObjectsManager():
     # The quadrant is the normal math one with x and y
     # x is positive on the bottom as pygame x
     # The quadrant origin (0,0) is the selected pos
-    def find_in_quadrant(self, vertical, positive):
-        pos = self.selected.pos
+    def find_in_quadrant(self, vertical, positive, pos):
         objects = {}
         if vertical:
             if positive:
@@ -116,8 +115,7 @@ class ScreenObjectsManager():
         return objects
 
     # Find the objects that are nearest
-    def find_nearest_objects(self, objects, vertical):
-        pos = self.selected.pos
+    def find_nearest_objects(self, objects, vertical, pos):
         best_pos = None
         min_value = None
         best_objects = {}
@@ -146,8 +144,7 @@ class ScreenObjectsManager():
                     best_objects[key] = objects[key]
             return best_objects
 
-    def find_best_object(self, objects, vertical, positive):
-        pos = self.selected.pos
+    def find_best_object(self, objects, vertical, positive, pos):
         best_key = None
         best_pos = None
         if vertical:

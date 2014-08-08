@@ -4,6 +4,7 @@ import socket
 import mopidy
 
 from .screen_objects import ScreenObjectsManager, TouchAndTextItem
+from .input_manager import InputManager
 
 
 class MenuScreen():
@@ -49,20 +50,21 @@ class MenuScreen():
     def update(self, screen):
         self.screen_objects.render(screen)
 
-    def touch_event(self, touch_event):
-        clicked = self.screen_objects.get_touch_objects_in_pos(
-            touch_event.current_pos)
-        for key in clicked:
-            if key == "exit_icon" or key == "exit":
-                mopidy.utils.process.exit_process()
-            elif key == "shutdown_icon" or key == "shutdown":
-                if os.system("gksu -- shutdown now -h") != 0:
-                    os.system("shutdown now -h")
-            elif key == "restart_icon" or key == "restart":
-                if os.system("gksu -- shutdown -r now") != 0:
-                    os.system("shutdown -r now")
-            elif key == "ip":
-                self.check_connection()
+    def touch_event(self, event):
+        if event.type == InputManager.click:
+            clicked = self.screen_objects.get_touch_objects_in_pos(
+                event.current_pos)
+            for key in clicked:
+                if key == "exit_icon" or key == "exit":
+                    mopidy.utils.process.exit_process()
+                elif key == "shutdown_icon" or key == "shutdown":
+                    if os.system("gksu -- shutdown now -h") != 0:
+                        os.system("shutdown now -h")
+                elif key == "restart_icon" or key == "restart":
+                    if os.system("gksu -- shutdown -r now") != 0:
+                        os.system("shutdown -r now")
+                elif key == "ip":
+                    self.check_connection()
 
     # Will check internet connection
     def check_connection(self):

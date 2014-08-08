@@ -31,6 +31,7 @@ class Extension(ext.Extension):
         schema['cursor'] = config.Boolean()
         schema['fullscreen'] = config.Boolean()
         schema['cache_dir'] = config.Path()
+        schema['gpio'] = config.Boolean()
         return schema
 
     def setup(self, registry):

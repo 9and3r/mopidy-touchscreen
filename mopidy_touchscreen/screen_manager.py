@@ -41,7 +41,9 @@ class ScreenManager():
             traceback.print_exc()
         self.track = None
         self.input_manager = InputManager(size)
-        self.screen_objects_manager = ScreenObjectsManager()
+        self.top_bar_objects = ScreenObjectsManager()
+        self.down_bar_objects = ScreenObjectsManager()
+        self.selected_zone = self.top_bar_objects
 
         # Top bar
         self.top_bar = pygame.Surface((self.size[0], self.base_size),
@@ -50,38 +52,38 @@ class ScreenManager():
 
         # Play/pause
         button = TouchAndTextItem(self.fonts['icon'], u"\ue615 ", (0, 0), None)
-        self.screen_objects_manager.set_touch_object("pause_play", button)
+        self.top_bar_objects.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
         # Random
         button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("random", button)
+        self.top_bar_objects.set_touch_object("random", button)
         x = button.get_right_pos()
 
         # Repeat
         button = TouchAndTextItem(self.fonts['icon'], u"\ue626", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("repeat", button)
+        self.top_bar_objects.set_touch_object("repeat", button)
         x = button.get_right_pos()
 
         # Single
         button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("single", button)
+        self.top_bar_objects.set_touch_object("single", button)
         x = button.get_right_pos()
 
         # Internet
         button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("internet", button)
+        self.top_bar_objects.set_touch_object("internet", button)
         x = button.get_right_pos()
 
         # Mute
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ", (x, 0), None)
-        self.screen_objects_manager.set_touch_object("mute", button)
+        self.top_bar_objects.set_touch_object("mute", button)
         x = button.get_right_pos()
 
         # Volume
         progress = Progressbar(self.fonts['base'], "100", (x, 0),
                                (self.size[0] - x, self.base_size), 100, True)
-        self.screen_objects_manager.set_touch_object("volume", progress)
+        self.top_bar_objects.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
 
         # Menu buttons
@@ -91,31 +93,31 @@ class ScreenManager():
         # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
                                   (0, self.base_size * 7), button_size)
-        self.screen_objects_manager.set_touch_object("menu_0", button)
+        self.down_bar_objects.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
                                   (x, self.base_size * 7), button_size)
-        self.screen_objects_manager.set_touch_object("menu_1", button)
+        self.down_bar_objects.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
         # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
                                   (x, self.base_size * 7), button_size)
-        self.screen_objects_manager.set_touch_object("menu_2", button)
+        self.down_bar_objects.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
         # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
                                   (x, self.base_size * 7), button_size)
-        self.screen_objects_manager.set_touch_object("menu_3", button)
+        self.down_bar_objects.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
         # Menu button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
                                   (x, self.base_size * 7), None)
-        self.screen_objects_manager.set_touch_object("menu_4", button)
+        self.down_bar_objects.set_touch_object("menu_4", button)
 
         # Down bar
         self.down_bar = pygame.Surface(
@@ -129,7 +131,7 @@ class ScreenManager():
         self.screens[4].check_connection()
         self.change_screen(self.current_screen)
 
-        self.screen_objects_manager.set_selected("pause_play")
+        self.top_bar_objects.set_selected("pause_play")
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -137,7 +139,8 @@ class ScreenManager():
         self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar, (0, 0))
         surface.blit(self.down_bar, (0, self.base_size * 7))
-        self.screen_objects_manager.render(surface)
+        self.top_bar_objects.render(surface)
+        self.down_bar_objects.render(surface)
         return surface
 
     def track_started(self, track):
@@ -152,31 +155,37 @@ class ScreenManager():
         event = self.input_manager.event(event)
         if event is not None:
             if event.type == InputManager.click:
-                objects = self.screen_objects_manager.get_touch_objects_in_pos(
+                objects = self.top_bar_objects.get_touch_objects_in_pos(
                     event.current_pos)
+                objects.extend(self.down_bar_objects.get_touch_objects_in_pos(
+                    event.current_pos))
                 self.click_on_objects(objects, event)
             elif event.type == InputManager.key and event.direction == InputManager.enter:
-                objects = [self.screen_objects_manager.selected_key]
+                objects = [self.selected_zone.selected_key]
                 self.click_on_objects(objects, event)
             elif event.type == InputManager.key:
-                self.screen_objects_manager.change_selected(event.direction)
+                if event.direction == InputManager.enter:
+                    logger.error(self.selected_zone.selected_key)
+                    self.click_on_objects([self.selected_zone.selected_key], event)
+                else:
+                    self.change_selection(event, None)
             self.screens[self.current_screen].touch_event(event)
 
     def volume_changed(self, volume):
         if not self.core.playback.mute.get():
             if volume > 80:
-                self.screen_objects_manager.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object("mute").set_text(
                     u"\ue61f", False)
             elif volume > 50:
-                self.screen_objects_manager.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object("mute").set_text(
                     u"\ue620", False)
             elif volume > 20:
-                self.screen_objects_manager.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object("mute").set_text(
                     u"\ue621", False)
             else:
-                self.screen_objects_manager.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object("mute").set_text(
                     u"\ue622", False)
-        self.screen_objects_manager.get_touch_object("volume").set_value(
+        self.top_bar_objects.get_touch_object("volume").set_value(
             volume)
 
     def click_on_objects(self, objects, event):
@@ -210,7 +219,7 @@ class ScreenManager():
                     self.change_screen(int(key[-1:]))
 
     def change_volume(self,event):
-        manager = self.screen_objects_manager
+        manager = self.top_bar_objects
         volume = manager.get_touch_object("volume")
         pos = event.current_pos
         value = volume.get_pos_value(pos)
@@ -220,17 +229,17 @@ class ScreenManager():
 
     def playback_state_changed(self, old_state, new_state):
         if new_state == mopidy.core.PlaybackState.PLAYING:
-            self.screen_objects_manager.get_touch_object(
+            self.top_bar_objects.get_touch_object(
                 "pause_play").set_text(u"\ue616", False)
         else:
-            self.screen_objects_manager.get_touch_object(
+            self.top_bar_objects.get_touch_object(
                 "pause_play").set_text(u"\ue615", False)
 
     def mute_changed(self, mute):
-        self.screen_objects_manager.get_touch_object("mute").set_active(
+        self.top_bar_objects.get_touch_object("mute").set_active(
             not mute)
         if mute:
-            self.screen_objects_manager.get_touch_object("mute").set_text(
+            self.top_bar_objects.get_touch_object("mute").set_text(
                 u"\ue623", False)
         else:
             self.volume_changed(self.core.playback.volume.get())
@@ -239,28 +248,42 @@ class ScreenManager():
         self.screens[1].tracklist_changed()
 
     def options_changed(self):
-        self.screen_objects_manager.get_touch_object("random").set_active(
+        self.top_bar_objects.get_touch_object("random").set_active(
             self.core.tracklist.random.get())
-        self.screen_objects_manager.get_touch_object("repeat").set_active(
+        self.top_bar_objects.get_touch_object("repeat").set_active(
             self.core.tracklist.repeat.get())
-        self.screen_objects_manager.get_touch_object("single").set_active(
+        self.top_bar_objects.get_touch_object("single").set_active(
             self.core.tracklist.single.get())
 
     def change_screen(self, new_screen):
-        self.screen_objects_manager.get_touch_object(
+        self.down_bar_objects.get_touch_object(
             "menu_" + str(self.current_screen)).set_active(False)
         self.current_screen = new_screen
-        self.screen_objects_manager.get_touch_object(
+        self.down_bar_objects.get_touch_object(
             "menu_" + str(new_screen)).set_active(True)
 
     def playlists_loaded(self):
         self.screens[3].playlists_loaded()
 
     def set_connection(self, connection, loading):
-        internet = self.screen_objects_manager.get_touch_object("internet")
+        internet = self.top_bar_objects.get_touch_object("internet")
         if loading:
             internet.set_text(u"\ue627", None)
             internet.set_active(False)
         else:
             internet.set_text(u"\ue602", None)
             internet.set_active(connection)
+
+    def change_selection(self, event, pos):
+        if self.selected_zone == self.top_bar_objects:
+            if not self.top_bar_objects.change_selected(event.direction, pos) and event.direction == InputManager.down:
+                pos = self.top_bar_objects.selected.pos
+                self.selected_zone = self.down_bar_objects
+                self.top_bar_objects.set_selected(None)
+                self.change_selection(event, pos)
+        elif self.selected_zone == self.down_bar_objects:
+            if not self.down_bar_objects.change_selected(event.direction, pos) and event.direction == InputManager.up:
+                pos = self.down_bar_objects.selected.pos
+                self.selected_zone = self.top_bar_objects
+                self.down_bar_objects.set_selected(None)
+                self.change_selection(event, pos)

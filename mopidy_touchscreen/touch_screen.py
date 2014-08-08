@@ -4,6 +4,7 @@ from threading import Thread
 
 import pygame
 import pykka
+import mopidy
 from mopidy import core
 
 from .screen_manager import ScreenManager
@@ -27,6 +28,12 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.screen_manager = ScreenManager(self.screen_size, self.core,
                                             self.backend, self.cache_dir)
 
+        # Raspberry pi GPIO
+        self.gpio = config['touchscreen']['gpio']
+        if self.gpio:
+            from .gpio_inpput_manager import GPIOManager
+            self.gpio = GPIOManager()
+
     def start_thread(self):
         clock = pygame.time.Clock()
         if self.fullscreen:
@@ -47,6 +54,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                 else:
                     self.screen_manager.event(event)
         pygame.quit()
+        mopidy.utils.process.exit_process()
 
     def on_start(self):
         try:
