@@ -1,34 +1,40 @@
-import RPi.GPIO as GPIO
 import logging
 import pygame
+
+import RPi.GPIO as GPIO
+
 
 logger = logging.getLogger(__name__)
 
 
 class GPIOManager():
-
     def __init__(self, pins):
         GPIO.setmode(GPIO.BCM)
 
         # Left Button
-        GPIO.setup(pins['left'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['left'], GPIO.BOTH, callback=left, bouncetime=30)
+        GPIO.setup(pins['left'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(pins['left'], GPIO.BOTH, callback=left,
+                              bouncetime=30)
 
-         # Right Button
-        GPIO.setup(pins['right'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['right'], GPIO.BOTH, callback=right, bouncetime=30)
+        # Right Button
+        GPIO.setup(pins['right'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(pins['right'], GPIO.BOTH, callback=right,
+                              bouncetime=30)
 
-         # Up Button
-        GPIO.setup(pins['up'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['up'], GPIO.BOTH, callback=up, bouncetime=30)
+        # Up Button
+        GPIO.setup(pins['up'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(pins['up'], GPIO.BOTH, callback=up,
+                              bouncetime=30)
 
-         # Down Button
-        GPIO.setup(pins['down'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['down'], GPIO.BOTH, callback=right, bouncetime=30)
+        # Down Button
+        GPIO.setup(pins['down'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(pins['down'], GPIO.BOTH, callback=right,
+                              bouncetime=30)
 
-         # Enter Button
-        GPIO.setup(pins['enter'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['enter'], GPIO.BOTH, callback=right, bouncetime=30)
+        # Enter Button
+        GPIO.setup(pins['enter'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(pins['enter'], GPIO.BOTH, callback=right,
+                              bouncetime=30)
 
 
 def right(channel):
