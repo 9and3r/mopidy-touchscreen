@@ -26,6 +26,8 @@ class ScreenObjectsManager():
         self.text_objects = {}
 
     def set_object(self, key, add_object):
+	if self.text_objects[key] is not None:
+	    self.dirty_area.append(self.text_objects[key].rect_in_pos)
         self.text_objects[key] = add_object
 	self.dirty_area.append(add_object.rect_in_pos)
 
