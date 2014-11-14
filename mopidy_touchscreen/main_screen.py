@@ -191,7 +191,7 @@ class MainScreen():
 
     def track_playback_ended(self, tl_track, time_position):
 	if self.image is not None:
-	    self.dirty_area.append(self.image.get_rect())
+	    self.dirty_area.append(pygame.Rect(self.base_size / 2, self.base_size + self.base_size / 2, self.image.get_rect().width,self.image.get_rect().height))
             self.image = None
 
         # There is no cover so it will use all the screen size for the text
