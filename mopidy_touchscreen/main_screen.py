@@ -41,11 +41,11 @@ class MainScreen():
             self.touch_text_manager.get_touch_object(
                 "time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
-            #self.touch_text_manager.get_touch_object("time_progress").set_text(
-             #   time.strftime('%M:%S', time.gmtime(
-            #        self.core.playback.time_position.get() / 1000)) + "/" +
-            #    time.strftime('%M:%S', time.gmtime(
-             #       self.track.length / 1000)))
+            self.touch_text_manager.get_touch_object("time_progress").set_text(
+                time.strftime('%M:%S', time.gmtime(
+                    self.core.playback.time_position.get() / 1000)) + "/" +
+                time.strftime('%M:%S', time.gmtime(
+                    self.track.length / 1000)))
 	    if update_all:
 		if self.image is not None:
                     screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
