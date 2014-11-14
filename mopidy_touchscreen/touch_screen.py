@@ -51,7 +51,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         while self.running:
             clock.tick(15)
             screen.blit(self.screen_manager.update(), (0, 0))
-            pygame.display.flip()
+            pygame.display.update(self.screen_manager.get_dirty_area())
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False

@@ -50,6 +50,9 @@ class MenuScreen():
     def update(self, screen):
         self.screen_objects.render(screen)
 
+    def get_dirty_area(self):
+	self.screen_objects.get_dirty_area()
+
     def touch_event(self, event):
         if event.type == InputManager.click:
             clicked = self.screen_objects.get_touch_objects_in_pos(

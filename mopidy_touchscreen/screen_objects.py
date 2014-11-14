@@ -15,9 +15,19 @@ class ScreenObjectsManager():
         self.text_objects = {}
         self.selected = None
         self.selected_key = None
+	self.dirty_area = []
+
+    def clear(self):
+	for key in self.touch_objects:
+	    self.dirty_area.append(self.touch_objects[key].rect_in_pos)
+	for key in self.text_objects:
+	    self.dirty_area.append(self.text_objects[key].rect_in_pos)
+	self.touch_objects = {}
+        self.text_objects = {}
 
     def set_object(self, key, add_object):
         self.text_objects[key] = add_object
+	self.dirty_area.append(add_object.rect_in_pos)
 
     def get_object(self, key):
         return self.text_objects[key]
@@ -30,11 +40,18 @@ class ScreenObjectsManager():
 
     def render(self, surface):
         for key in self.text_objects:
-            self.text_objects[key].update()
+            if self.text_objects[key].update():
+		self.dirty_area.append(self.text_objects[key].rect_in_pos)
             self.text_objects[key].render(surface)
         for key in self.touch_objects:
-            self.touch_objects[key].update()
+            if self.touch_objects[key].update():
+		self.dirty_area.append(self.touch_objects[key].rect_in_pos)
             self.touch_objects[key].render(surface)
+
+    def get_dirty_area(self):
+	dirty_area = self.dirty_area
+	self.dirty_area = []
+	return dirty_area
 
     def get_touch_objects_in_pos(self, pos):
         touched_objects = []
@@ -192,15 +209,21 @@ class BaseItem():
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
+	self.dirty = True
         self.rect = pygame.Rect(0, 0, self.size[0], self.size[1])
         self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1], self.size[0],
                                        self.size[1])
 
     def get_right_pos(self):
         return self.pos[0] + self.size[0]
-
+    
+    # Returns if must be redraw
     def update(self):
-        pass
+        if self.dirty:
+	    self.dirty = False
+	    return True
+	else:
+	    return False
 
 
 class TextItem(BaseItem):
@@ -237,6 +260,9 @@ class TextItem(BaseItem):
 		self.step = -self.size[0]
             else:
 		self.step = self.step + 4
+	    return True
+	else:
+	    return BaseItem.update(self)
 
     def render(self, surface):
         if self.fit_horizontal:
@@ -246,6 +272,7 @@ class TextItem(BaseItem):
         
 
     def set_text(self, text, change_size):
+	self.dirty = True
         if change_size:
             TextItem.__init__(self, self.font, text, self.pos, None)
         else:
@@ -262,9 +289,11 @@ class TouchObject(BaseItem):
         return self.rect_in_pos.collidepoint(pos)
 
     def set_active(self, active):
+	self.dirty = True
         self.active = active
 
     def set_selected(self, selected):
+	self.dirty = True
         self.selected = selected
 
 
@@ -278,9 +307,10 @@ class TouchAndTextItem(TouchObject, TextItem):
         self.selected_box = self.font.render(text, True, self.selected_color)
 
     def update(self):
-        TextItem.update(self)
+        return TextItem.update(self)
 
     def set_text(self, text, change_size):
+	self.dirty = True
         TextItem.set_text(self, text, change_size)
         self.active_box = self.font.render(text, True, self.active_color)
         self.selected_box = self.font.render(text, True, self.selected_color)
@@ -315,9 +345,7 @@ class Progressbar(TouchObject):
             self.text = TextItem(font, text, pos, None)
             self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /
                          2, self.text.pos[1])
-
-    def update(self):
-        pass
+		
 
     def render(self, surface):
         surface.blit(self.surface, self.pos)
@@ -325,6 +353,7 @@ class Progressbar(TouchObject):
 
     def set_value(self, value):
         if value != self.value:
+	    self.dirty = True
             self.value = value
             if self.value_text:
                 self.set_text(str(self.value))
@@ -376,6 +405,7 @@ class ScrollBar(TouchObject):
             return 0
 
     def set_item(self, current_item):
+	self.dirty = True
         self.current_item = current_item
         self.bar_pos = float(self.current_item) / float(self.max) * float(
             self.size[1])

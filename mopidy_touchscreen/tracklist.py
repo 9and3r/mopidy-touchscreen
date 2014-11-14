@@ -14,6 +14,9 @@ class Tracklist():
         self.tracks_strings = []
         self.update_list()
 
+    def get_dirty_area(self):
+	return self.list_view.get_dirty_area()
+
     def update(self, screen):
         self.list_view.render(screen)
 

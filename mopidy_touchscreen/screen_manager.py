@@ -6,7 +6,6 @@ import mopidy.core
 import pygame
 from pkg_resources import Requirement, resource_filename
 
-from .dynamic_background import DynamicBackground
 from .library_screen import LibraryScreen
 from .main_screen import MainScreen
 from .menu_screen import MenuScreen
@@ -24,7 +23,6 @@ class ScreenManager():
         self.core = core
         self.backend = backend
         self.fonts = {}
-        self.background = DynamicBackground()
         self.current_screen = 0
         self.base_size = self.size[1] / 8
         font = resource_filename(Requirement.parse("mopidy-touchscreen"),
@@ -44,6 +42,7 @@ class ScreenManager():
         self.top_bar_objects = ScreenObjectsManager()
         self.down_bar_objects = ScreenObjectsManager()
         self.selected_zone = self.top_bar_objects
+	self.dirty_area = []
 
         # Top bar
         self.top_bar = pygame.Surface((self.size[0], self.base_size),
@@ -135,7 +134,7 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
-        self.background.draw_background(surface)
+        surface.fill([200,200,200])
         self.screens[self.current_screen].update(surface)
         surface.blit(self.top_bar, (0, 0))
         surface.blit(self.down_bar, (0, self.base_size * 7))
@@ -147,6 +146,14 @@ class ScreenManager():
         self.track = track
         self.screens[0].track_started(track.track)
         self.screens[1].track_started(track)
+
+    def get_dirty_area(self):
+	self.dirty_area = self.dirty_area + self.top_bar_objects.get_dirty_area()
+        self.dirty_area = self.dirty_area + self.down_bar_objects.get_dirty_area()
+        self.dirty_area = self.dirty_area + self.screens[self.current_screen].get_dirty_area()
+	dirty_area = self.dirty_area
+	self.dirty_area = []
+	return dirty_area
 
     def track_playback_ended(self, tl_track, time_position):
         self.screens[0].track_playback_ended(tl_track, time_position)
@@ -261,6 +268,7 @@ class ScreenManager():
         self.current_screen = new_screen
         self.down_bar_objects.get_touch_object(
             "menu_" + str(new_screen)).set_active(True)
+        self.dirty_area.append(pygame.Rect(0,0,self.size[0],self.size[1]))
 
     def playlists_loaded(self):
         self.screens[3].playlists_loaded()

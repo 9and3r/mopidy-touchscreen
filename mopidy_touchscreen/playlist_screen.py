@@ -13,6 +13,9 @@ class PlaylistScreen():
         self.playlists = []
         self.playlists_loaded()
 
+    def get_dirty_area(self):
+	return self.list_view.get_dirty_area()
+
     def update(self, screen):
         self.list_view.render(screen)
 

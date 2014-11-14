@@ -22,6 +22,9 @@ class LibraryScreen():
         self.library_strings = None
         self.lookup_uri(None)
 
+    def get_dirty_area(self):
+	return self.list_view.get_dirty_area()
+
     def go_inside_directory(self, uri):
         self.directory_list.append(self.current_directory)
         self.current_directory = uri

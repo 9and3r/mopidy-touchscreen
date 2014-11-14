@@ -21,8 +21,12 @@ class ListView():
         self.set_list([])
         self.selected = []
 
+    def get_dirty_area(self):
+	return self.screen_objects.get_dirty_area()
+
     # Sets the list for the lisview. It should be an iterable of strings
     def set_list(self, item_list):
+	self.screen_objects.clear()
         self.list = item_list
         self.list_size = len(item_list)
         if self.max_rows < self.list_size:

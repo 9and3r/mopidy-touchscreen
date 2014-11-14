@@ -108,6 +108,9 @@ class MainScreen():
         else:
             self.load_image()
 
+    def get_dirty_area(self):
+	return self.touch_text_manager.get_dirty_area()
+
     def get_artist_string(self):
         artists_string = ''
         for artist in self.artists:
