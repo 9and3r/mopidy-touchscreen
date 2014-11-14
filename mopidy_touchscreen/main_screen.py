@@ -27,6 +27,7 @@ class MainScreen():
         self.cache = cache
         self.image = None
         self.artists = None
+	self.dirty_area = []
 	self.image_now_loaded = False
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
@@ -40,16 +41,17 @@ class MainScreen():
             self.touch_text_manager.get_touch_object(
                 "time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
-            self.touch_text_manager.get_touch_object("time_progress").set_text(
-                time.strftime('%M:%S', time.gmtime(
-                    self.core.playback.time_position.get() / 1000)) + "/" +
-                time.strftime('%M:%S', time.gmtime(
-                    self.track.length / 1000)))
+            #self.touch_text_manager.get_touch_object("time_progress").set_text(
+             #   time.strftime('%M:%S', time.gmtime(
+            #        self.core.playback.time_position.get() / 1000)) + "/" +
+            #    time.strftime('%M:%S', time.gmtime(
+             #       self.track.length / 1000)))
 	    if update_all:
 		if self.image is not None:
                     screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
 		    self.image_now_loaded = False
 	    if self.image_now_loaded:
+		self.dirty_area.append(self.image.get_rect())
 		screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
 		self.image_now_loaded = False
 	self.touch_text_manager.render(screen)
@@ -96,10 +98,7 @@ class MainScreen():
         self.touch_text_manager.set_touch_object("next", button)
 
         # Progress
-        progress = Progressbar(self.fonts['base'],
-                               time.strftime('%M:%S', time.gmtime(
-                                   0)) + "/" + time.strftime('%M:%S',
-                                                             time.gmtime(0)),
+        progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0)) + "/" + time.strftime('%M:%S',time.gmtime(0)),
                                (size_1, self.base_size * 6),
                                (
                                self.size[0] - size_1 - size_2, self.base_size),
@@ -114,7 +113,9 @@ class MainScreen():
             self.load_image()
 
     def get_dirty_area(self):
-	return self.touch_text_manager.get_dirty_area()
+	dirty = self.touch_text_manager.get_dirty_area() + self.dirty_area
+	self.dirty_area = []
+	return dirty
 
     def get_artist_string(self):
         artists_string = ''
