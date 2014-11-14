@@ -277,11 +277,15 @@ class TextItem(BaseItem):
         
 
     def set_text(self, text, change_size):
-	self.dirty = True
-        if change_size:
-            TextItem.__init__(self, self.font, text, self.pos, None)
-        else:
-            TextItem.__init__(self, self.font, text, self.pos, self.size)
+	if text != self.text:
+	    self.dirty = True
+            if change_size:
+                TextItem.__init__(self, self.font, text, self.pos, None)
+            else:
+                TextItem.__init__(self, self.font, text, self.pos, self.size)
+	    return True
+	else:
+	    return False
 
 
 class TouchObject(BaseItem):
@@ -374,8 +378,7 @@ class Progressbar(TouchObject):
         return x * self.max / self.size[0]
 
     def set_text(self, text):
-	self.dirty = True
-        self.text.set_text(text, True)
+        self.dirty = self.text.set_text(text, True)
 
 
 class ScrollBar(TouchObject):
