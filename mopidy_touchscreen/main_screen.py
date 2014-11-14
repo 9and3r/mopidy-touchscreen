@@ -45,11 +45,13 @@ class MainScreen():
                     self.core.playback.time_position.get() / 1000)) + "/" +
                 time.strftime('%M:%S', time.gmtime(
                     self.track.length / 1000)))
-	if update_all:
-            if self.image_now_loaded:
+	    if update_all:
 		if self.image is not None:
                     screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
 		    self.image_now_loaded = False
+	    if self.image_now_loaded:
+		screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
+		self.image_now_loaded = False
 	self.touch_text_manager.render(screen)
         return screen
 
@@ -187,8 +189,9 @@ class MainScreen():
             self.touch_text_manager.set_object("artist_name", current)
 
     def track_playback_ended(self, tl_track, time_position):
-
-        self.image = None
+	if self.image is not None:
+	    self.dirty_area.append(self.image.get_rect())
+            self.image = None
 
         # There is no cover so it will use all the screen size for the text
         width = self.size[0] - self.base_size
