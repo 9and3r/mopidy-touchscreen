@@ -27,6 +27,7 @@ class MainScreen():
         self.cache = cache
         self.image = None
         self.artists = None
+	self.image_now_loaded = False
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
         if current_track is None:
@@ -34,11 +35,8 @@ class MainScreen():
         else:
             self.track_started(current_track)
 
-    def update(self, screen):
+    def update(self, screen, update_all):
         if self.track is not None:
-            if self.image is not None:
-                screen.blit(self.image, (
-                    self.base_size / 2, self.base_size + self.base_size / 2))
             self.touch_text_manager.get_touch_object(
                 "time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
@@ -47,7 +45,12 @@ class MainScreen():
                     self.core.playback.time_position.get() / 1000)) + "/" +
                 time.strftime('%M:%S', time.gmtime(
                     self.track.length / 1000)))
-        self.touch_text_manager.render(screen)
+	if update_all:
+            if self.image_now_loaded:
+		if self.image is not None:
+                    screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
+		    self.image_now_loaded = False
+	self.touch_text_manager.render(screen)
         return screen
 
     def track_started(self, track):
@@ -212,6 +215,7 @@ class MainScreen():
                 self.get_cover_folder() +
                 self.get_image_file_name()).convert(),
             (size, size))
+	self.image_now_loaded = True
 
     def touch_event(self, event):
         if event.type == InputManager.click:

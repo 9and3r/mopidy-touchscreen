@@ -43,6 +43,7 @@ class ScreenManager():
         self.down_bar_objects = ScreenObjectsManager()
         self.selected_zone = self.top_bar_objects
 	self.dirty_area = []
+	self.screen_changed = True
 
         # Top bar
         self.top_bar = pygame.Surface((self.size[0], self.base_size),
@@ -135,11 +136,12 @@ class ScreenManager():
     def update(self):
         surface = pygame.Surface(self.size)
         surface.fill([200,200,200])
-        self.screens[self.current_screen].update(surface)
+        self.screens[self.current_screen].update(surface, self.screen_changed)
         surface.blit(self.top_bar, (0, 0))
         surface.blit(self.down_bar, (0, self.base_size * 7))
         self.top_bar_objects.render(surface)
         self.down_bar_objects.render(surface)
+	self.screen_changed = False
         return surface
 
     def track_started(self, track):
@@ -263,6 +265,7 @@ class ScreenManager():
             self.core.tracklist.single.get())
 
     def change_screen(self, new_screen):
+	self.screen_changed = True
         self.down_bar_objects.get_touch_object(
             "menu_" + str(self.current_screen)).set_active(False)
         self.current_screen = new_screen

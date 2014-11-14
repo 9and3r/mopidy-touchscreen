@@ -38,6 +38,7 @@ class ScreenObjectsManager():
     def get_touch_object(self, key):
         return self.touch_objects[key]
 
+
     def render(self, surface):
         for key in self.text_objects:
             if self.text_objects[key].update():
@@ -369,6 +370,7 @@ class Progressbar(TouchObject):
         return x * self.max / self.size[0]
 
     def set_text(self, text):
+	self.dirty = True
         self.text.set_text(text, True)
 
 

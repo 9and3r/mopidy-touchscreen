@@ -17,8 +17,8 @@ class Tracklist():
     def get_dirty_area(self):
 	return self.list_view.get_dirty_area()
 
-    def update(self, screen):
-        self.list_view.render(screen)
+    def update(self, screen, update_all):
+	self.list_view.render(screen)
 
     def tracklist_changed(self):
         self.update_list()

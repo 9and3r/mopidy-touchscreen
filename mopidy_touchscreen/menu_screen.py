@@ -47,11 +47,11 @@ class MenuScreen():
                                   (0, self.base_size * 4), None)
         self.screen_objects.set_touch_object("ip", button)
 
-    def update(self, screen):
+    def update(self, screen, update_all):
         self.screen_objects.render(screen)
 
     def get_dirty_area(self):
-	self.screen_objects.get_dirty_area()
+	return self.screen_objects.get_dirty_area()
 
     def touch_event(self, event):
         if event.type == InputManager.click:
