@@ -220,8 +220,6 @@ class TextItem(BaseItem):
         if size is not None:
             if self.pos[0] + self.box.get_rect().width > pos[0] + size[0]:
                 self.fit_horizontal = False
-                self.text += "          "
-                self.original_text = self.text
                 self.step = 0
             else:
                 self.fit_horizontal = True
@@ -235,28 +233,17 @@ class TextItem(BaseItem):
 
     def update(self):
         if not self.fit_horizontal:
-            if self.text == self.original_text:
-                if self.step > 90:
-                    self.step = 0
-                    new_text = self.text[1:]
-                    new_text = new_text + self.text[:1]
-                    self.text = new_text
-                else:
-                    self.step += 1
-            elif self.step > 5:
-                self.step = 0
-                new_text = self.text[1:]
-                new_text = new_text + self.text[:1]
-                self.text = new_text
+            if self.step > self.box.get_rect().width:
+		self.step = -self.size[0]
             else:
-                self.step += 1
+		self.step = self.step + 4
 
     def render(self, surface):
         if self.fit_horizontal:
-            pass
+            surface.blit(self.box, self.pos, area=self.rect)
         else:
-            self.box = self.font.render(self.text, True, self.color)
-        surface.blit(self.box, self.pos, area=self.rect)
+            surface.blit(self.box, self.pos, area=pygame.Rect(self.step, 0, self.size[0], self.size[1]))
+        
 
     def set_text(self, text, change_size):
         if change_size:
@@ -299,14 +286,8 @@ class TouchAndTextItem(TouchObject, TextItem):
         self.selected_box = self.font.render(text, True, self.selected_color)
 
     def render(self, surface):
-        if self.fit_horizontal:
-            pass
-        else:
-            if self.active:
-                self.active_box = self.font.render(self.text, True,
-                                                   self.active_color)
-            else:
-                self.box = self.font.render(self.text, True, self.color)
+        if not self.fit_horizontal:
+                self.rect = pygame.Rect(self.step, 0, self.size[0], self.size[1])
         if self.selected:
             surface.blit(self.selected_box, self.pos, area=self.rect)
         elif self.active:

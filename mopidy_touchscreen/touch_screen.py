@@ -44,7 +44,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         clock = pygame.time.Clock()
         if self.fullscreen:
             screen = pygame.display.set_mode(self.screen_size,
-                                             pygame.FULLSCREEN)
+                                             pygame.FULLSCREEN, pygame.HWSURFACE)
         else:
             screen = pygame.display.set_mode(self.screen_size)
         pygame.mouse.set_visible(self.cursor)
