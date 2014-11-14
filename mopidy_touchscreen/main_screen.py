@@ -50,8 +50,8 @@ class MainScreen():
 		if self.image is not None:
                     screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
 		    self.image_now_loaded = False
-	    if self.image_now_loaded:
-		self.dirty_area.append(self.image.get_rect())
+	    elif self.image_now_loaded:
+		self.dirty_area.append(pygame.Rect(self.base_size / 2, self.base_size + self.base_size / 2, self.image.get_rect().width,self.image.get_rect().height))
 		screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
 		self.image_now_loaded = False
 	self.touch_text_manager.render(screen)
