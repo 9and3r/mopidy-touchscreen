@@ -235,6 +235,7 @@ class MainScreen():
                         value = self.touch_text_manager.get_touch_object(
                             key).get_pos_value(event.current_pos) * 1000
                         self.core.playback.seek(value)
+			
                     elif key == "previous":
                         self.core.playback.previous()
                     elif key == "next":
