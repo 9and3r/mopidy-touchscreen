@@ -23,10 +23,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                             config['touchscreen']['screen_height'])
         self.cache_dir = config['touchscreen']['cache_dir']
         self.fullscreen = config['touchscreen']['fullscreen']
-	os.environ["SDL_FBDEV"] = "/dev/fb1"
-	os.environ["SDL_MOUSEDEV"] = "/dev/input/touchscreen"
-	os.environ["TSLIB TSDEVICE"] = "/dev/input/eventX"
-	os.environ["SDL_MOUSEDRV"] = "TSLIB"
+	os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
+	os.environ["SDL_MOUSEDRV"] = config['touchscreen']['sdl_mousdrv']
+	os.environ["SDL_MOUSEDEV"] = config['touchscreen']['sdl_mousedev']
         pygame.init()
         self.cursor = config['touchscreen']['cursor']
         self.screen_manager = ScreenManager(self.screen_size, self.core,

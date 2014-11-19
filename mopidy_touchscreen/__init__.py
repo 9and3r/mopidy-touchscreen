@@ -37,6 +37,9 @@ class Extension(ext.Extension):
         schema['gpio_up'] = config.Integer()
         schema['gpio_down'] = config.Integer()
         schema['gpio_enter'] = config.Integer()
+	schema['sdl_fbdev'] = config.String()
+	schema['sdl_mousdrv'] = config.String()
+	schema['sdl_mousedev'] = config.String()
         return schema
 
     def setup(self, registry):
