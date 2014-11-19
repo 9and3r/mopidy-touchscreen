@@ -9,7 +9,7 @@ from .touch_screen import TouchScreen
 from .touch_screen_backend import TouchScreenBackend
 
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 # TODO: If you need to log, use loggers named after the current Python module
 logger = logging.getLogger(__name__)
