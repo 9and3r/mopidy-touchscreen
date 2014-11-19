@@ -1,7 +1,7 @@
 import logging
 import traceback
 from threading import Thread
-
+import os
 import pygame
 import pykka
 import mopidy
@@ -23,6 +23,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                             config['touchscreen']['screen_height'])
         self.cache_dir = config['touchscreen']['cache_dir']
         self.fullscreen = config['touchscreen']['fullscreen']
+	os.environ["SDL_FBDEV"] = "/dev/fb1"
+	os.environ["SDL_MOUSEDEV"] = "/dev/input/touchscreen"
+	os.environ["SDL_MOUSEDRV"] = "TSLIB"
         pygame.init()
         self.cursor = config['touchscreen']['cursor']
         self.screen_manager = ScreenManager(self.screen_size, self.core,
@@ -44,7 +47,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         clock = pygame.time.Clock()
         if self.fullscreen:
             screen = pygame.display.set_mode(self.screen_size,
-                                             pygame.FULLSCREEN, pygame.HWSURFACE)
+                                             pygame.FULLSCREEN)
         else:
             screen = pygame.display.set_mode(self.screen_size)
         pygame.mouse.set_visible(self.cursor)

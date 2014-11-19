@@ -264,7 +264,7 @@ class TextItem(BaseItem):
             if self.step > self.box.get_rect().width:
 		self.step = -self.size[0]
             else:
-		self.step = self.step + 4
+		self.step = self.step + 1
 	    return True
 	else:
 	    return BaseItem.update(self)

@@ -28,6 +28,7 @@ class MainScreen():
         self.image = None
         self.artists = None
 	self.dirty_area = []
+	self.track_duration = "00:00"
 	self.image_now_loaded = False
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
@@ -43,9 +44,7 @@ class MainScreen():
                 self.core.playback.time_position.get() / 1000)
             self.touch_text_manager.get_touch_object("time_progress").set_text(
                 time.strftime('%M:%S', time.gmtime(
-                    self.core.playback.time_position.get() / 1000)) + "/" +
-                time.strftime('%M:%S', time.gmtime(
-                    self.track.length / 1000)))
+                    self.core.playback.time_position.get() / 1000)) + "/" + self.track_duration)
 	    if update_all:
 		if self.image is not None:
                     screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
@@ -61,6 +60,8 @@ class MainScreen():
         self.image = None
         x = self.base_size * 5
         width = self.size[0] - self.base_size / 2 - x
+
+	self.track_duration = time.strftime('%M:%S', time.gmtime(track.length / 1000))
 
         # Load all artists
         self.artists = []
@@ -193,6 +194,9 @@ class MainScreen():
 	if self.image is not None:
 	    self.dirty_area.append(pygame.Rect(self.base_size / 2, self.base_size + self.base_size / 2, self.image.get_rect().width,self.image.get_rect().height))
             self.image = None
+
+	self.track_duration = "00:00"
+	
 
         # There is no cover so it will use all the screen size for the text
         width = self.size[0] - self.base_size
