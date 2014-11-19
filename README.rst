@@ -53,6 +53,9 @@ Mopidy-Touchscreen to your Mopidy configuration file::
     cursor = True
     fullscreen = False
     cache_dir = $XDG_CACHE_DIR/mopidy/touchscreen
+    sdl_fbdev = /dev/fb1
+    sdl_mousdrv = TSLIB
+    sdl_mousedev = event0
 
 The following configuration values are available:
     
