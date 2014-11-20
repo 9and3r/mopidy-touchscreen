@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import time
+import mopidy.core
 import urllib
 import urllib2
 from threading import Thread
@@ -35,8 +36,58 @@ class MainScreen():
             self.track_playback_ended(None, None)
         else:
             self.track_started(current_track)
+            
+            
+        # Top bar
+        self.top_bar = pygame.Surface((self.size[0], self.base_size),
+                                      pygame.SRCALPHA)
+        self.top_bar.fill((0, 0, 0, 128))
+
+        # Play/pause
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue615 ",
+                                  (0, 0), None)
+        self.touch_text_manager.set_touch_object("pause_play", button)
+        x = button.get_right_pos()
+
+        # Random
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ",
+                                  (x, 0), None)
+        self.touch_text_manager.set_touch_object("random", button)
+        x = button.get_right_pos()
+
+        # Repeat
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue626",
+                                  (x, 0), None)
+        self.touch_text_manager.set_touch_object("repeat", button)
+        x = button.get_right_pos()
+
+        # Single
+        button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0),
+                                  None)
+        self.touch_text_manager.set_touch_object("single", button)
+        x = button.get_right_pos()
+
+        # Internet
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ",
+                                  (x, 0), None)
+        self.touch_text_manager.set_touch_object("internet", button)
+        x = button.get_right_pos()
+
+        # Mute
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ",
+                                  (x, 0), None)
+        self.touch_text_manager.set_touch_object("mute", button)
+        x = button.get_right_pos()
+
+        # Volume
+        progress = Progressbar(self.fonts['base'], "100", (x, 0),
+                               (self.size[0] - x, self.base_size),
+                               100, True)
+        self.touch_text_manager.set_touch_object("volume", progress)
+        progress.set_value(self.core.playback.volume.get())
 
     def update(self, screen, update_all):
+        screen.blit(self.top_bar, (0, 0))
         if self.track is not None:
             self.touch_text_manager.get_touch_object(
                 "time_progress").set_value(
@@ -45,8 +96,9 @@ class MainScreen():
                 "time_progress").set_text(
                 time.strftime('%M:%S', time.gmtime(
                     self.core.playback.time_position.get() / 1000)) + "/" + self.track_duration)
-            screen.blit(self.image, (
-            self.base_size / 2, self.base_size + self.base_size / 2))
+            if self.image is not None:
+                screen.blit(self.image, (
+                    self.base_size / 2, self.base_size + self.base_size / 2))
         self.touch_text_manager.render(screen)
         return screen
 
@@ -64,24 +116,24 @@ class MainScreen():
             self.artists.append(artist)
 
         # Track name
-        label = TextItem(self.fonts['base'],
+        label = TouchAndTextItem(self.fonts['base'],
                          MainScreen.get_track_name(track),
                          (x, self.base_size * 2),
-                         (width, self.size[1]))
-        self.touch_text_manager.set_object("track_name", label)
+                         (width, -1))
+        self.touch_text_manager.set_touch_object("track_name", label)
 
         # Album name
-        label = TextItem(self.fonts['base'],
+        label = TouchAndTextItem(self.fonts['base'],
                          MainScreen.get_track_album_name(track),
                          (x, self.base_size * 3),
-                         (width, self.size[1]))
-        self.touch_text_manager.set_object("album_name", label)
+                         (width, -1))
+        self.touch_text_manager.set_touch_object("album_name", label)
 
         # Artist
-        label = TextItem(self.fonts['base'], self.get_artist_string(),
+        label = TouchAndTextItem(self.fonts['base'], self.get_artist_string(),
                          (x, self.base_size * 4),
-                         (width, self.size[1]))
-        self.touch_text_manager.set_object("artist_name", label)
+                         (width, -1))
+        self.touch_text_manager.set_touch_object("artist_name", label)
 
         # Previous track button
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61c",
@@ -116,7 +168,6 @@ class MainScreen():
             thread.start()
         else:
             self.load_image()
-
 
     def get_artist_string(self):
         artists_string = ''
@@ -173,27 +224,27 @@ class MainScreen():
             # There is no cover so it will use all the screen size for the text
             width = self.size[0] - self.base_size
 
-            current = TextItem(self.fonts['base'],
+            current = TouchAndTextItem(self.fonts['base'],
                                MainScreen.get_track_name(self.track),
                                (self.base_size / 2,
                                 self.base_size * 2),
                                (width, -1))
-            self.touch_text_manager.set_object("track_name", current)
+            self.touch_text_manager.set_touch_object("track_name", current)
 
-            current = TextItem(self.fonts['base'],
+            current = TouchAndTextItem(self.fonts['base'],
                                MainScreen.get_track_album_name(
                                    self.track),
                                (self.base_size / 2,
                                 self.base_size * 3),
                                (width, -1))
-            self.touch_text_manager.set_object("album_name", current)
+            self.touch_text_manager.set_touch_object("album_name", current)
 
-            current = TextItem(self.fonts['base'],
+            current = TouchAndTextItem(self.fonts['base'],
                                self.get_artist_string(),
                                (self.base_size / 2,
                                 self.base_size * 4),
                                (width, -1))
-            self.touch_text_manager.set_object("artist_name", current)
+            self.touch_text_manager.set_touch_object("artist_name", current)
 
     def track_playback_ended(self, tl_track, time_position):
         if self.image is not None:
@@ -205,24 +256,22 @@ class MainScreen():
 
         self.track_duration = "00:00"
 
-
-        # There is no cover so it will use all the screen size for the text
         width = self.size[0] - self.base_size
 
-        current = TextItem(self.fonts['base'], "Stopped",
+        current = TouchAndTextItem(self.fonts['base'], "",
                            (self.base_size / 2, self.base_size * 2),
                            (width, -1))
-        self.touch_text_manager.set_object("track_name", current)
+        self.touch_text_manager.set_touch_object("track_name", current)
 
-        current = TextItem(self.fonts['base'], "",
+        current = TouchAndTextItem(self.fonts['base'], "",
                            (self.base_size / 2, self.base_size * 3),
                            (width, -1))
-        self.touch_text_manager.set_object("album_name", current)
+        self.touch_text_manager.set_touch_object("album_name", current)
 
-        current = TextItem(self.fonts['base'], "",
+        current = TouchAndTextItem(self.fonts['base'], "",
                            (self.base_size / 2, self.base_size * 4),
                            (width, -1))
-        self.touch_text_manager.set_object("artist_name", current)
+        self.touch_text_manager.set_touch_object("artist_name", current)
 
     def load_image(self):
         size = self.base_size * 4
@@ -231,24 +280,14 @@ class MainScreen():
                 self.get_cover_folder() +
                 self.get_image_file_name()).convert(),
             (size, size))
-        self.image_now_loaded = True
 
     def touch_event(self, event):
         if event.type == InputManager.click:
             objects = self.touch_text_manager.get_touch_objects_in_pos(
                 event.current_pos)
             if objects is not None:
-                for key in objects:
-                    if key == "time_progress":
-                        value = self.touch_text_manager.get_touch_object(
-                            key).get_pos_value(
-                            event.current_pos) * 1000
-                        self.core.playback.seek(value)
+                self.click_on_objects(objects, event)
 
-                    elif key == "previous":
-                        self.core.playback.previous()
-                    elif key == "next":
-                        self.core.playback.next()
         elif event.type == InputManager.swipe:
             if event.direction == InputManager.left:
                 self.core.playback.next()
@@ -268,6 +307,114 @@ class MainScreen():
                 self.manager.backend.tell(
                     {'action': 'volume', 'value': volume})
                 self.manager.volume_changed(volume)
+                
+    def click_on_objects(self, objects, event):
+        if objects is not None:
+            for key in objects:
+                if key == "time_progress":
+                    value = self.touch_text_manager.get_touch_object(
+                     key).get_pos_value(
+                        event.current_pos) * 1000
+                    self.core.playback.seek(value)
+
+                elif key == "previous":
+                    self.core.playback.previous()
+                elif key == "next":
+                    self.core.playback.next()
+                elif key == "volume":
+                    self.change_volume(event)
+                elif key == "pause_play":
+                    if self.core.playback.state.get() == \
+                            mopidy.core.PlaybackState.PLAYING:
+                        self.core.playback.pause()
+                    else:
+                        self.core.playback.play()
+                elif key == "mute":
+                    mute = not self.core.playback.mute.get()
+                    self.core.playback.set_mute(mute)
+                    self.mute_changed(mute)
+                elif key == "random":
+                    random = not self.core.tracklist.random.get()
+                    self.core.tracklist.set_random(random)
+                    self.options_changed()
+                elif key == "repeat":
+                    self.core.tracklist.set_repeat(
+                        not self.core.tracklist.repeat.get())
+                elif key == "single":
+                    self.core.tracklist.set_single(
+                        not self.core.tracklist.single.get())
+                elif key == "internet":
+                    self.manager.check_connection()
+                elif key == "track_name":
+                    self.manager.search(self.track.name, 0)
+                elif key == "album_name":
+                    self.manager.search(self.track.album.name, 1)
+                elif key == "artist_name":
+                    self.manager.search(self.get_artist_string(), 2)
+
+    def change_volume(self, event):
+        manager = self.touch_text_manager
+        volume = manager.get_touch_object("volume")
+        pos = event.current_pos
+        value = volume.get_pos_value(pos)
+        self.core.playback.volume = value
+        self.volume_changed(value)
+        
+    def volume_changed(self, volume):
+        if not self.core.playback.mute.get():
+            if volume > 80:
+                self.touch_text_manager.get_touch_object(
+                    "mute").set_text(
+                    u"\ue61f", False)
+            elif volume > 50:
+                self.touch_text_manager.get_touch_object(
+                    "mute").set_text(
+                    u"\ue620", False)
+            elif volume > 20:
+                self.touch_text_manager.get_touch_object(
+                    "mute").set_text(
+                    u"\ue621", False)
+            else:
+                self.touch_text_manager.get_touch_object(
+                    "mute").set_text(
+                    u"\ue622", False)
+        self.touch_text_manager.get_touch_object("volume").set_value(
+            volume)
+        
+    def options_changed(self):
+        self.touch_text_manager.get_touch_object("random").set_active(
+            self.core.tracklist.random.get())
+        self.touch_text_manager.get_touch_object("repeat").set_active(
+            self.core.tracklist.repeat.get())
+        self.touch_text_manager.get_touch_object("single").set_active(
+            self.core.tracklist.single.get())
+
+    def mute_changed(self, mute):
+        self.touch_text_manager.get_touch_object("mute").set_active(
+            not mute)
+        if mute:
+            self.touch_text_manager.get_touch_object("mute").set_text(
+                u"\ue623", False)
+        else:
+            self.volume_changed(self.core.playback.volume.get())
+            
+    def playback_state_changed(self, old_state, new_state):
+        if new_state == mopidy.core.PlaybackState.PLAYING:
+            self.touch_text_manager.get_touch_object(
+                "pause_play").set_text(u"\ue616", False)
+        else:
+            self.touch_text_manager.get_touch_object(
+                "pause_play").set_text(u"\ue615", False)
+                                
+    def set_connection(self, connection, loading):
+        internet = self.touch_text_manager.get_touch_object("internet")
+        if loading:
+            internet.set_text(u"\ue627", None)
+            internet.set_active(False)
+        else:
+            internet.set_text(u"\ue602", None)
+            internet.set_active(connection)
+
 
     @staticmethod
     def get_track_name(track):
