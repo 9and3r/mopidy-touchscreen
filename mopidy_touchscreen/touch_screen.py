@@ -18,20 +18,27 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         super(TouchScreen, self).__init__()
         self.core = core
         self.running = False
-        self.screen_size = (config['touchscreen']['screen_width'],
-                            config['touchscreen']['screen_height'])
-        self.cache_dir = config['touchscreen']['cache_dir']
+	self.cursor = config['touchscreen']['cursor']
+	self.cache_dir = config['touchscreen']['cache_dir']
         self.fullscreen = config['touchscreen']['fullscreen']
-        os.putenv("SDL_FBDEV", config['touchscreen']['sdl_fbdev'])
-        os.putenv("SDL_MOUSEDRV", config['touchscreen'][
-            'sdl_mousdrv'])
-        os.putenv("SDL_MOUSEDEV",config['touchscreen'][
-            'sdl_mousedev'])
+	self.screen_size = (config['touchscreen']['screen_width'],
+                            config['touchscreen']['screen_height'])
+        os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
+        os.environ["SDL_MOUSEDRV"] = config['touchscreen'][
+            'sdl_mousdrv']
+        os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
+            'sdl_mousedev']
         pygame.init()
-        self.cursor = config['touchscreen']['cursor']
-        self.screen_manager = ScreenManager(self.screen_size,
+	if self.fullscreen:
+            self.screen = pygame.display.set_mode(self.screen_size,
+                                             pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode(self.screen_size)
+	pygame.mouse.set_visible(self.cursor)
+	self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
                                             self.cache_dir)
+        
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
@@ -48,15 +55,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def start_thread(self):
         clock = pygame.time.Clock()
-        if self.fullscreen:
-            screen = pygame.display.set_mode(self.screen_size,
-                                             pygame.FULLSCREEN)
-        else:
-            screen = pygame.display.set_mode(self.screen_size)
-        pygame.mouse.set_visible(self.cursor)
         while self.running:
             clock.tick(15)
-            screen.blit(self.screen_manager.update(), (0, 0))
+            self.screen.blit(self.screen_manager.update(), (0, 0))
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
