@@ -6,12 +6,13 @@ import time
 import urllib
 import urllib2
 from threading import Thread
-
 import pygame
 
-from .screen_objects import (Progressbar, ScreenObjectsManager, TextItem,
+from .screen_objects import (Progressbar, ScreenObjectsManager,
+                             TextItem,
                              TouchAndTextItem)
 from .input_manager import InputManager
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,7 @@ class MainScreen():
         self.cache = cache
         self.image = None
         self.artists = None
-	self.dirty_area = []
-	self.track_duration = "00:00"
-	self.image_now_loaded = False
+        self.track_duration = "00:00"
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
         if current_track is None:
@@ -42,18 +41,13 @@ class MainScreen():
             self.touch_text_manager.get_touch_object(
                 "time_progress").set_value(
                 self.core.playback.time_position.get() / 1000)
-            self.touch_text_manager.get_touch_object("time_progress").set_text(
+            self.touch_text_manager.get_touch_object(
+                "time_progress").set_text(
                 time.strftime('%M:%S', time.gmtime(
                     self.core.playback.time_position.get() / 1000)) + "/" + self.track_duration)
-	    if update_all:
-		if self.image is not None:
-                    screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
-		    self.image_now_loaded = False
-	    elif self.image_now_loaded:
-		self.dirty_area.append(pygame.Rect(self.base_size / 2, self.base_size + self.base_size / 2, self.image.get_rect().width,self.image.get_rect().height))
-		screen.blit(self.image, (self.base_size / 2, self.base_size + self.base_size / 2))
-		self.image_now_loaded = False
-	self.touch_text_manager.render(screen)
+            screen.blit(self.image, (
+            self.base_size / 2, self.base_size + self.base_size / 2))
+        self.touch_text_manager.render(screen)
         return screen
 
     def track_started(self, track):
@@ -61,7 +55,8 @@ class MainScreen():
         x = self.base_size * 5
         width = self.size[0] - self.base_size / 2 - x
 
-	self.track_duration = time.strftime('%M:%S', time.gmtime(track.length / 1000))
+        self.track_duration = time.strftime('%M:%S', time.gmtime(
+            track.length / 1000))
 
         # Load all artists
         self.artists = []
@@ -69,7 +64,8 @@ class MainScreen():
             self.artists.append(artist)
 
         # Track name
-        label = TextItem(self.fonts['base'], MainScreen.get_track_name(track),
+        label = TextItem(self.fonts['base'],
+                         MainScreen.get_track_name(track),
                          (x, self.base_size * 2),
                          (width, self.size[1]))
         self.touch_text_manager.set_object("track_name", label)
@@ -83,7 +79,8 @@ class MainScreen():
 
         # Artist
         label = TextItem(self.fonts['base'], self.get_artist_string(),
-                         (x, self.base_size * 4), (width, self.size[1]))
+                         (x, self.base_size * 4),
+                         (width, self.size[1]))
         self.touch_text_manager.set_object("artist_name", label)
 
         # Previous track button
@@ -94,17 +91,24 @@ class MainScreen():
 
         size_2 = self.fonts['icon'].size(u"\ue61d")[0]
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61d",
-                                  (self.size[0] - size_2, self.base_size * 6),
+                                  (self.size[0] - size_2,
+                                   self.base_size * 6),
                                   None)
         self.touch_text_manager.set_touch_object("next", button)
 
         # Progress
-        progress = Progressbar(self.fonts['base'],time.strftime('%M:%S', time.gmtime(0)) + "/" + time.strftime('%M:%S',time.gmtime(0)),
+        progress = Progressbar(self.fonts['base'],
+                               time.strftime('%M:%S', time.gmtime(
+                                   0)) + "/" + time.strftime('%M:%S',
+                                                             time.gmtime(
+                                                                 0)),
                                (size_1, self.base_size * 6),
                                (
-                               self.size[0] - size_1 - size_2, self.base_size),
+                                   self.size[0] - size_1 - size_2,
+                                   self.base_size),
                                track.length / 1000, False)
-        self.touch_text_manager.set_touch_object("time_progress", progress)
+        self.touch_text_manager.set_touch_object("time_progress",
+                                                 progress)
 
         self.track = track
         if not self.is_image_in_cache():
@@ -113,10 +117,6 @@ class MainScreen():
         else:
             self.load_image()
 
-    def get_dirty_area(self):
-	dirty = self.touch_text_manager.get_dirty_area() + self.dirty_area
-	self.dirty_area = []
-	return dirty
 
     def get_artist_string(self):
         artists_string = ''
@@ -175,28 +175,36 @@ class MainScreen():
 
             current = TextItem(self.fonts['base'],
                                MainScreen.get_track_name(self.track),
-                               (self.base_size / 2, self.base_size * 2),
+                               (self.base_size / 2,
+                                self.base_size * 2),
                                (width, -1))
             self.touch_text_manager.set_object("track_name", current)
 
             current = TextItem(self.fonts['base'],
-                               MainScreen.get_track_album_name(self.track),
-                               (self.base_size / 2, self.base_size * 3),
+                               MainScreen.get_track_album_name(
+                                   self.track),
+                               (self.base_size / 2,
+                                self.base_size * 3),
                                (width, -1))
             self.touch_text_manager.set_object("album_name", current)
 
-            current = TextItem(self.fonts['base'], self.get_artist_string(),
-                               (self.base_size / 2, self.base_size * 4),
+            current = TextItem(self.fonts['base'],
+                               self.get_artist_string(),
+                               (self.base_size / 2,
+                                self.base_size * 4),
                                (width, -1))
             self.touch_text_manager.set_object("artist_name", current)
 
     def track_playback_ended(self, tl_track, time_position):
-	if self.image is not None:
-	    self.dirty_area.append(pygame.Rect(self.base_size / 2, self.base_size + self.base_size / 2, self.image.get_rect().width,self.image.get_rect().height))
+        if self.image is not None:
+            self.dirty_area.append(pygame.Rect(self.base_size / 2,
+                                               self.base_size + self.base_size / 2,
+                                               self.image.get_rect().width,
+                                               self.image.get_rect().height))
             self.image = None
 
-	self.track_duration = "00:00"
-	
+        self.track_duration = "00:00"
+
 
         # There is no cover so it will use all the screen size for the text
         width = self.size[0] - self.base_size
@@ -223,7 +231,7 @@ class MainScreen():
                 self.get_cover_folder() +
                 self.get_image_file_name()).convert(),
             (size, size))
-	self.image_now_loaded = True
+        self.image_now_loaded = True
 
     def touch_event(self, event):
         if event.type == InputManager.click:
@@ -233,9 +241,10 @@ class MainScreen():
                 for key in objects:
                     if key == "time_progress":
                         value = self.touch_text_manager.get_touch_object(
-                            key).get_pos_value(event.current_pos) * 1000
+                            key).get_pos_value(
+                            event.current_pos) * 1000
                         self.core.playback.seek(value)
-			
+
                     elif key == "previous":
                         self.core.playback.previous()
                     elif key == "next":

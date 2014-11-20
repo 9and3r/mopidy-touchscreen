@@ -1,6 +1,5 @@
 import logging
 import traceback
-
 import mopidy
 import mopidy.core
 import pygame
@@ -10,31 +9,35 @@ from .library_screen import LibraryScreen
 from .main_screen import MainScreen
 from .menu_screen import MenuScreen
 from .playlist_screen import PlaylistScreen
-from .screen_objects import Progressbar, ScreenObjectsManager, TouchAndTextItem
+from .screen_objects import Progressbar, ScreenObjectsManager, \
+    TouchAndTextItem
 from .input_manager import InputManager
 from .tracklist import Tracklist
+
 
 logger = logging.getLogger(__name__)
 
 
 class ScreenManager():
-    def __init__(self, size, core, backend, cache):
+    def __init__(self, size, core, cache):
         self.size = size
         self.core = core
-        self.backend = backend
         self.fonts = {}
         self.current_screen = 0
         self.base_size = self.size[1] / 8
-        font = resource_filename(Requirement.parse("mopidy-touchscreen"),
-                                 "mopidy_touchscreen/icomoon.ttf")
-        self.fonts['base'] = pygame.font.SysFont("verdana", self.base_size)
+        font = resource_filename(
+            Requirement.parse("mopidy-touchscreen"),
+            "mopidy_touchscreen/icomoon.ttf")
+        self.fonts['base'] = pygame.font.SysFont("verdana",
+                                                 self.base_size)
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:
-            self.screens = [MainScreen(size, self, cache, core, self.fonts),
-                            Tracklist(size, self.base_size, self),
-                            LibraryScreen(size, self.base_size, self),
-                            PlaylistScreen(size, self.base_size, self),
-                            MenuScreen(size, self.base_size, self)]
+            self.screens = [
+                MainScreen(size, self, cache, core, self.fonts),
+                Tracklist(size, self.base_size, self),
+                LibraryScreen(size, self.base_size, self),
+                PlaylistScreen(size, self.base_size, self),
+                MenuScreen(size, self.base_size, self)]
         except:
             traceback.print_exc()
         self.track = None
@@ -42,8 +45,8 @@ class ScreenManager():
         self.top_bar_objects = ScreenObjectsManager()
         self.down_bar_objects = ScreenObjectsManager()
         self.selected_zone = self.top_bar_objects
-	self.dirty_area = []
-	self.screen_changed = True
+        self.dirty_area = []
+        self.screen_changed = True
 
         # Top bar
         self.top_bar = pygame.Surface((self.size[0], self.base_size),
@@ -51,38 +54,45 @@ class ScreenManager():
         self.top_bar.fill((0, 0, 0, 128))
 
         # Play/pause
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue615 ", (0, 0), None)
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue615 ",
+                                  (0, 0), None)
         self.top_bar_objects.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
         # Random
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ", (x, 0), None)
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ",
+                                  (x, 0), None)
         self.top_bar_objects.set_touch_object("random", button)
         x = button.get_right_pos()
 
         # Repeat
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue626", (x, 0), None)
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue626",
+                                  (x, 0), None)
         self.top_bar_objects.set_touch_object("repeat", button)
         x = button.get_right_pos()
 
         # Single
-        button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0), None)
+        button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0),
+                                  None)
         self.top_bar_objects.set_touch_object("single", button)
         x = button.get_right_pos()
 
         # Internet
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ", (x, 0), None)
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ",
+                                  (x, 0), None)
         self.top_bar_objects.set_touch_object("internet", button)
         x = button.get_right_pos()
 
         # Mute
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ", (x, 0), None)
+        button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ",
+                                  (x, 0), None)
         self.top_bar_objects.set_touch_object("mute", button)
         x = button.get_right_pos()
 
         # Volume
         progress = Progressbar(self.fonts['base'], "100", (x, 0),
-                               (self.size[0] - x, self.base_size), 100, True)
+                               (self.size[0] - x, self.base_size),
+                               100, True)
         self.top_bar_objects.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
 
@@ -92,25 +102,29 @@ class ScreenManager():
 
         # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
-                                  (0, self.base_size * 7), button_size)
+                                  (0, self.base_size * 7),
+                                  button_size)
         self.down_bar_objects.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
-                                  (x, self.base_size * 7), button_size)
+                                  (x, self.base_size * 7),
+                                  button_size)
         self.down_bar_objects.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
         # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
-                                  (x, self.base_size * 7), button_size)
+                                  (x, self.base_size * 7),
+                                  button_size)
         self.down_bar_objects.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
         # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
-                                  (x, self.base_size * 7), button_size)
+                                  (x, self.base_size * 7),
+                                  button_size)
         self.down_bar_objects.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
@@ -121,7 +135,8 @@ class ScreenManager():
 
         # Down bar
         self.down_bar = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size * 7), pygame.SRCALPHA)
+            (self.size[0], self.size[1] - self.base_size * 7),
+            pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 128))
 
         self.options_changed()
@@ -135,13 +150,14 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
-        surface.fill([200,200,200])
-        self.screens[self.current_screen].update(surface, self.screen_changed)
+        surface.fill([200, 200, 200])
+        self.screens[self.current_screen].update(surface,
+                                                 self.screen_changed)
         surface.blit(self.top_bar, (0, 0))
         surface.blit(self.down_bar, (0, self.base_size * 7))
         self.top_bar_objects.render(surface)
         self.down_bar_objects.render(surface)
-	self.screen_changed = False
+        self.screen_changed = False
         return surface
 
     def track_started(self, track):
@@ -150,12 +166,13 @@ class ScreenManager():
         self.screens[1].track_started(track)
 
     def get_dirty_area(self):
-	self.dirty_area = self.dirty_area + self.top_bar_objects.get_dirty_area()
+        self.dirty_area = self.dirty_area + self.top_bar_objects.get_dirty_area()
         self.dirty_area = self.dirty_area + self.down_bar_objects.get_dirty_area()
-        self.dirty_area = self.dirty_area + self.screens[self.current_screen].get_dirty_area()
-	dirty_area = self.dirty_area
-	self.dirty_area = []
-	return dirty_area
+        self.dirty_area = self.dirty_area + self.screens[
+            self.current_screen].get_dirty_area()
+        dirty_area = self.dirty_area
+        self.dirty_area = []
+        return dirty_area
 
     def track_playback_ended(self, tl_track, time_position):
         self.screens[0].track_playback_ended(tl_track, time_position)
@@ -166,8 +183,9 @@ class ScreenManager():
             if event.type == InputManager.click:
                 objects = self.top_bar_objects.get_touch_objects_in_pos(
                     event.current_pos)
-                objects.extend(self.down_bar_objects.get_touch_objects_in_pos(
-                    event.current_pos))
+                objects.extend(
+                    self.down_bar_objects.get_touch_objects_in_pos(
+                        event.current_pos))
                 self.click_on_objects(objects, event)
             elif event.type == InputManager.key and event.direction == InputManager.enter:
                 objects = [self.selected_zone.selected_key]
@@ -175,7 +193,8 @@ class ScreenManager():
             elif event.type == InputManager.key:
                 if event.direction == InputManager.enter:
                     logger.error(self.selected_zone.selected_key)
-                    self.click_on_objects([self.selected_zone.selected_key], event)
+                    self.click_on_objects(
+                        [self.selected_zone.selected_key], event)
                 else:
                     self.change_selection(event, None)
             self.screens[self.current_screen].touch_event(event)
@@ -183,16 +202,20 @@ class ScreenManager():
     def volume_changed(self, volume):
         if not self.core.playback.mute.get():
             if volume > 80:
-                self.top_bar_objects.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object(
+                    "mute").set_text(
                     u"\ue61f", False)
             elif volume > 50:
-                self.top_bar_objects.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object(
+                    "mute").set_text(
                     u"\ue620", False)
             elif volume > 20:
-                self.top_bar_objects.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object(
+                    "mute").set_text(
                     u"\ue621", False)
             else:
-                self.top_bar_objects.get_touch_object("mute").set_text(
+                self.top_bar_objects.get_touch_object(
+                    "mute").set_text(
                     u"\ue622", False)
         self.top_bar_objects.get_touch_object("volume").set_value(
             volume)
@@ -227,13 +250,12 @@ class ScreenManager():
                 elif key[:-1] == "menu_":
                     self.change_screen(int(key[-1:]))
 
-    def change_volume(self,event):
+    def change_volume(self, event):
         manager = self.top_bar_objects
         volume = manager.get_touch_object("volume")
         pos = event.current_pos
         value = volume.get_pos_value(pos)
-        self.backend.tell(
-            {'action': 'volume', 'value': value})
+        self.core.playback.volume = value
         self.volume_changed(value)
 
     def playback_state_changed(self, old_state, new_state):
@@ -265,13 +287,14 @@ class ScreenManager():
             self.core.tracklist.single.get())
 
     def change_screen(self, new_screen):
-	self.screen_changed = True
+        self.screen_changed = True
         self.down_bar_objects.get_touch_object(
             "menu_" + str(self.current_screen)).set_active(False)
         self.current_screen = new_screen
         self.down_bar_objects.get_touch_object(
             "menu_" + str(new_screen)).set_active(True)
-        self.dirty_area.append(pygame.Rect(0,0,self.size[0],self.size[1]))
+        self.dirty_area.append(
+            pygame.Rect(0, 0, self.size[0], self.size[1]))
 
     def playlists_loaded(self):
         self.screens[3].playlists_loaded()
@@ -287,13 +310,17 @@ class ScreenManager():
 
     def change_selection(self, event, pos):
         if self.selected_zone == self.top_bar_objects:
-            if not self.top_bar_objects.change_selected(event.direction, pos) and event.direction == InputManager.down:
+            if not self.top_bar_objects.change_selected(
+                    event.direction,
+                    pos) and event.direction == InputManager.down:
                 pos = self.top_bar_objects.selected.pos
                 self.selected_zone = self.down_bar_objects
                 self.top_bar_objects.set_selected(None)
                 self.change_selection(event, pos)
         elif self.selected_zone == self.down_bar_objects:
-            if not self.down_bar_objects.change_selected(event.direction, pos) and event.direction == InputManager.up:
+            if not self.down_bar_objects.change_selected(
+                    event.direction,
+                    pos) and event.direction == InputManager.up:
                 pos = self.down_bar_objects.selected.pos
                 self.selected_zone = self.top_bar_objects
                 self.down_bar_objects.set_selected(None)

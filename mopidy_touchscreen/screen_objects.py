@@ -1,6 +1,5 @@
 import logging
 import math
-
 import pygame
 
 from .input_manager import InputManager
@@ -15,23 +14,13 @@ class ScreenObjectsManager():
         self.text_objects = {}
         self.selected = None
         self.selected_key = None
-	self.dirty_area = []
 
     def clear(self):
-	for key in self.touch_objects:
-	    self.dirty_area.append(self.touch_objects[key].rect_in_pos)
-	for key in self.text_objects:
-	    self.dirty_area.append(self.text_objects[key].rect_in_pos)
-	self.touch_objects = {}
+        self.touch_objects = {}
         self.text_objects = {}
 
     def set_object(self, key, add_object):
-	try:
-	    self.dirty_area.append(self.text_objects[key].rect_in_pos)
-	except KeyError:
-	    pass
         self.text_objects[key] = add_object
-	self.dirty_area.append(add_object.rect_in_pos)
 
     def get_object(self, key):
         return self.text_objects[key]
@@ -45,18 +34,11 @@ class ScreenObjectsManager():
 
     def render(self, surface):
         for key in self.text_objects:
-            if self.text_objects[key].update():
-		self.dirty_area.append(self.text_objects[key].rect_in_pos)
+            self.text_objects[key].update()
             self.text_objects[key].render(surface)
         for key in self.touch_objects:
-            if self.touch_objects[key].update():
-		self.dirty_area.append(self.touch_objects[key].rect_in_pos)
+            self.touch_objects[key].update()
             self.touch_objects[key].render(surface)
-
-    def get_dirty_area(self):
-	dirty_area = self.dirty_area
-	self.dirty_area = []
-	return dirty_area
 
     def get_touch_objects_in_pos(self, pos):
         touched_objects = []
@@ -89,16 +71,20 @@ class ScreenObjectsManager():
         if pos is None:
             pos = self.selected.pos
         if direction == InputManager.right:
-            bests = self.find_nearest_objects(self.find_in_quadrant(False, True, pos), True, pos)
+            bests = self.find_nearest_objects(
+                self.find_in_quadrant(False, True, pos), True, pos)
             best_key = self.find_best_object(bests, False, True, pos)
         elif direction == InputManager.left:
-            bests = self.find_nearest_objects(self.find_in_quadrant(False, False, pos), True, pos)
+            bests = self.find_nearest_objects(
+                self.find_in_quadrant(False, False, pos), True, pos)
             best_key = self.find_best_object(bests, False, False, pos)
         elif direction == InputManager.down:
-            bests = self.find_nearest_objects(self.find_in_quadrant(True, True, pos), False, pos)
+            bests = self.find_nearest_objects(
+                self.find_in_quadrant(True, True, pos), False, pos)
             best_key = self.find_best_object(bests, True, True, pos)
         elif direction == InputManager.up:
-            bests = self.find_nearest_objects(self.find_in_quadrant(True, False, pos), False, pos)
+            bests = self.find_nearest_objects(
+                self.find_in_quadrant(True, False, pos), False, pos)
             best_key = self.find_best_object(bests, True, False, pos)
         if best_key is None:
             return False
@@ -175,7 +161,8 @@ class ScreenObjectsManager():
                     if best_pos is None:
                         best_pos = objects[key].pos[1]
                         best_key = key
-                    elif objects[key].pos[1] >= pos[1] and objects[key].pos[1] < best_pos:
+                    elif objects[key].pos[1] >= pos[1] and \
+                                    objects[key].pos[1] < best_pos:
                         best_pos = objects[key].pos[1]
                         best_key = key
             else:
@@ -183,7 +170,8 @@ class ScreenObjectsManager():
                     if best_pos is None:
                         best_pos = objects[key].pos[1]
                         best_key = key
-                    elif objects[key].pos[1] <= pos[1] and objects[key].pos[1] > best_pos:
+                    elif objects[key].pos[1] <= pos[1] and \
+                                    objects[key].pos[1] > best_pos:
                         best_pos = objects[key].pos[1]
                         best_key = key
         else:
@@ -192,7 +180,8 @@ class ScreenObjectsManager():
                     if best_pos is None:
                         best_pos = objects[key].pos[0]
                         best_key = key
-                    elif objects[key].pos[0] >= pos[0] and objects[key].pos[0] < best_pos:
+                    elif objects[key].pos[0] >= pos[0] and \
+                                    objects[key].pos[0] < best_pos:
                         best_pos = objects[key].pos[0]
                         best_key = key
             else:
@@ -200,35 +189,28 @@ class ScreenObjectsManager():
                     if best_pos is None:
                         best_pos = objects[key].pos[0]
                         best_key = key
-                    elif objects[key].pos[0] <= pos[0] and objects[key].pos[0] > best_pos:
+                    elif objects[key].pos[0] <= pos[0] and \
+                                    objects[key].pos[0] > best_pos:
                         best_pos = objects[key].pos[0]
                         best_key = key
         return best_key
-
-
-
-
 
 
 class BaseItem():
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
-	self.dirty = True
         self.rect = pygame.Rect(0, 0, self.size[0], self.size[1])
-        self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1], self.size[0],
+        self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1],
+                                       self.size[0],
                                        self.size[1])
 
     def get_right_pos(self):
         return self.pos[0] + self.size[0]
-    
-    # Returns if must be redraw
+
+
     def update(self):
-        if self.dirty:
-	    self.dirty = False
-	    return True
-	else:
-	    return False
+        pass
 
 
 class TextItem(BaseItem):
@@ -246,12 +228,14 @@ class TextItem(BaseItem):
         else:
             BaseItem.__init__(self, pos, self.font.size(text))
         if size is not None:
-            if self.pos[0] + self.box.get_rect().width > pos[0] + size[0]:
+            if self.pos[0] + self.box.get_rect().width > pos[0] + \
+                    size[0]:
                 self.fit_horizontal = False
                 self.step = 0
             else:
                 self.fit_horizontal = True
-            if self.pos[1] + self.box.get_rect().height > pos[1] + size[1]:
+            if self.pos[1] + self.box.get_rect().height > pos[1] + \
+                    size[1]:
                 self.fit_vertical = False
             else:
                 self.fit_vertical = True
@@ -262,30 +246,30 @@ class TextItem(BaseItem):
     def update(self):
         if not self.fit_horizontal:
             if self.step > self.box.get_rect().width:
-		self.step = -self.size[0]
+                self.step = -self.size[0]
             else:
-		self.step = self.step + 1
-	    return True
-	else:
-	    return BaseItem.update(self)
+                self.step = self.step + 1
+            return True
+        else:
+            return BaseItem.update(self)
 
     def render(self, surface):
         if self.fit_horizontal:
             surface.blit(self.box, self.pos, area=self.rect)
         else:
-            surface.blit(self.box, self.pos, area=pygame.Rect(self.step, 0, self.size[0], self.size[1]))
-        
+            surface.blit(self.box, self.pos,
+                         area=pygame.Rect(self.step, 0, self.size[0],
+                                          self.size[1]))
+
 
     def set_text(self, text, change_size):
-	if text != self.text:
-	    self.dirty = True
+        if text != self.text:
             if change_size:
-                TextItem.__init__(self, self.font, text, self.pos, None)
+                TextItem.__init__(self, self.font, text, self.pos,
+                                  None)
             else:
-                TextItem.__init__(self, self.font, text, self.pos, self.size)
-	    return True
-	else:
-	    return False
+                TextItem.__init__(self, self.font, text, self.pos,
+                                  self.size)
 
 
 class TouchObject(BaseItem):
@@ -298,11 +282,9 @@ class TouchObject(BaseItem):
         return self.rect_in_pos.collidepoint(pos)
 
     def set_active(self, active):
-	self.dirty = True
         self.active = active
 
     def set_selected(self, selected):
-	self.dirty = True
         self.selected = selected
 
 
@@ -312,21 +294,25 @@ class TouchAndTextItem(TouchObject, TextItem):
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
         self.selected_color = (150, 0, 255)
-        self.active_box = self.font.render(text, True, self.active_color)
-        self.selected_box = self.font.render(text, True, self.selected_color)
+        self.active_box = self.font.render(text, True,
+                                           self.active_color)
+        self.selected_box = self.font.render(text, True,
+                                             self.selected_color)
 
     def update(self):
-        return TextItem.update(self)
+        TextItem.update(self)
 
     def set_text(self, text, change_size):
-	self.dirty = True
         TextItem.set_text(self, text, change_size)
-        self.active_box = self.font.render(text, True, self.active_color)
-        self.selected_box = self.font.render(text, True, self.selected_color)
+        self.active_box = self.font.render(text, True,
+                                           self.active_color)
+        self.selected_box = self.font.render(text, True,
+                                             self.selected_color)
 
     def render(self, surface):
         if not self.fit_horizontal:
-                self.rect = pygame.Rect(self.step, 0, self.size[0], self.size[1])
+            self.rect = pygame.Rect(self.step, 0, self.size[0],
+                                    self.size[1])
         if self.selected:
             surface.blit(self.selected_box, self.pos, area=self.rect)
         elif self.active:
@@ -347,14 +333,16 @@ class Progressbar(TouchObject):
         self.value_text = value_text
         if value_text:
             self.text = TextItem(font, str(max_value), pos, None)
-            self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-                         2, self.text.pos[1])
+            self.text.pos = (
+            self.pos[0] + self.size[0] / 2 - self.text.size[0] /
+            2, self.text.pos[1])
             self.text.set_text(str(self.value), True)
         else:
             self.text = TextItem(font, text, pos, None)
-            self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-                         2, self.text.pos[1])
-		
+            self.text.pos = (
+            self.pos[0] + self.size[0] / 2 - self.text.size[0] /
+            2, self.text.pos[1])
+
 
     def render(self, surface):
         surface.blit(self.surface, self.pos)
@@ -362,12 +350,12 @@ class Progressbar(TouchObject):
 
     def set_value(self, value):
         if value != self.value:
-	    self.dirty = True
             self.value = value
             if self.value_text:
                 self.set_text(str(self.value))
-                self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-                         2, self.text.pos[1])
+                self.text.pos = (
+                self.pos[0] + self.size[0] / 2 - self.text.size[0] /
+                2, self.text.pos[1])
             self.surface.fill(self.back_color)
             pos_pixel = value * self.size[0] / self.max
             rect = pygame.Rect(0, 0, pos_pixel, self.size[1])
@@ -378,12 +366,13 @@ class Progressbar(TouchObject):
         return x * self.max / self.size[0]
 
     def set_text(self, text):
-        self.dirty = self.text.set_text(text, True)
+        self.text.set_text(text, True)
 
 
 class ScrollBar(TouchObject):
     def __init__(self, pos, size, max_value, items_on_screen):
-        BaseItem.__init__(self, pos, (pos[0] + size[0], pos[1] + size[1]))
+        BaseItem.__init__(self, pos,
+                          (pos[0] + size[0], pos[1] + size[1]))
         self.pos = pos
         self.size = size
         self.max = max_value
@@ -403,7 +392,8 @@ class ScrollBar(TouchObject):
 
     def render(self, surface):
         surface.blit(self.back_bar, self.pos)
-        surface.blit(self.bar, (self.pos[0], self.pos[1] + self.bar_pos))
+        surface.blit(self.bar,
+                     (self.pos[0], self.pos[1] + self.bar_pos))
 
     def touch(self, pos):
         if pos[1] < self.pos[1] + self.bar_pos:
@@ -414,7 +404,7 @@ class ScrollBar(TouchObject):
             return 0
 
     def set_item(self, current_item):
-	self.dirty = True
         self.current_item = current_item
-        self.bar_pos = float(self.current_item) / float(self.max) * float(
+        self.bar_pos = float(self.current_item) / float(
+            self.max) * float(
             self.size[1])

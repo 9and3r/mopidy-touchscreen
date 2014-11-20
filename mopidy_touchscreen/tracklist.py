@@ -9,16 +9,14 @@ class Tracklist():
         self.manager = manager
         self.list_view = ListView((0, self.base_size), (
             self.size[0], self.size[1] - 2 * self.base_size),
-            self.base_size, manager.fonts['base'])
+                                  self.base_size,
+                                  manager.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
         self.update_list()
 
-    def get_dirty_area(self):
-	return self.list_view.get_dirty_area()
-
     def update(self, screen, update_all):
-	self.list_view.render(screen)
+        self.list_view.render(screen)
 
     def tracklist_changed(self):
         self.update_list()

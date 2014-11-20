@@ -1,5 +1,4 @@
 import logging
-
 import mopidy.models
 
 from .list_view import ListView
@@ -15,7 +14,8 @@ class LibraryScreen():
         self.manager = manager
         self.list_view = ListView((0, self.base_size), (
             self.size[0], self.size[1] - 2 * self.base_size),
-            self.base_size, manager.fonts['base'])
+                                  self.base_size,
+                                  manager.fonts['base'])
         self.directory_list = []
         self.current_directory = None
         self.library = None
@@ -23,7 +23,7 @@ class LibraryScreen():
         self.lookup_uri(None)
 
     def get_dirty_area(self):
-	return self.list_view.get_dirty_area()
+        return self.list_view.get_dirty_area()
 
     def go_inside_directory(self, uri):
         self.directory_list.append(self.current_directory)
@@ -46,7 +46,7 @@ class LibraryScreen():
             self.lookup_uri(directory)
 
     def update(self, screen, update_all):
-	self.list_view.render(screen)
+        self.list_view.render(screen)
 
     def touch_event(self, touch_event):
         clicked = self.list_view.touch_event(touch_event)
@@ -56,7 +56,8 @@ class LibraryScreen():
                     if clicked == 0:
                         self.go_up_directory()
                     else:
-                        self.play_uri(self.library[clicked - 1].uri, False)
+                        self.play_uri(self.library[clicked - 1].uri,
+                                      False)
                 else:
                     self.play_uri(self.library[clicked].uri, False)
             else:
@@ -65,16 +66,19 @@ class LibraryScreen():
                         self.go_up_directory()
                     else:
                         if self.library[
-                                clicked - 1].type == mopidy.models.Ref.TRACK:
-                            self.play_uri(self.library[clicked - 1].uri, True)
+                                    clicked - 1].type == mopidy.models.Ref.TRACK:
+                            self.play_uri(
+                                self.library[clicked - 1].uri, True)
                         else:
                             self.go_inside_directory(
                                 self.library[clicked - 1].uri)
                 else:
-                    if self.library[clicked].type == mopidy.models.Track:
+                    if self.library[
+                        clicked].type == mopidy.models.Track:
                         self.play_uri(self.library[clicked].uri, True)
                     else:
-                        self.go_inside_directory(self.library[clicked].uri)
+                        self.go_inside_directory(
+                            self.library[clicked].uri)
 
     def play_uri(self, uri, track):
         self.manager.core.tracklist.clear()

@@ -9,32 +9,35 @@ from mopidy import core
 
 from .screen_manager import ScreenManager
 
+
 logger = logging.getLogger(__name__)
 
 
 class TouchScreen(pykka.ThreadingActor, core.CoreListener):
     def __init__(self, config, core):
         super(TouchScreen, self).__init__()
-        self.backend = \
-            pykka.ActorRegistry.get_by_class_name("TouchScreenBackend")[0]
         self.core = core
         self.running = False
         self.screen_size = (config['touchscreen']['screen_width'],
                             config['touchscreen']['screen_height'])
         self.cache_dir = config['touchscreen']['cache_dir']
         self.fullscreen = config['touchscreen']['fullscreen']
-	os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
-	os.environ["SDL_MOUSEDRV"] = config['touchscreen']['sdl_mousdrv']
-	os.environ["SDL_MOUSEDEV"] = config['touchscreen']['sdl_mousedev']
+        os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
+        os.environ["SDL_MOUSEDRV"] = config['touchscreen'][
+            'sdl_mousdrv']
+        os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
+            'sdl_mousedev']
         pygame.init()
         self.cursor = config['touchscreen']['cursor']
-        self.screen_manager = ScreenManager(self.screen_size, self.core,
-                                            self.backend, self.cache_dir)
+        self.screen_manager = ScreenManager(self.screen_size,
+                                            self.core,
+                                            self.cache_dir)
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
             from .gpio_inpput_manager import GPIOManager
+
             pins = {}
             pins['left'] = config['touchscreen']['gpio_left']
             pins['right'] = config['touchscreen']['gpio_right']
@@ -54,7 +57,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         while self.running:
             clock.tick(15)
             screen.blit(self.screen_manager.update(), (0, 0))
-            pygame.display.update(self.screen_manager.get_dirty_area())
+            pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -86,7 +89,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.screen_manager.volume_changed(volume)
 
     def playback_state_changed(self, old_state, new_state):
-        self.screen_manager.playback_state_changed(old_state, new_state)
+        self.screen_manager.playback_state_changed(old_state,
+                                                   new_state)
 
     def tracklist_changed(self):
         try:
@@ -95,7 +99,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             traceback.print_exc()
 
     def track_playback_ended(self, tl_track, time_position):
-        self.screen_manager.track_playback_ended(tl_track, time_position)
+        self.screen_manager.track_playback_ended(tl_track,
+                                                 time_position)
 
     def options_changed(self):
         try:

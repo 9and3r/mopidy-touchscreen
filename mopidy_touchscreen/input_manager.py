@@ -34,19 +34,24 @@ class InputManager():
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 4:
-                touch_event = InputEvent(InputManager.swipe, self.down_pos,
-                                         self.up_pos, True, InputManager.up)
+                touch_event = InputEvent(InputManager.swipe,
+                                         self.down_pos,
+                                         self.up_pos, True,
+                                         InputManager.up)
                 return touch_event
             elif event.button == 5:
-                touch_event = InputEvent(InputManager.swipe, self.down_pos,
-                                         self.up_pos, True, InputManager.down)
+                touch_event = InputEvent(InputManager.swipe,
+                                         self.down_pos,
+                                         self.up_pos, True,
+                                         InputManager.down)
                 return touch_event
             elif event.button == 1 and self.down_button == 1:
                 touch_event = self.mouse_up(event)
                 return touch_event
             elif event.button == 3 and self.down_button == 3:
                 touch_event = InputEvent(InputManager.long_click,
-                                         self.down_pos, self.up_pos, None, None)
+                                         self.down_pos, self.up_pos,
+                                         None, None)
                 return touch_event
             else:
                 return None
@@ -78,7 +83,8 @@ class InputManager():
             else:
                 return None
             if direction is not None:
-                return InputEvent(InputManager.key, None, None, None, direction)
+                return InputEvent(InputManager.key, None, None, None,
+                                  direction)
 
     def mouse_down(self, event):
         self.down_pos = event.pos
@@ -87,26 +93,33 @@ class InputManager():
 
     def mouse_up(self, event):
         self.up_pos = event.pos
-        if abs(self.down_pos[0] - self.up_pos[0]) < self.max_move_margin:
-            if abs(self.down_pos[1] - self.up_pos[1]) < self.max_move_margin:
+        if abs(self.down_pos[0] - self.up_pos[
+            0]) < self.max_move_margin:
+            if abs(self.down_pos[1] - self.up_pos[
+                1]) < self.max_move_margin:
                 if time.time() - InputManager.long_click_min_time > \
                         self.down_time:
-                    return InputEvent(InputManager.long_click, self.down_pos,
+                    return InputEvent(InputManager.long_click,
+                                      self.down_pos,
                                       self.up_pos, None, None)
                 else:
-                    return InputEvent(InputManager.click, self.down_pos,
+                    return InputEvent(InputManager.click,
+                                      self.down_pos,
                                       self.up_pos, None, None)
-            elif abs(self.down_pos[1] - self.up_pos[1]) > self.min_swipe_move:
+            elif abs(self.down_pos[1] - self.up_pos[
+                1]) > self.min_swipe_move:
                 return InputEvent(InputManager.swipe, self.down_pos,
                                   self.up_pos, True, None)
         elif self.down_pos[1] - self.up_pos[1] < self.max_move_margin:
-            if abs(self.down_pos[0] - self.up_pos[0]) > self.min_swipe_move:
+            if abs(self.down_pos[0] - self.up_pos[
+                0]) > self.min_swipe_move:
                 return InputEvent(InputManager.swipe, self.down_pos,
                                   self.up_pos, False, None)
 
 
 class InputEvent():
-    def __init__(self, event_type, down_pos, current_pos, vertical, direction):
+    def __init__(self, event_type, down_pos, current_pos, vertical,
+                 direction):
         self.type = event_type
         self.down_pos = down_pos
         self.current_pos = current_pos

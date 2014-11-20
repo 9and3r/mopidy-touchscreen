@@ -1,6 +1,7 @@
 import logging
 
-from .screen_objects import ScreenObjectsManager, ScrollBar, TouchAndTextItem
+from .screen_objects import ScreenObjectsManager, ScrollBar, \
+    TouchAndTextItem
 from .input_manager import InputManager
 
 logger = logging.getLogger(__name__)
@@ -21,20 +22,20 @@ class ListView():
         self.set_list([])
         self.selected = []
 
-    def get_dirty_area(self):
-	return self.screen_objects.get_dirty_area()
-
     # Sets the list for the lisview. It should be an iterable of strings
     def set_list(self, item_list):
-	self.screen_objects.clear()
+        self.screen_objects.clear()
         self.list = item_list
         self.list_size = len(item_list)
         if self.max_rows < self.list_size:
             self.scrollbar = True
             scroll_bar = ScrollBar(
-                (self.pos[0] + self.size[0] - self.base_size, self.pos[1]),
-                (self.base_size, self.size[1]), self.list_size, self.max_rows)
-            self.screen_objects.set_touch_object("scrollbar", scroll_bar)
+                (self.pos[0] + self.size[0] - self.base_size,
+                 self.pos[1]),
+                (self.base_size, self.size[1]), self.list_size,
+                self.max_rows)
+            self.screen_objects.set_touch_object("scrollbar",
+                                                 scroll_bar)
         else:
             self.scrollbar = False
         self.load_new_item_position(0)
@@ -55,11 +56,10 @@ class ListView():
         while i < self.list_size and z < self.max_rows:
             item = TouchAndTextItem(self.font, self.list[i], (
                 self.pos[0], self.pos[1] + self.base_size * z),
-                (width, -1))
+                                    (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
-
 
 
     def render(self, surface):
@@ -95,14 +95,16 @@ class ListView():
                 if self.current_item + self.max_rows > self.list_size:
                     self.current_item = self.list_size - self.max_rows
                 self.load_new_item_position(self.current_item)
-                self.screen_objects.get_touch_object("scrollbar").set_item(
+                self.screen_objects.get_touch_object(
+                    "scrollbar").set_item(
                     self.current_item)
             elif direction == -1:
                 self.current_item -= self.max_rows
                 if self.current_item < 0:
                     self.current_item = 0
                 self.load_new_item_position(self.current_item)
-                self.screen_objects.get_touch_object("scrollbar").set_item(
+                self.screen_objects.get_touch_object(
+                    "scrollbar").set_item(
                     self.current_item)
             self.set_selected(self.selected)
 
@@ -110,13 +112,15 @@ class ListView():
     def set_selected(self, selected):
         for number in self.selected:
             try:
-                self.screen_objects.get_touch_object(str(number)).set_active(
+                self.screen_objects.get_touch_object(
+                    str(number)).set_active(
                     False)
             except KeyError:
                 pass
         for number in selected:
             try:
-                self.screen_objects.get_touch_object(str(number)).set_active(
+                self.screen_objects.get_touch_object(
+                    str(number)).set_active(
                     True)
             except KeyError:
                 pass

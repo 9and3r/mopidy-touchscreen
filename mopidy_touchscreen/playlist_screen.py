@@ -8,16 +8,14 @@ class PlaylistScreen():
         self.manager = manager
         self.list_view = ListView((0, self.base_size), (
             self.size[0], self.size[1] - 2 * self.base_size),
-            self.base_size, manager.fonts['base'])
+                                  self.base_size,
+                                  manager.fonts['base'])
         self.playlists_strings = []
         self.playlists = []
         self.playlists_loaded()
 
-    def get_dirty_area(self):
-	return self.list_view.get_dirty_area()
-
     def update(self, screen, update_all):
-	self.list_view.render(screen)
+        self.list_view.render(screen)
 
     def playlists_loaded(self):
         self.playlists_strings = []
@@ -31,5 +29,6 @@ class PlaylistScreen():
         clicked = self.list_view.touch_event(touch_event)
         if clicked is not None:
             self.manager.core.tracklist.clear()
-            self.manager.core.tracklist.add(uri=self.playlists[clicked].uri)
+            self.manager.core.tracklist.add(
+                uri=self.playlists[clicked].uri)
             self.manager.core.playback.play()

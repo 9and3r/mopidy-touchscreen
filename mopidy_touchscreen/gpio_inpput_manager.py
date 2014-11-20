@@ -18,7 +18,8 @@ class GPIOManager():
 
         # Right Button
         GPIO.setup(pins['right'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['right'], GPIO.BOTH, callback=right,
+        GPIO.add_event_detect(pins['right'], GPIO.BOTH,
+                              callback=right,
                               bouncetime=30)
 
         # Up Button
@@ -33,7 +34,8 @@ class GPIOManager():
 
         # Enter Button
         GPIO.setup(pins['enter'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['enter'], GPIO.BOTH, callback=right,
+        GPIO.add_event_detect(pins['enter'], GPIO.BOTH,
+                              callback=right,
                               bouncetime=30)
 
 

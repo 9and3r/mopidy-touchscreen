@@ -1,6 +1,5 @@
 import os
 import socket
-
 import mopidy
 
 from .screen_objects import ScreenObjectsManager, TouchAndTextItem
@@ -16,29 +15,38 @@ class MenuScreen():
         self.screen_objects = ScreenObjectsManager()
 
         # Exit mopidy button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue611",
+        button = TouchAndTextItem(self.manager.fonts['icon'],
+                                  u"\ue611",
                                   (0, self.base_size), None)
         self.screen_objects.set_touch_object("exit_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Exit Mopidy",
-                                  (button.get_right_pos(), self.base_size),
+        button = TouchAndTextItem(self.manager.fonts['base'],
+                                  "Exit Mopidy",
+                                  (button.get_right_pos(),
+                                   self.base_size),
                                   None)
         self.screen_objects.set_touch_object("exit", button)
 
         # Shutdown button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue60b",
+        button = TouchAndTextItem(self.manager.fonts['icon'],
+                                  u"\ue60b",
                                   (0, self.base_size * 2), None)
         self.screen_objects.set_touch_object("shutdown_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Shutdown",
-                                  (button.get_right_pos(), self.base_size * 2),
+        button = TouchAndTextItem(self.manager.fonts['base'],
+                                  "Shutdown",
+                                  (button.get_right_pos(),
+                                   self.base_size * 2),
                                   None)
         self.screen_objects.set_touch_object("shutdown", button)
 
         # Restart button
-        button = TouchAndTextItem(self.manager.fonts['icon'], u"\ue609",
+        button = TouchAndTextItem(self.manager.fonts['icon'],
+                                  u"\ue609",
                                   (0, self.base_size * 3), None)
         self.screen_objects.set_touch_object("restart_icon", button)
-        button = TouchAndTextItem(self.manager.fonts['base'], "Restart",
-                                  (button.get_right_pos(), self.base_size * 3),
+        button = TouchAndTextItem(self.manager.fonts['base'],
+                                  "Restart",
+                                  (button.get_right_pos(),
+                                   self.base_size * 3),
                                   None)
         self.screen_objects.set_touch_object("restart", button)
 
@@ -49,9 +57,6 @@ class MenuScreen():
 
     def update(self, screen, update_all):
         self.screen_objects.render(screen)
-
-    def get_dirty_area(self):
-	return self.screen_objects.get_dirty_area()
 
     def touch_event(self, event):
         if event.type == InputManager.click:

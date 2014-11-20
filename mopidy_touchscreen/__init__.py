@@ -2,11 +2,9 @@ from __future__ import unicode_literals
 
 import logging
 import os
-
 from mopidy import config, ext
 
 from .touch_screen import TouchScreen
-from .touch_screen_backend import TouchScreenBackend
 
 
 __version__ = '0.2.2'
@@ -21,7 +19,8 @@ class Extension(ext.Extension):
     version = __version__
 
     def get_default_config(self):
-        conf_file = os.path.join(os.path.dirname(__file__), 'ext.conf')
+        conf_file = os.path.join(os.path.dirname(__file__),
+                                 'ext.conf')
         return config.read(conf_file)
 
     def get_config_schema(self):
@@ -37,13 +36,10 @@ class Extension(ext.Extension):
         schema['gpio_up'] = config.Integer()
         schema['gpio_down'] = config.Integer()
         schema['gpio_enter'] = config.Integer()
-	schema['sdl_fbdev'] = config.String()
-	schema['sdl_mousdrv'] = config.String()
-	schema['sdl_mousedev'] = config.String()
+        schema['sdl_fbdev'] = config.String()
+        schema['sdl_mousdrv'] = config.String()
+        schema['sdl_mousedev'] = config.String()
         return schema
 
     def setup(self, registry):
         registry.add('frontend', TouchScreen)
-
-        # Backend used for controling volume
-        registry.add('backend', TouchScreenBackend)
