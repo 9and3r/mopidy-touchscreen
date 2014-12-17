@@ -62,7 +62,7 @@ class ScreenManager():
         button_size = (self.size[0] / 6, self.base_size)
 
          # Search button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue601",
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
                                   (0, self.base_size * 7),
                                   button_size)
         self.down_bar_objects.set_touch_object("menu_0", button)
@@ -112,7 +112,7 @@ class ScreenManager():
         self.playback_state_changed(self.core.playback.state.get(),
                                     self.core.playback.state.get())
         self.screens[menu_index].check_connection()
-        self.change_screen(self.current_screen)
+        self.change_screen(library_index)
 
 
     def update(self):

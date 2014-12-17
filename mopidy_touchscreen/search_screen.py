@@ -13,8 +13,8 @@ class SearchScreen():
         self.size = size
         self.base_size = base_size
         self.manager = manager
-        self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] - self.base_size),
+        self.list_view = ListView((0, self.base_size), (
+            self.size[0], self.size[1] - 2*self.base_size),
                                   self.base_size,
                                   manager.fonts['base'])
         self.results_strings = []
