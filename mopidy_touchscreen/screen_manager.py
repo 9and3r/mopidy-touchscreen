@@ -41,7 +41,7 @@ class ScreenManager():
         self.fonts['icon'] = pygame.font.Font(font, self.base_size)
         try:
             self.screens = [
-                SearchScreen(size, self.base_size, self),
+                SearchScreen(size, self.base_size, self, self.fonts),
                 MainScreen(size, self, cache, core, self.fonts),
                 Tracklist(size, self.base_size, self),
                 LibraryScreen(size, self.base_size, self),
@@ -64,41 +64,42 @@ class ScreenManager():
          # Search button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
                                   (0, self.base_size * 7),
-                                  button_size)
+                                  button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
                                   (x, self.base_size * 7),
-                                  button_size)
+                                  button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
         # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
                                   (x, self.base_size * 7),
-                                  button_size)
+                                  button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
         # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
                                   (x, self.base_size * 7),
-                                  button_size)
+                                  button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
         # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
                                   (x, self.base_size * 7),
-                                  button_size)
+                                  button_size, center=True)
+
         self.down_bar_objects.set_touch_object("menu_4", button)
         x = button.get_right_pos()
 
         # Menu button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
-                                  (x, self.base_size * 7), None)
+                                  (x, self.base_size * 7), button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_5", button)
 
         # Down bar
