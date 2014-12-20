@@ -8,6 +8,7 @@ import urllib
 import urllib2
 from threading import Thread
 import pygame
+from .base_screen import BaseScreen
 
 from .screen_objects import (Progressbar, ScreenObjectsManager,
                              TextItem,
@@ -18,13 +19,10 @@ from .input_manager import InputManager
 logger = logging.getLogger(__name__)
 
 
-class MainScreen():
-    def __init__(self, size, manager, cache, core, fonts):
+class MainScreen(BaseScreen):
+    def __init__(self, size, base_size, manager, fonts, cache, core):
+        BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.core = core
-        self.size = size
-        self.base_size = self.size[1] / 8
-        self.fonts = fonts
-        self.manager = manager
         self.track = None
         self.cache = cache
         self.image = None
@@ -297,7 +295,7 @@ class MainScreen():
                 volume = self.core.playback.volume.get() + 10
                 if volume > 100:
                     volume = 100
-                    self.core.playback.volume = volume
+                self.core.playback.volume = volume
                 self.manager.volume_changed(volume)
             elif event.direction == InputManager.down:
                 volume = self.core.playback.volume.get() - 10

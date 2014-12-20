@@ -5,6 +5,7 @@ import pygame
 
 from .screen_objects import Progressbar, ScreenObjectsManager, \
     TouchAndTextItem, TextItem
+from .base_screen import BaseScreen
 
 logger = logging.getLogger(__name__)
 
@@ -14,12 +15,9 @@ mode_album_name = 1
 mode_artist_name = 2
 
 
-class SearchScreen():
+class SearchScreen(BaseScreen):
     def __init__(self, size, base_size, manager, fonts):
-        self.size = size
-        self.base_size = base_size
-        self.manager = manager
-        self.fonts = fonts
+        BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.list_view = ListView((0, self.base_size*2), (
             self.size[0], self.size[1] - 3*self.base_size),
                                   self.base_size,

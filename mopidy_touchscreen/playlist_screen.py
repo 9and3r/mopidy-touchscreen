@@ -1,15 +1,14 @@
 from .list_view import ListView
+from .base_screen import BaseScreen
 
 
-class PlaylistScreen():
-    def __init__(self, size, base_size, manager):
-        self.size = size
-        self.base_size = base_size
-        self.manager = manager
+class PlaylistScreen(BaseScreen):
+    def __init__(self, size, base_size, manager, fonts):
+        BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.list_view = ListView((0, 0), (
             self.size[0], self.size[1] - self.base_size),
                                   self.base_size,
-                                  manager.fonts['base'])
+                                  self.fonts['base'])
         self.playlists_strings = []
         self.playlists = []
         self.playlists_loaded()

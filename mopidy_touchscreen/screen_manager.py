@@ -42,11 +42,11 @@ class ScreenManager():
         try:
             self.screens = [
                 SearchScreen(size, self.base_size, self, self.fonts),
-                MainScreen(size, self, cache, core, self.fonts),
-                Tracklist(size, self.base_size, self),
-                LibraryScreen(size, self.base_size, self),
-                PlaylistScreen(size, self.base_size, self),
-                MenuScreen(size, self.base_size, self)]
+                MainScreen(size, self.base_size, self, self.fonts, cache, core),
+                Tracklist(size, self.base_size, self, self.fonts),
+                LibraryScreen(size, self.base_size, self, self.fonts),
+                PlaylistScreen(size, self.base_size, self, self.fonts),
+                MenuScreen(size, self.base_size, self, self.fonts)]
         except:
             traceback.print_exc()
         self.track = None
@@ -159,8 +159,6 @@ class ScreenManager():
 
     def volume_changed(self, volume):
         self.screens[main_screen_index].volume_changed(volume)
-
-
 
     def playback_state_changed(self, old_state, new_state):
         self.screens[main_screen_index].playback_state_changed(old_state, new_state)
