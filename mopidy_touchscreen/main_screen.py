@@ -297,15 +297,13 @@ class MainScreen():
                 volume = self.core.playback.volume.get() + 10
                 if volume > 100:
                     volume = 100
-                self.manager.backend.tell(
-                    {'action': 'volume', 'value': volume})
+                    self.core.playback.volume = volume
                 self.manager.volume_changed(volume)
             elif event.direction == InputManager.down:
                 volume = self.core.playback.volume.get() - 10
                 if volume < 0:
                     volume = 0
-                self.manager.backend.tell(
-                    {'action': 'volume', 'value': volume})
+                self.core.playback.volume = volume
                 self.manager.volume_changed(volume)
                 
     def click_on_objects(self, objects, event):
