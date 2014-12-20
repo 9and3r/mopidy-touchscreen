@@ -51,9 +51,7 @@ class ScreenManager():
             traceback.print_exc()
         self.track = None
         self.input_manager = InputManager(size)
-        self.top_bar_objects = ScreenObjectsManager()
         self.down_bar_objects = ScreenObjectsManager()
-        self.selected_zone = self.top_bar_objects
         self.dirty_area = []
         self.screen_changed = True
 
@@ -115,14 +113,12 @@ class ScreenManager():
         self.screens[menu_index].check_connection()
         self.change_screen(library_index)
 
-
     def update(self):
         surface = pygame.Surface(self.size)
         surface.fill([200, 200, 200])
         self.screens[self.current_screen].update(surface,
                                                  self.screen_changed)
         surface.blit(self.down_bar, (0, self.base_size * 7))
-        self.top_bar_objects.render(surface)
         self.down_bar_objects.render(surface)
         self.screen_changed = False
         return surface
@@ -138,24 +134,15 @@ class ScreenManager():
     def event(self, event):
         event = self.input_manager.event(event)
         if event is not None:
-            if event.type == InputManager.click:
-                objects = self.top_bar_objects.get_touch_objects_in_pos(
-                    event.current_pos)
-                objects.extend(
-                    self.down_bar_objects.get_touch_objects_in_pos(
-                        event.current_pos))
-                self.click_on_objects(objects, event)
-            elif event.type == InputManager.key and event.direction == InputManager.enter:
-                objects = [self.selected_zone.selected_key]
-                self.click_on_objects(objects, event)
-            elif event.type == InputManager.key:
-                if event.direction == InputManager.enter:
-                    logger.error(self.selected_zone.selected_key)
-                    self.click_on_objects(
-                        [self.selected_zone.selected_key], event)
-                else:
-                    self.change_selection(event, None)
-            self.screens[self.current_screen].touch_event(event)
+            if not self.manage_event(event):
+                self.screens[self.current_screen].touch_event(event)
+
+    def manage_event(self, event):
+        if event.type == InputManager.click:
+            objects = self.down_bar_objects.get_touch_objects_in_pos(event.current_pos)
+            return self.click_on_objects(objects, event)
+        else:
+            return False
 
     def volume_changed(self, volume):
         self.screens[main_screen_index].volume_changed(volume)
@@ -187,6 +174,8 @@ class ScreenManager():
             for key in objects:
                 if key[:-1] == "menu_":
                     self.change_screen(int(key[-1:]))
+                    return True
+        return False
 
     def playlists_loaded(self):
         self.screens[playlist_index].playlists_loaded()

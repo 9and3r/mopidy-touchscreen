@@ -18,10 +18,10 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         super(TouchScreen, self).__init__()
         self.core = core
         self.running = False
-	self.cursor = config['touchscreen']['cursor']
-	self.cache_dir = config['touchscreen']['cache_dir']
+        self.cursor = config['touchscreen']['cursor']
+        self.cache_dir = config['touchscreen']['cache_dir']
         self.fullscreen = config['touchscreen']['fullscreen']
-	self.screen_size = (config['touchscreen']['screen_width'],
+        self.screen_size = (config['touchscreen']['screen_width'],
                             config['touchscreen']['screen_height'])
         os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
         os.environ["SDL_MOUSEDRV"] = config['touchscreen'][
@@ -29,13 +29,13 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
             'sdl_mousedev']
         pygame.init()
-	if self.fullscreen:
+        if self.fullscreen:
             self.screen = pygame.display.set_mode(self.screen_size,
                                              pygame.FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode(self.screen_size)
-	pygame.mouse.set_visible(self.cursor)
-	self.screen_manager = ScreenManager(self.screen_size,
+        pygame.mouse.set_visible(self.cursor)
+        self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
                                             self.cache_dir)
         
