@@ -52,7 +52,6 @@ class ScreenManager():
         self.track = None
         self.input_manager = InputManager(size)
         self.down_bar_objects = ScreenObjectsManager()
-        self.dirty_area = []
         self.screen_changed = True
 
         # Menu buttons
@@ -166,8 +165,6 @@ class ScreenManager():
         self.current_screen = new_screen
         self.down_bar_objects.get_touch_object(
             "menu_" + str(new_screen)).set_active(True)
-        self.dirty_area.append(
-            pygame.Rect(0, 0, self.size[0], self.size[1]))
 
     def click_on_objects(self, objects, event):
         if objects is not None:
@@ -188,21 +185,3 @@ class ScreenManager():
 
     def search(self, query, mode):
         self.screens[search_index].search(query, mode)
-
-    def change_selection(self, event, pos):
-        if self.selected_zone == self.top_bar_objects:
-            if not self.top_bar_objects.change_selected(
-                    event.direction,
-                    pos) and event.direction == InputManager.down:
-                pos = self.top_bar_objects.selected.pos
-                self.selected_zone = self.down_bar_objects
-                self.top_bar_objects.set_selected(None)
-                self.change_selection(event, pos)
-        elif self.selected_zone == self.down_bar_objects:
-            if not self.down_bar_objects.change_selected(
-                    event.direction,
-                    pos) and event.direction == InputManager.up:
-                pos = self.down_bar_objects.selected.pos
-                self.selected_zone = self.top_bar_objects
-                self.down_bar_objects.set_selected(None)
-                self.change_selection(event, pos)
