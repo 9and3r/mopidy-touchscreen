@@ -12,7 +12,7 @@ from .screen_objects import ScreenObjectsManager, \
     TouchAndTextItem
 from .input_manager import InputManager
 from .tracklist import Tracklist
-
+from .dynamic_background import DynamicBackground
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,7 @@ class ScreenManager():
         self.size = size
         self.core = core
         self.fonts = {}
+        self.background = DynamicBackground()
         self.current_screen = 0
         self.base_size = self.size[1] / 8
         font = resource_filename(
@@ -112,7 +113,7 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
-        surface.fill([200, 200, 200])
+        self.background.draw_background(surface)
         self.screens[self.current_screen].update(surface,
                                                  self.screen_changed)
         surface.blit(self.down_bar, (0, self.base_size * 7))
