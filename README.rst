@@ -115,7 +115,7 @@ Changelog
 v0.2.1
 ----------------------------------------
 
--Font will be included on instalation
+- Font will be included on instalation
 
 v0.2.0
 ----------------------------------------

@@ -1,7 +1,5 @@
 import logging
 import traceback
-import mopidy
-import mopidy.core
 import pygame
 from pkg_resources import Requirement, resource_filename
 
@@ -10,7 +8,7 @@ from .library_screen import LibraryScreen
 from .main_screen import MainScreen
 from .menu_screen import MenuScreen
 from .playlist_screen import PlaylistScreen
-from .screen_objects import Progressbar, ScreenObjectsManager, \
+from .screen_objects import ScreenObjectsManager, \
     TouchAndTextItem
 from .input_manager import InputManager
 from .tracklist import Tracklist
