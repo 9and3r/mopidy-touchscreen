@@ -39,6 +39,8 @@ class Extension(ext.Extension):
         schema['sdl_fbdev'] = config.String()
         schema['sdl_mousdrv'] = config.String()
         schema['sdl_mousedev'] = config.String()
+        schema['sdl_audiodriver'] = config.String()
+        schema['sdl_path_dsp'] = config.String()
         return schema
 
     def setup(self, registry):

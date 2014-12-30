@@ -6,6 +6,7 @@ import pygame
 from .screen_objects import Progressbar, ScreenObjectsManager, \
     TouchAndTextItem, TextItem
 from .base_screen import BaseScreen
+from .input_manager import InputManager
 
 logger = logging.getLogger(__name__)
 
@@ -111,19 +112,22 @@ class SearchScreen(BaseScreen):
 
 
     def touch_event(self, touch_event):
-        clicked = self.list_view.touch_event(touch_event)
-        if clicked is not None:
-            self.manager.core.tracklist.clear()
-            self.manager.core.tracklist.add(
-                uri=self.results[clicked].uri)
-            self.manager.core.playback.play()
+        if touch_event.type == InputManager.click:
+            clicked = self.list_view.touch_event(touch_event)
+            if clicked is not None:
+                self.manager.core.tracklist.clear()
+                self.manager.core.tracklist.add(
+                    uri=self.results[clicked].uri)
+                self.manager.core.playback.play()
+            else:
+                clicked = self.screen_objects.get_touch_objects_in_pos(touch_event.down_pos)
+                if len(clicked) > 0:
+                    clicked = clicked[0]
+                    if clicked == self.mode_objects_keys[0]:
+                        self.search(mode=0)
+                    if clicked == self.mode_objects_keys[1]:
+                        self.search(mode=1)
+                    if clicked == self.mode_objects_keys[2]:
+                        self.search(mode=2)
         else:
-            clicked = self.screen_objects.get_touch_objects_in_pos(touch_event.down_pos)
-            if len(clicked) > 0:
-                clicked = clicked[0]
-                if clicked == self.mode_objects_keys[0]:
-                    self.search(mode=0)
-                if clicked == self.mode_objects_keys[1]:
-                    self.search(mode=1)
-                if clicked == self.mode_objects_keys[2]:
-                    self.search(mode=2)
+            self.list_view.touch_event(touch_event)

@@ -28,6 +28,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             'sdl_mousdrv']
         os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
             'sdl_mousedev']
+        os.environ["SDL_AUDIODRIVER"] = config['touchscreen']['sdl_audiodriver']
+        os.environ["SDL_PATH_DSP"] = config['touchscreen']['sdl_path_dsp']
         pygame.init()
         pygame.display.set_caption("Mopidy-Touchscreen")
         if self.fullscreen:

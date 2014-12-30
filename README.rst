@@ -67,6 +67,7 @@ The following configuration values are available:
 - ``touchscreen/screen_width``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
   ``~/.cache/mopidy/spotify``
 
+
 Features
 =============
 
