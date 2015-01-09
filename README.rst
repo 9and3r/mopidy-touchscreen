@@ -66,17 +66,17 @@ The following configuration values are available:
 
 
 How to Setup
-=============
+============
 
 Use the basic configuration to setup as most standard screens works fine without further configuration.
 
 Raspberry Pi and LCD Shields
--------
+----------------------------
 
 If you are using a LCD Shield in Raspberry Pi you need to config your LCD and run mopidy with root privileges:
 
 Configure your LCD Shield
-`````````````
+`````````````````````````
 
 Add to the config the next variables::
 
@@ -93,7 +93,7 @@ To find your values find an example of using pygame with your LCD Shield and it 
     os.environ["SDL_MOUSEDEV"] = "event0"
     
 Run mopidy with root privileges
-`````````````
+```````````````````````````````
     
 You can use ``sudo mopidy``.
 
@@ -103,13 +103,13 @@ Do not forget that this is a workaround and that mopidy will run with root privi
     
     
 Help
-=============
+====
 
 You can use `mopidy discuss <https://discuss.mopidy.com/>`_
 or send an email to `9and3r@gmail.com <mailto:9and3r@gmail.com>`_
 
 Features
-=============
+========
 
 Working
 -------
@@ -153,7 +153,7 @@ Project resources
 Changelog
 =========
 
-v0.3.1
+v0.3.2
 ----------------------------------------
 
 - Bug Fixes
