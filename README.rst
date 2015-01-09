@@ -40,8 +40,8 @@ Or, if available, install the Debian/Ubuntu package from `apt.mopidy.com
 <http://apt.mopidy.com/>`_.
 
 
-Configuration
-=============
+Basic Configuration
+===================
 
 Before starting Mopidy, you must add configuration for
 Mopidy-Touchscreen to your Mopidy configuration file::
@@ -53,9 +53,6 @@ Mopidy-Touchscreen to your Mopidy configuration file::
     cursor = True
     fullscreen = False
     cache_dir = $XDG_CACHE_DIR/mopidy/touchscreen
-    sdl_fbdev = /dev/fb1
-    sdl_mousdrv = TSLIB
-    sdl_mousedev = event0
 
 The following configuration values are available:
     
@@ -65,13 +62,51 @@ The following configuration values are available:
 - ``touchscreen/cursor``: If the mouse cursor should be shown. (If you use a touchscreen it should be false)
 - ``touchscreen/fullscreen``: If you want to be shown as a window or in fullscreen.
 - ``touchscreen/screen_width``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
-  ``~/.cache/mopidy/spotify``
-- ``touchscreen/sdl_fbdev``
-- ``touchscreen/sdl_mousdrv``
-- ``touchscreen/sdl_mousedev``
-- ``touchscreen/sdl_audiodriver``
-- ``touchscreen/sdl_path_dsp``
+  ``~/.cache/mopidy/touchscreen``
 
+
+How to Setup
+=============
+
+Use the basic configuration to setup as most standard screens works fine without further configuration.
+
+Raspberry Pi and LCD Shields
+-------
+
+If you are using a LCD Shield in Raspberry Pi you need to config your LCD and run mopidy with root privileges:
+
+Configure your LCD Shield
+`````````````
+
+Add to the config the next variables::
+
+    [touchscreen]
+    sdl_fbdev = /dev/fb1
+    sdl_mousdrv = TSLIB
+    sdl_mousedev = event0
+    
+This is just an example. It may work but each LCD Shield seems to have its own configuration. 
+To find your values find an example of using pygame with your LCD Shield and it should be something like this in the code::
+
+    os.environ["SDL_FBDEV"] = "/dev/fb1"
+    os.environ["SDL_MOUSEDRV"] = "TSLIB"
+    os.environ["SDL_MOUSEDEV"] = "event0"
+    
+Run mopidy with root privileges
+`````````````
+    
+You can use ``sudo mopidy``.
+
+In case you are using musicbox edit ``/etc/init.d/mopidy`` file. Change ``DAEMON_USER=mopidy`` to ``DAEMON_USER=root``
+
+Do not forget that this is a workaround and that mopidy will run with root privileges.
+    
+    
+Help
+=============
+
+You can use `mopidy discuss <https://discuss.mopidy.com/>`_
+or send an email to `9and3r@gmail.com <mailto:9and3r@gmail.com>`_
 
 Features
 =============
@@ -118,10 +153,18 @@ Project resources
 Changelog
 =========
 
+v0.3.0
+----------------------------------------
+
+- Bug Fixes
+- UI changes
+- Smoth text scrolling
+- Search albums, artist or songs (Not fully implemented. Basic functionality)
+
 v0.2.1
 ----------------------------------------
 
-- Font will be included on instalation
+- Font will be included on installation
 
 v0.2.0
 ----------------------------------------
