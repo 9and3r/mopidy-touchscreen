@@ -20,13 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 class MainScreen(BaseScreen):
-    def __init__(self, size, base_size, manager, fonts, cache, core):
+    def __init__(self, size, base_size, manager, fonts, cache, core, background):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.core = core
         self.track = None
         self.cache = cache
         self.image = None
         self.artists = None
+        self.background = background
         self.track_duration = "00:00"
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
@@ -273,11 +274,13 @@ class MainScreen(BaseScreen):
 
     def load_image(self):
         size = self.base_size * 4
-        self.image = pygame.transform.scale(
-            pygame.image.load(
+        image = pygame.transform.scale(pygame.image.load(
                 self.get_cover_folder() +
                 self.get_image_file_name()).convert(),
             (size, size))
+        self.background.set_target_color(pygame.transform.average_color(image))
+        self.image = image
+
 
     def touch_event(self, event):
         if event.type == InputManager.click:

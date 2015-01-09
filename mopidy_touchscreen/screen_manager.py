@@ -41,7 +41,7 @@ class ScreenManager():
         try:
             self.screens = [
                 SearchScreen(size, self.base_size, self, self.fonts),
-                MainScreen(size, self.base_size, self, self.fonts, cache, core),
+                MainScreen(size, self.base_size, self, self.fonts, cache, core, self.background),
                 Tracklist(size, self.base_size, self, self.fonts),
                 LibraryScreen(size, self.base_size, self, self.fonts),
                 PlaylistScreen(size, self.base_size, self, self.fonts),

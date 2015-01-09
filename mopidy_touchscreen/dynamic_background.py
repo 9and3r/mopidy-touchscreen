@@ -15,9 +15,12 @@ class DynamicBackground():
                 self.current[x] += 1
             if self.current != self.target:
                 same = False
-        if same:
-            self.target = get_valid_color()
+        #if same:
+        #    self.target = get_valid_color()
         surface.fill(self.current)
+
+    def set_target_color(self, color):
+        self.target = [color[0], color[1], color[2]]
 
 
 # Returns an array with 3 integers in range of 0-255
