@@ -1,5 +1,7 @@
 import random
 
+change_speed = 2
+
 
 class DynamicBackground():
     def __init__(self):
@@ -9,12 +11,15 @@ class DynamicBackground():
     def draw_background(self, surface):
         same = True
         for x in range(0, 3):
-            if self.current[x] > self.target[x]:
-                self.current[x] -= 1
-            elif self.current[x] < self.target[x]:
-                self.current[x] += 1
-            if self.current != self.target:
-                same = False
+            if abs(self.current[x]-self.target[x]) < change_speed:
+                self.current[x] = self.target[x]
+            else:
+                if self.current[x] > self.target[x]:
+                    self.current[x] -= change_speed
+                elif self.current[x] < self.target[x]:
+                    self.current[x] += change_speed
+                if self.current != self.target:
+                    same = False
         #if same:
         #    self.target = get_valid_color()
         surface.fill(self.current)

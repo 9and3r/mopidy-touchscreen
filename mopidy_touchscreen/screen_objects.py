@@ -214,6 +214,9 @@ class BaseItem():
 
 
 class TextItem(BaseItem):
+
+    scroll_speed = 2
+
     def __init__(self, font, text, pos, size, center=False):
         self.font = font
         self.text = text
@@ -253,7 +256,7 @@ class TextItem(BaseItem):
             if self.step > self.box.get_rect().width:
                 self.step = -self.size[0]
             else:
-                self.step = self.step + 1
+                self.step = self.step + TextItem.scroll_speed
             return True
         else:
             return BaseItem.update(self)
