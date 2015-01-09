@@ -32,11 +32,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         os.environ["SDL_PATH_DSP"] = config['touchscreen']['sdl_path_dsp']
         pygame.init()
         pygame.display.set_caption("Mopidy-Touchscreen")
-        if self.fullscreen:
-            self.screen = pygame.display.set_mode(self.screen_size,
-                                             pygame.FULLSCREEN)
-        else:
-            self.screen = pygame.display.set_mode(self.screen_size)
+        self.get_display_surface(self.screen_size)
         pygame.mouse.set_visible(self.cursor)
         self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
@@ -56,6 +52,13 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             pins['enter'] = config['touchscreen']['gpio_enter']
             self.gpio_manager = GPIOManager(pins)
 
+    def get_display_surface(self, size):
+        if self.fullscreen:
+            self.screen = pygame.display.set_mode(size,
+                                             pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+
     def start_thread(self):
         clock = pygame.time.Clock()
         while self.running:
@@ -67,6 +70,9 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                     self.running = False
                 elif event.type == pygame.KEYUP and event.key == pygame.K_q:
                     self.running = False
+                elif event.type == pygame.VIDEORESIZE:
+                    self.get_display_surface(event.size)
+                    self.screen_manager.resize(event)
                 else:
                     self.screen_manager.event(event)
         pygame.quit()

@@ -26,11 +26,16 @@ menu_index = 5
 
 class ScreenManager():
     def __init__(self, size, core, cache):
-        self.size = size
         self.core = core
+        self.cache = cache
         self.fonts = {}
         self.background = DynamicBackground()
-        self.current_screen = 0
+        self.current_screen = library_index
+        self.init_manager(size)
+
+
+    def init_manager(self, size):
+        self.size = size
         self.base_size = self.size[1] / 8
         font = resource_filename(
             Requirement.parse("mopidy-touchscreen"),
@@ -41,7 +46,7 @@ class ScreenManager():
         try:
             self.screens = [
                 SearchScreen(size, self.base_size, self, self.fonts),
-                MainScreen(size, self.base_size, self, self.fonts, cache, core, self.background),
+                MainScreen(size, self.base_size, self, self.fonts, self.cache, self.core, self.background),
                 Tracklist(size, self.base_size, self, self.fonts),
                 LibraryScreen(size, self.base_size, self, self.fonts),
                 PlaylistScreen(size, self.base_size, self, self.fonts),
@@ -109,7 +114,7 @@ class ScreenManager():
         self.playback_state_changed(self.core.playback.state.get(),
                                     self.core.playback.state.get())
         self.screens[menu_index].check_connection()
-        self.change_screen(library_index)
+        self.change_screen(self.current_screen)
 
     def update(self):
         surface = pygame.Surface(self.size)
@@ -184,3 +189,6 @@ class ScreenManager():
 
     def search(self, query, mode):
         self.screens[search_index].search(query, mode)
+
+    def resize(self, event):
+        self.init_manager(event.size)
