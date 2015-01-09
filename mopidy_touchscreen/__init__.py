@@ -7,7 +7,7 @@ from mopidy import config, ext
 from .touch_screen import TouchScreen
 
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
 # TODO: If you need to log, use loggers named after the current Python module
 logger = logging.getLogger(__name__)
