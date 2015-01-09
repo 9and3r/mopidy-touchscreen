@@ -61,7 +61,7 @@ The following configuration values are available:
 - ``touchscreen/screen_height``: The width of the resolution you want to use in pixels.
 - ``touchscreen/cursor``: If the mouse cursor should be shown. (If you use a touchscreen it should be false)
 - ``touchscreen/fullscreen``: If you want to be shown as a window or in fullscreen.
-- ``touchscreen/screen_width``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
+- ``touchscreen/cache_dir``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
   ``~/.cache/mopidy/touchscreen``
 
 
