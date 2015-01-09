@@ -29,7 +29,7 @@ class ScreenManager():
         self.size = size
         self.core = core
         self.fonts = {}
-        self.background = DynamicBackground()
+        self.background = DynamicBackground(self.size)
         self.current_screen = 0
         self.base_size = self.size[1] / 8
         font = resource_filename(

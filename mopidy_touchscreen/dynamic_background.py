@@ -1,10 +1,13 @@
 import random
 
+import pygame
 
 class DynamicBackground():
-    def __init__(self):
+    def __init__(self, size):
+        self.size = size
         self.current = get_valid_color()
         self.target = get_valid_color()
+        self.surface = None
 
     def draw_background(self, surface):
         same = True
@@ -18,9 +21,18 @@ class DynamicBackground():
         #if same:
         #    self.target = get_valid_color()
         surface.fill(self.current)
+        if self.surface is not None:
+            surface.blit(self.surface,(0,0))
 
-    def set_target_color(self, color):
+    def set_target_color(self, color, surface):
         self.target = [color[0], color[1], color[2]]
+        #irudi = pygame.Surface(surface.get_size())
+        #pygame.transform.laplacian(surface, irudi)
+        irudi = surface
+        target = pygame.Surface(self.size)
+        pygame.transform.smoothscale(irudi, self.size, target)
+        target.set_alpha(80)
+        self.surface = target
 
 
 # Returns an array with 3 integers in range of 0-255
