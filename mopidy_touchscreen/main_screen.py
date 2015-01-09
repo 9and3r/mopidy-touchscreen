@@ -278,7 +278,7 @@ class MainScreen(BaseScreen):
                 self.get_cover_folder() +
                 self.get_image_file_name()).convert(),
             (size, size))
-        self.background.set_target_color(pygame.transform.average_color(image))
+        self.background.set_target_color(pygame.transform.average_color(image), image)
         self.image = image
 
 
