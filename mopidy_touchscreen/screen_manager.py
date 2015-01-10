@@ -29,7 +29,6 @@ class ScreenManager():
         self.core = core
         self.cache = cache
         self.fonts = {}
-        self.background = DynamicBackground(size)
         self.current_screen = library_index
         self.init_manager(size)
 

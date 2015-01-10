@@ -1,9 +1,13 @@
 import random
 
+<<<<<<< HEAD
 change_speed = 2
 
 import pygame
 
+=======
+import pygame
+>>>>>>> d49db26693cc07087bc620dcdc603290ef56557b
 
 class DynamicBackground():
     def __init__(self, size):
