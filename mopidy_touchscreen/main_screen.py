@@ -246,13 +246,8 @@ class MainScreen(BaseScreen):
             self.touch_text_manager.set_touch_object("artist_name", current)
 
     def track_playback_ended(self, tl_track, time_position):
-        if self.image is not None:
-            self.dirty_area.append(pygame.Rect(self.base_size / 2,
-                                               self.base_size + self.base_size / 2,
-                                               self.image.get_rect().width,
-                                               self.image.get_rect().height))
-            self.image = None
-
+        self.background.set_target_color(None)
+        self.image = None
         self.track_duration = "00:00"
 
         width = self.size[0] - self.base_size
