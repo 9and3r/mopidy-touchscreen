@@ -30,9 +30,9 @@ class DynamicBackground():
 
     def set_target_color(self, color):
         if color is not None:
-            self.target = get_similar_valid_color(color)
             self.auto_mode = False
             self.target_current_same = False
+            self.target = get_similar_valid_color(color)
         else:
             self.auto_mode = True
             self.target = get_valid_color()

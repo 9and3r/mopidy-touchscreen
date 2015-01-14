@@ -145,6 +145,13 @@ class ScreenManager():
             objects = self.down_bar_objects.get_touch_objects_in_pos(event.current_pos)
             return self.click_on_objects(objects, event)
         else:
+            if event.type == InputManager.key:
+                if event.direction == InputManager.right:
+                    self.change_screen(self.current_screen+1)
+                    return True
+                elif event.direction == InputManager.left:
+                    self.change_screen(self.current_screen-1)
+                    return True
             return False
 
     def volume_changed(self, volume):
@@ -163,12 +170,12 @@ class ScreenManager():
         self.screens[main_screen_index].options_changed()
 
     def change_screen(self, new_screen):
-        self.screen_changed = True
-        self.down_bar_objects.get_touch_object(
-            "menu_" + str(self.current_screen)).set_active(False)
-        self.current_screen = new_screen
-        self.down_bar_objects.get_touch_object(
-            "menu_" + str(new_screen)).set_active(True)
+        if new_screen > -1 and new_screen < len(self.screens):
+            self.down_bar_objects.get_touch_object(
+                "menu_" + str(self.current_screen)).set_active(False)
+            self.current_screen = new_screen
+            self.down_bar_objects.get_touch_object(
+                "menu_" + str(new_screen)).set_active(True)
 
     def click_on_objects(self, objects, event):
         if objects is not None:

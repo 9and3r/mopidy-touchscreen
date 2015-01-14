@@ -215,7 +215,8 @@ class BaseItem():
 
 class TextItem(BaseItem):
 
-    scroll_speed = 2
+    scroll_speed = 5
+
 
     def __init__(self, font, text, pos, size, center=False):
         self.font = font
@@ -235,6 +236,8 @@ class TextItem(BaseItem):
                     size[0]:
                 self.fit_horizontal = False
                 self.step = 0
+                self.step_2 = None
+                self.scroll_white_gap = self.size[1] * 4
             else:
                 self.fit_horizontal = True
             if self.pos[1] + self.box.get_rect().height > pos[1] + \
@@ -253,10 +256,15 @@ class TextItem(BaseItem):
 
     def update(self):
         if not self.fit_horizontal:
-            if self.step > self.box.get_rect().width:
-                self.step = -self.size[0]
+            self.step = self.step + TextItem.scroll_speed
+            if self.step_2 is None:
+                if (self.box.get_rect().width - self.step + self.scroll_white_gap) < self.size[0]:
+                    self.step_2 = self.box.get_rect().width - self.step + self.scroll_white_gap
             else:
-                self.step = self.step + TextItem.scroll_speed
+                self.step_2 = self.step_2 - TextItem.scroll_speed
+                if self.step_2 < 0:
+                    self.step = 0 - self.step_2
+                    self.step_2 = None
             return True
         else:
             return BaseItem.update(self)
@@ -268,7 +276,10 @@ class TextItem(BaseItem):
             surface.blit(self.box, self.pos,
                          area=pygame.Rect(self.step, 0, self.size[0],
                                           self.size[1]))
-
+            if self.step_2 is not None:
+                surface.blit(self.box, (self.pos[0]+self.step_2, self.pos[1]),
+                         area=pygame.Rect(0, 0, self.size[0] - self.step_2,
+                                          self.size[1]))
 
     def set_text(self, text, change_size):
         if text != self.text:
@@ -302,6 +313,7 @@ class TouchAndTextItem(TouchObject, TextItem):
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
         self.selected_color = (150, 0, 255)
+        self.normal_box = self.box
         self.active_box = self.font.render(text, True,
                                            self.active_color)
         self.selected_box = self.font.render(text, True,
@@ -312,21 +324,28 @@ class TouchAndTextItem(TouchObject, TextItem):
 
     def set_text(self, text, change_size):
         TextItem.set_text(self, text, change_size)
+        self.normal_box = self.box
         self.active_box = self.font.render(text, True,
                                            self.active_color)
         self.selected_box = self.font.render(text, True,
                                              self.selected_color)
 
-    def render(self, surface):
-        if not self.fit_horizontal:
-            self.rect = pygame.Rect(self.step, 0, self.size[0],
-                                    self.size[1])
-        if self.selected:
-            surface.blit(self.selected_box, (self.pos[0]+self.margin, self.pos[1]), area=self.rect)
-        elif self.active:
-            surface.blit(self.active_box, (self.pos[0]+self.margin, self.pos[1]), area=self.rect)
+    def set_active(self, active):
+        TouchObject.set_active(self, active)
+        if self.active:
+            self.box = self.active_box
         else:
-            surface.blit(self.box, (self.pos[0]+self.margin, self.pos[1]), area=self.rect)
+            self.box = self.normal_box
+
+    def set_selected(self, selected):
+        TouchObject.set_selected(self, selected)
+        if self.selected:
+            self.box = self.selected_box
+        else:
+            self.box = self.normal_box
+
+    def render(self, surface):
+        TextItem.render(self, surface)
 
 
 class Progressbar(TouchObject):
