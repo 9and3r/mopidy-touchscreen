@@ -19,8 +19,9 @@ class ListView():
         self.list_size = 0
         self.list = []
         self.scrollbar = False
+        self.selected = None
         self.set_list([])
-        self.selected = []
+        self.active = []
 
     # Sets the list for the lisview. It should be an iterable of strings
     def set_list(self, item_list):
@@ -38,6 +39,10 @@ class ListView():
                                                  scroll_bar)
         else:
             self.scrollbar = False
+        if self.list_size > 0:
+            self.selected = 0
+        else:
+            self.selected = None
         self.load_new_item_position(0)
 
     # Will load items currently displaying in item_pos
@@ -60,7 +65,7 @@ class ListView():
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
-
+        self.reload_selected()
 
     def render(self, surface):
         self.screen_objects.render(surface)
@@ -79,11 +84,20 @@ class ListView():
                             self.move_to(direction)
                     else:
                         return int(key)
+        elif touch_event.type == InputManager.key:
+            if touch_event.direction == InputManager.enter:
+                if self.selected is not None:
+                    return self.selected
+            elif touch_event.direction == InputManager.up:
+                self.set_selected(self.selected-1)
+            elif touch_event.direction == InputManager.down:
+                self.set_selected(self.selected+1)
         elif touch_event.type == InputManager.swipe:
             if touch_event.direction == InputManager.up:
                 self.move_to(-1)
             elif touch_event.direction == InputManager.down:
                 self.move_to(1)
+
 
     # Scroll to direction
     # direction == 1 will scroll down
@@ -106,22 +120,59 @@ class ListView():
                 self.screen_objects.get_touch_object(
                     "scrollbar").set_item(
                     self.current_item)
-            self.set_selected(self.selected)
+            self.set_active(self.active)
 
-    # Set selected items
-    def set_selected(self, selected):
-        for number in self.selected:
+
+    # Set active items
+    def set_active(self, active):
+        for number in self.active:
             try:
                 self.screen_objects.get_touch_object(
                     str(number)).set_active(
                     False)
             except KeyError:
                 pass
-        for number in selected:
+        for number in active:
             try:
                 self.screen_objects.get_touch_object(
                     str(number)).set_active(
                     True)
             except KeyError:
                 pass
-        self.selected = selected
+        self.active = active
+
+    def set_selected(self, selected):
+        if selected > -1 and selected < len(self.list):
+            if self.selected is not None:
+                try:
+                    self.screen_objects.get_touch_object(
+                        str(self.selected)).set_selected(
+                        False)
+                except KeyError:
+                    pass
+            if selected is not None:
+                try:
+                    self.screen_objects.get_touch_object(
+                        str(selected)).set_selected(
+                        True)
+                except KeyError:
+                    pass
+            self.selected = selected
+            self.set_selected_on_screen()
+
+    def set_selected_on_screen(self):
+        if self.current_item + self.max_rows <= self.selected:
+            self.move_to(1)
+            self.set_selected_on_screen()
+        elif self.current_item > self.selected:
+            self.move_to(-1)
+            self.set_selected_on_screen()
+
+    def reload_selected(self):
+        if self.selected is not None:
+            try:
+                self.screen_objects.get_touch_object(
+                        str(self.selected)).set_selected(
+                        True)
+            except KeyError:
+                pass

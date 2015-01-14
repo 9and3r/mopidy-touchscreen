@@ -36,5 +36,5 @@ class Tracklist(BaseScreen):
                                                     on_error_step=1)
 
     def track_started(self, track):
-        self.list_view.set_selected(
+        self.list_view.set_active(
             [self.manager.core.tracklist.index(track).get()])

@@ -103,11 +103,15 @@ class ScreenManager():
                                   (x, self.base_size * 7), button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_5", button)
 
+        # Down bar Solid
+        self.down_bar_solid = pygame.Surface(
+            (self.size[0], self.size[1] - self.base_size * 7))
+
         # Down bar
         self.down_bar = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size * 7),
-            pygame.SRCALPHA)
-        self.down_bar.fill((0, 0, 0, 128))
+            (self.size[0], self.size[1] - self.base_size * 7), pygame.SRCALPHA)
+        self.down_bar.fill((0,0,0,200))
+
 
         self.options_changed()
         self.mute_changed(self.core.playback.mute.get())
@@ -118,9 +122,10 @@ class ScreenManager():
 
     def update(self):
         surface = pygame.Surface(self.size)
-        self.background.draw_background(surface)
+        self.background.draw_background([surface, self.down_bar_solid])
         self.screens[self.current_screen].update(surface,
                                                  self.screen_changed)
+        surface.blit(self.down_bar_solid, (0, self.base_size * 7))
         surface.blit(self.down_bar, (0, self.base_size * 7))
         self.down_bar_objects.render(surface)
         self.screen_changed = False

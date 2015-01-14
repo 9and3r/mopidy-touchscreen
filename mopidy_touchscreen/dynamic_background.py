@@ -11,7 +11,7 @@ class DynamicBackground():
         self.auto_mode = True
         self.target_current_same = False
 
-    def draw_background(self, surface):
+    def draw_background(self, surfaces):
         if not self.target_current_same:
             for x in range(0, 3):
                 if abs(self.current[x]-self.target[x]) < change_speed:
@@ -26,7 +26,8 @@ class DynamicBackground():
         if self.auto_mode and self.target_current_same:
             self.target = get_valid_color()
             self.target_current_same = False
-        surface.fill(self.current)
+        for surface in surfaces:
+            surface.fill(self.current)
 
     def set_target_color(self, color):
         if color is not None:

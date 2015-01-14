@@ -237,7 +237,7 @@ class TextItem(BaseItem):
                 self.fit_horizontal = False
                 self.step = 0
                 self.step_2 = None
-                self.scroll_white_gap = self.size[1] * 4
+                self.scroll_white_gap = self.font.get_height() * 4
             else:
                 self.fit_horizontal = True
             if self.pos[1] + self.box.get_rect().height > pos[1] + \
@@ -296,6 +296,9 @@ class TouchObject(BaseItem):
         BaseItem.__init__(self, pos, size)
         self.active = False
         self.selected = False
+        self.selected_box = pygame.Surface(size,pygame.SRCALPHA)
+        self.selected_box.fill((0,0,0,128))
+        pygame.draw.rect(self.selected_box, (255,255,255), self.selected_box.get_rect(), size[1]/10+1)
 
     def is_pos_inside(self, pos):
         return self.rect_in_pos.collidepoint(pos)
@@ -305,6 +308,10 @@ class TouchObject(BaseItem):
 
     def set_selected(self, selected):
         self.selected = selected
+
+    def render(self, surface):
+        if self.selected:
+            surface.blit(self.selected_box, self.pos)
 
 
 class TouchAndTextItem(TouchObject, TextItem):
@@ -316,8 +323,6 @@ class TouchAndTextItem(TouchObject, TextItem):
         self.normal_box = self.box
         self.active_box = self.font.render(text, True,
                                            self.active_color)
-        self.selected_box = self.font.render(text, True,
-                                             self.selected_color)
 
     def update(self):
         TextItem.update(self)
@@ -327,8 +332,6 @@ class TouchAndTextItem(TouchObject, TextItem):
         self.normal_box = self.box
         self.active_box = self.font.render(text, True,
                                            self.active_color)
-        self.selected_box = self.font.render(text, True,
-                                             self.selected_color)
 
     def set_active(self, active):
         TouchObject.set_active(self, active)
@@ -337,14 +340,8 @@ class TouchAndTextItem(TouchObject, TextItem):
         else:
             self.box = self.normal_box
 
-    def set_selected(self, selected):
-        TouchObject.set_selected(self, selected)
-        if self.selected:
-            self.box = self.selected_box
-        else:
-            self.box = self.normal_box
-
     def render(self, surface):
+        TouchObject.render(self, surface)
         TextItem.render(self, surface)
 
 
