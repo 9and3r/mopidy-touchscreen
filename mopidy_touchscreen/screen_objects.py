@@ -31,7 +31,6 @@ class ScreenObjectsManager():
     def get_touch_object(self, key):
         return self.touch_objects[key]
 
-
     def render(self, surface):
         for key in self.text_objects:
             self.text_objects[key].update()
@@ -68,6 +67,7 @@ class ScreenObjectsManager():
             self.selected_key = None
 
     def change_selected(self, direction, pos):
+        best_key = None
         if pos is None:
             pos = self.selected.pos
         if direction == InputManager.right:
@@ -208,7 +208,6 @@ class BaseItem():
     def get_right_pos(self):
         return self.pos[0] + self.size[0]
 
-
     def update(self):
         pass
 
@@ -216,7 +215,6 @@ class BaseItem():
 class TextItem(BaseItem):
 
     scroll_speed = 5
-
 
     def __init__(self, font, text, pos, size, center=False):
         self.font = font
@@ -252,16 +250,19 @@ class TextItem(BaseItem):
         self.center = center
         if self.center:
             if self.fit_horizontal:
-                self.margin = (self.size[0]-self.box.get_rect().width)/2
+                self.margin = (self.size[0]-
+                               self.box.get_rect().width)/2
 
     def update(self):
         if not self.fit_horizontal:
-            self.step = self.step + TextItem.scroll_speed
+            self.step += TextItem.scroll_speed
             if self.step_2 is None:
-                if (self.box.get_rect().width - self.step + self.scroll_white_gap) < self.size[0]:
-                    self.step_2 = self.box.get_rect().width - self.step + self.scroll_white_gap
+                if (self.box.get_rect().width - self.step +
+                        self.scroll_white_gap) < self.size[0]:
+                    self.step_2 = self.box.get_rect().width \
+                                  - self.step + self.scroll_white_gap
             else:
-                self.step_2 = self.step_2 - TextItem.scroll_speed
+                self.step_2 -= TextItem.scroll_speed
                 if self.step_2 < 0:
                     self.step = 0 - self.step_2
                     self.step_2 = None
@@ -277,9 +278,10 @@ class TextItem(BaseItem):
                          area=pygame.Rect(self.step, 0, self.size[0],
                                           self.size[1]))
             if self.step_2 is not None:
-                surface.blit(self.box, (self.pos[0]+self.step_2, self.pos[1]),
-                         area=pygame.Rect(0, 0, self.size[0] - self.step_2,
-                                          self.size[1]))
+                surface.blit(self.box, (self.pos[0]+self.step_2,
+                                        self.pos[1]),
+                             area=pygame.Rect(0, 0, self.size[0] - self.step_2,
+                                              self.size[1]))
 
     def set_text(self, text, change_size):
         if text != self.text:
@@ -296,9 +298,13 @@ class TouchObject(BaseItem):
         BaseItem.__init__(self, pos, size)
         self.active = False
         self.selected = False
-        self.selected_box = pygame.Surface(size,pygame.SRCALPHA)
-        self.selected_box.fill((0,0,0,128))
-        pygame.draw.rect(self.selected_box, (255,255,255), self.selected_box.get_rect(), size[1]/10+1)
+        self.selected_box = pygame.Surface(size, pygame.SRCALPHA)
+        self.selected_box.fill((0, 0, 0, 128))
+        self.selected_box_rectangle = pygame.Surface(size,
+                                                     pygame.SRCALPHA)
+        pygame.draw.rect(self.selected_box_rectangle, (255, 255, 255),
+                         self.selected_box_rectangle.get_rect(),
+                         size[1]/10+1)
 
     def is_pos_inside(self, pos):
         return self.rect_in_pos.collidepoint(pos)
@@ -312,6 +318,15 @@ class TouchObject(BaseItem):
     def render(self, surface):
         if self.selected:
             surface.blit(self.selected_box, self.pos)
+            surface.blit(self.selected_box_rectangle, self.pos)
+
+    def pre_render(self, surface):
+        if self.selected:
+            surface.blit(self.selected_box, self.pos)
+
+    def post_render(self, surface):
+        if self.selected:
+            surface.blit(self.selected_box_rectangle, self.pos)
 
 
 class TouchAndTextItem(TouchObject, TextItem):
@@ -319,7 +334,6 @@ class TouchAndTextItem(TouchObject, TextItem):
         TextItem.__init__(self, font, text, pos, size, center=center)
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
-        self.selected_color = (150, 0, 255)
         self.normal_box = self.box
         self.active_box = self.font.render(text, True,
                                            self.active_color)
@@ -341,8 +355,9 @@ class TouchAndTextItem(TouchObject, TextItem):
             self.box = self.normal_box
 
     def render(self, surface):
-        TouchObject.render(self, surface)
+        TouchObject.pre_render(self, surface)
         TextItem.render(self, surface)
+        TouchObject.post_render(self, surface)
 
 
 class Progressbar(TouchObject):
@@ -357,16 +372,16 @@ class Progressbar(TouchObject):
         self.value_text = value_text
         if value_text:
             self.text = TextItem(font, str(max_value), pos, None)
-            self.text.pos = (
-            self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-            2, self.text.pos[1])
+            self.text.pos = (self.pos[0]
+                             + self.size[0] / 2 -
+                             self.text.size[0] /
+                             2, self.text.pos[1])
             self.text.set_text(str(self.value), True)
         else:
             self.text = TextItem(font, text, pos, None)
             self.text.pos = (
-            self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-            2, self.text.pos[1])
-
+                self.pos[0] + self.size[0] / 2 - self.text.size[0] /
+                2, self.text.pos[1])
 
     def render(self, surface):
         surface.blit(self.surface, self.pos)
@@ -377,9 +392,10 @@ class Progressbar(TouchObject):
             self.value = value
             if self.value_text:
                 self.set_text(str(self.value))
-                self.text.pos = (
-                self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-                2, self.text.pos[1])
+                self.text.pos = (self.pos[0]
+                                 + self.size[0] / 2 -
+                                 self.text.size[0]
+                                 / 2, self.text.pos[1])
             self.surface.fill(self.back_color)
             pos_pixel = value * self.size[0] / self.max
             rect = pygame.Rect(0, 0, pos_pixel, self.size[1])

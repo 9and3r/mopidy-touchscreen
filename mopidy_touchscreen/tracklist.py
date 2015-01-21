@@ -10,10 +10,13 @@ class Tracklist(BaseScreen):
         self.base_size = base_size
         self.manager = manager
         self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] - self.base_size), self.base_size, self.fonts['base'])
+            self.size[0], self.size[1] -
+            self.base_size), self.base_size, self.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
         self.update_list()
+        self.track_started(
+            self.manager.core.playback.current_tl_track.get())
 
     def update(self, screen, update_all):
         self.list_view.render(screen)

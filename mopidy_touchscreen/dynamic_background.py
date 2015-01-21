@@ -1,5 +1,5 @@
 import random
-import logging
+
 
 change_speed = 2
 

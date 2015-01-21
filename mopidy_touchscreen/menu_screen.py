@@ -66,10 +66,10 @@ class MenuScreen(BaseScreen):
                     mopidy.utils.process.exit_process()
                 elif key == "shutdown_icon" or key == "shutdown":
                     if os.system("gksu -- shutdown now -h") != 0:
-                        os.system("shutdown now -h")
+                        os.system("sudo shutdown now -h")
                 elif key == "restart_icon" or key == "restart":
                     if os.system("gksu -- shutdown -r now") != 0:
-                        os.system("shutdown -r now")
+                        os.system("sudo shutdown -r now")
                 elif key == "ip":
                     self.check_connection()
 

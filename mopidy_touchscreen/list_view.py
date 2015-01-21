@@ -20,10 +20,11 @@ class ListView():
         self.list = []
         self.scrollbar = False
         self.selected = None
-        self.set_list([])
         self.active = []
+        self.set_list([])
 
-    # Sets the list for the lisview. It should be an iterable of strings
+    # Sets the list for the lisview.
+    # It should be an iterable of strings
     def set_list(self, item_list):
         self.screen_objects.clear()
         self.list = item_list
@@ -98,7 +99,6 @@ class ListView():
             elif touch_event.direction == InputManager.down:
                 self.move_to(1)
 
-
     # Scroll to direction
     # direction == 1 will scroll down
     # direction == -1 will scroll up
@@ -121,7 +121,6 @@ class ListView():
                     "scrollbar").set_item(
                     self.current_item)
             self.set_active(self.active)
-
 
     # Set active items
     def set_active(self, active):

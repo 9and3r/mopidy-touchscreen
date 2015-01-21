@@ -54,15 +54,14 @@ class LibraryScreen(BaseScreen):
                 if clicked == 0:
                     self.go_up_directory()
                 else:
-                    if self.library[
-                                clicked - 1].type == mopidy.models.Ref.TRACK:
+                    if self.library[clicked - 1].type\
+                            == mopidy.models.Ref.TRACK:
                         self.play_uri(self.current_directory, clicked-1)
                     else:
                         self.go_inside_directory(
                             self.library[clicked - 1].uri)
             else:
-                 self.go_inside_directory(
-                        self.library[clicked].uri)
+                self.go_inside_directory(self.library[clicked].uri)
 
     def play_uri(self, uri, track_pos):
         self.manager.core.tracklist.clear()
@@ -71,7 +70,9 @@ class LibraryScreen(BaseScreen):
             if item.type == mopidy.models.Ref.TRACK:
                 tracks.append(self.manager.core.library.lookup(item.uri).get()[0])
             else:
-                track_pos = track_pos - 1
+                track_pos -= 1
         self.manager.core.tracklist.add(tracks)
-        self.manager.core.playback.play(tl_track=self.manager.core.tracklist.tl_tracks.get()[track_pos])
+        self.manager.core.playback.play(
+            tl_track=self.manager.core.tracklist.tl_tracks.get()
+            [track_pos])
 
