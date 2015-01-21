@@ -68,7 +68,7 @@ class SearchScreen(BaseScreen):
         self.set_mode(mode=mode_track_name)
         self.set_query("")
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         screen.blit(self.top_bar, (0, 0))
         self.screen_objects.render(screen)
         self.list_view.render(screen)

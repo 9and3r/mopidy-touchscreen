@@ -54,7 +54,7 @@ class MenuScreen(BaseScreen):
                                   (0, self.base_size * 3), None)
         self.screen_objects.set_touch_object("ip", button)
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         self.screen_objects.render(screen)
 
     def touch_event(self, event):

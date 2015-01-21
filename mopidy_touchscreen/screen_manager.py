@@ -37,7 +37,6 @@ class ScreenManager():
         self.size = None
         self.screens = None
         self.track = None
-        self.screen_changed = None
         self.input_manager = InputManager(size)
         self.down_bar_objects = ScreenObjectsManager()
         self.down_bar_solid = None
@@ -67,7 +66,6 @@ class ScreenManager():
         except:
             traceback.print_exc()
         self.track = None
-        self.screen_changed = True
 
         # Menu buttons
 
@@ -137,12 +135,10 @@ class ScreenManager():
         surface = pygame.Surface(self.size)
         self.background.draw_background([surface,
                                          self.down_bar_solid])
-        self.screens[self.current_screen].update(surface,
-                                                 self.screen_changed)
+        self.screens[self.current_screen].update(surface)
         surface.blit(self.down_bar_solid, (0, self.base_size * 7))
         surface.blit(self.down_bar, (0, self.base_size * 7))
         self.down_bar_objects.render(surface)
-        self.screen_changed = False
         return surface
 
     def track_started(self, track):

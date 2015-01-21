@@ -44,7 +44,7 @@ class LibraryScreen(BaseScreen):
             self.current_directory = directory
             self.browse_uri(directory)
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         self.list_view.render(screen)
 
     def touch_event(self, touch_event):

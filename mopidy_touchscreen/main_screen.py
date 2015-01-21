@@ -84,7 +84,7 @@ class MainScreen(BaseScreen):
         self.touch_text_manager.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         screen.blit(self.top_bar, (0, 0))
         if self.track is not None:
             self.touch_text_manager.get_touch_object(
