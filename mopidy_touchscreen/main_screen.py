@@ -10,9 +10,9 @@ from threading import Thread
 import pygame
 
 from .base_screen import BaseScreen
+from .input_manager import InputManager
 from .screen_objects import (Progressbar, ScreenObjectsManager,
                              TouchAndTextItem)
-from .input_manager import InputManager
 
 
 logger = logging.getLogger(__name__)

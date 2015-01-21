@@ -1,7 +1,8 @@
 import logging
-import traceback
-from threading import Thread
 import os
+from threading import Thread
+import traceback
+
 import pygame
 import pykka
 import mopidy
@@ -28,7 +29,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             'sdl_mousdrv']
         os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
             'sdl_mousedev']
-        os.environ["SDL_AUDIODRIVER"] = config['touchscreen']['sdl_audiodriver']
+        os.environ["SDL_AUDIODRIVER"] = \
+            config['touchscreen']['sdl_audiodriver']
         os.environ["SDL_PATH_DSP"] = config['touchscreen']['sdl_path_dsp']
         pygame.init()
         pygame.display.set_caption("Mopidy-Touchscreen")
@@ -37,7 +39,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
                                             self.cache_dir)
-        
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']

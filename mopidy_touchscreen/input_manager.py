@@ -93,10 +93,10 @@ class InputManager():
 
     def mouse_up(self, event):
         self.up_pos = event.pos
-        if abs(self.down_pos[0] - self.up_pos[
-            0]) < self.max_move_margin:
-            if abs(self.down_pos[1] - self.up_pos[
-                1]) < self.max_move_margin:
+        if abs(self.down_pos[0] -
+                self.up_pos[0]) < self.max_move_margin:
+            if abs(self.down_pos[1] -
+                    self.up_pos[1]) < self.max_move_margin:
                 if time.time() - InputManager.long_click_min_time > \
                         self.down_time:
                     return InputEvent(InputManager.long_click,
@@ -106,8 +106,8 @@ class InputManager():
                     return InputEvent(InputManager.click,
                                       self.down_pos,
                                       self.up_pos, None, None)
-            elif abs(self.down_pos[1] - self.up_pos[
-                1]) > self.min_swipe_move:
+            elif abs(self.down_pos[1] - self.up_pos[1])\
+                    > self.min_swipe_move:
                 return InputEvent(InputManager.swipe, self.down_pos,
                                   self.up_pos, True, None)
         elif self.down_pos[1] - self.up_pos[1] < self.max_move_margin:

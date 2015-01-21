@@ -2,9 +2,9 @@ import os
 import socket
 import mopidy
 
-from .screen_objects import ScreenObjectsManager, TouchAndTextItem
-from .input_manager import InputManager
 from .base_screen import BaseScreen
+from .input_manager import InputManager
+from .screen_objects import ScreenObjectsManager, TouchAndTextItem
 
 
 class MenuScreen(BaseScreen):

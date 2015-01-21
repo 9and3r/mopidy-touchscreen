@@ -1,7 +1,7 @@
 import logging
-import pygame
 
 import RPi.GPIO as GPIO
+import pygame
 
 
 logger = logging.getLogger(__name__)
@@ -92,8 +92,3 @@ def enter(channel):
     dict['key'] = pygame.K_RETURN
     event = pygame.event.Event(type, dict)
     pygame.event.post(event)
-
-
-
-
-

@@ -1,14 +1,11 @@
 from .list_view import ListView
-import logging
 
 import pygame
 
-from .screen_objects import Progressbar, ScreenObjectsManager, \
-    TouchAndTextItem, TextItem
 from .base_screen import BaseScreen
 from .input_manager import InputManager
-
-logger = logging.getLogger(__name__)
+from .screen_objects import ScreenObjectsManager, \
+    TouchAndTextItem, TextItem
 
 
 mode_track_name = 0

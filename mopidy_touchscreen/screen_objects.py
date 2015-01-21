@@ -1,5 +1,6 @@
 import logging
 import math
+
 import pygame
 
 from .input_manager import InputManager
@@ -66,135 +67,6 @@ class ScreenObjectsManager():
             self.selected = None
             self.selected_key = None
 
-    def change_selected(self, direction, pos):
-        best_key = None
-        if pos is None:
-            pos = self.selected.pos
-        if direction == InputManager.right:
-            bests = self.find_nearest_objects(
-                self.find_in_quadrant(False, True, pos), True, pos)
-            best_key = self.find_best_object(bests, False, True, pos)
-        elif direction == InputManager.left:
-            bests = self.find_nearest_objects(
-                self.find_in_quadrant(False, False, pos), True, pos)
-            best_key = self.find_best_object(bests, False, False, pos)
-        elif direction == InputManager.down:
-            bests = self.find_nearest_objects(
-                self.find_in_quadrant(True, True, pos), False, pos)
-            best_key = self.find_best_object(bests, True, True, pos)
-        elif direction == InputManager.up:
-            bests = self.find_nearest_objects(
-                self.find_in_quadrant(True, False, pos), False, pos)
-            best_key = self.find_best_object(bests, True, False, pos)
-        if best_key is None:
-            return False
-        else:
-            self.set_selected(best_key)
-            return True
-
-    # Find touch objects on specified quadrant
-    # The quadrant is the normal math one with x and y
-    # x is positive on the bottom as pygame x
-    # The quadrant origin (0,0) is the selected pos
-    def find_in_quadrant(self, vertical, positive, pos):
-        objects = {}
-        if vertical:
-            if positive:
-                for key in self.touch_objects:
-                    current = self.touch_objects[key]
-                    if current.pos[1] > pos[1]:
-                        objects[key] = current
-            else:
-                for key in self.touch_objects:
-                    current = self.touch_objects[key]
-                    if current.pos[1] < pos[1]:
-                        objects[key] = current
-        else:
-            if positive:
-                for key in self.touch_objects:
-                    current = self.touch_objects[key]
-                    if current.pos[0] > pos[0]:
-                        objects[key] = current
-            else:
-                for key in self.touch_objects:
-                    current = self.touch_objects[key]
-                    if current.pos[0] < pos[0]:
-                        objects[key] = current
-        return objects
-
-    # Find the objects that are nearest
-    def find_nearest_objects(self, objects, vertical, pos):
-        best_pos = None
-        min_value = None
-        best_objects = {}
-        if vertical:
-            for key in objects:
-                if min_value is None:
-                    best_pos = objects[key].pos[1]
-                    min_value = abs(objects[key].pos[1] - pos[1])
-                elif abs(objects[key].pos[1] - pos[1]) < min_value:
-                    min_value = abs(objects[key].pos[1] - pos[1])
-                    best_pos = objects[key].pos[1]
-            for key in objects:
-                if objects[key].pos[1] == best_pos:
-                    best_objects[key] = objects[key]
-            return best_objects
-        else:
-            for key in objects:
-                if min_value is None:
-                    best_pos = objects[key].pos[0]
-                    min_value = abs(objects[key].pos[0] - pos[0])
-                elif abs(objects[key].pos[0] - pos[0]) < min_value:
-                    min_value = abs(objects[key].pos[0] - pos[0])
-                    best_pos = objects[key].pos[0]
-            for key in objects:
-                if objects[key].pos[0] == best_pos:
-                    best_objects[key] = objects[key]
-            return best_objects
-
-    def find_best_object(self, objects, vertical, positive, pos):
-        best_key = None
-        best_pos = None
-        if vertical:
-            if positive:
-                for key in objects:
-                    if best_pos is None:
-                        best_pos = objects[key].pos[1]
-                        best_key = key
-                    elif objects[key].pos[1] >= pos[1] and \
-                                    objects[key].pos[1] < best_pos:
-                        best_pos = objects[key].pos[1]
-                        best_key = key
-            else:
-                for key in objects:
-                    if best_pos is None:
-                        best_pos = objects[key].pos[1]
-                        best_key = key
-                    elif objects[key].pos[1] <= pos[1] and \
-                                    objects[key].pos[1] > best_pos:
-                        best_pos = objects[key].pos[1]
-                        best_key = key
-        else:
-            if positive:
-                for key in objects:
-                    if best_pos is None:
-                        best_pos = objects[key].pos[0]
-                        best_key = key
-                    elif objects[key].pos[0] >= pos[0] and \
-                                    objects[key].pos[0] < best_pos:
-                        best_pos = objects[key].pos[0]
-                        best_key = key
-            else:
-                for key in objects:
-                    if best_pos is None:
-                        best_pos = objects[key].pos[0]
-                        best_key = key
-                    elif objects[key].pos[0] <= pos[0] and \
-                                    objects[key].pos[0] > best_pos:
-                        best_pos = objects[key].pos[0]
-                        best_key = key
-        return best_key
-
 
 class BaseItem():
     def __init__(self, pos, size):
@@ -250,7 +122,7 @@ class TextItem(BaseItem):
         self.center = center
         if self.center:
             if self.fit_horizontal:
-                self.margin = (self.size[0]-
+                self.margin = (self.size[0] -
                                self.box.get_rect().width)/2
 
     def update(self):
@@ -259,8 +131,9 @@ class TextItem(BaseItem):
             if self.step_2 is None:
                 if (self.box.get_rect().width - self.step +
                         self.scroll_white_gap) < self.size[0]:
-                    self.step_2 = self.box.get_rect().width \
-                                  - self.step + self.scroll_white_gap
+                    self.step_2 = \
+                        self.box.get_rect().width - \
+                        self.step + self.scroll_white_gap
             else:
                 self.step_2 -= TextItem.scroll_speed
                 if self.step_2 < 0:
@@ -272,7 +145,8 @@ class TextItem(BaseItem):
 
     def render(self, surface):
         if self.fit_horizontal:
-            surface.blit(self.box, ((self.pos[0] + self.margin), self.pos[1]), area=self.rect)
+            surface.blit(
+                self.box, ((self.pos[0] + self.margin), self.pos[1]), area=self.rect)
         else:
             surface.blit(self.box, self.pos,
                          area=pygame.Rect(self.step, 0, self.size[0],
@@ -280,7 +154,9 @@ class TextItem(BaseItem):
             if self.step_2 is not None:
                 surface.blit(self.box, (self.pos[0]+self.step_2,
                                         self.pos[1]),
-                             area=pygame.Rect(0, 0, self.size[0] - self.step_2,
+                             area=pygame.Rect(0, 0,
+                                              self.size[0] -
+                                              self.step_2,
                                               self.size[1]))
 
     def set_text(self, text, change_size):

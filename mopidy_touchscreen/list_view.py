@@ -1,8 +1,8 @@
 import logging
 
+from .input_manager import InputManager
 from .screen_objects import ScreenObjectsManager, ScrollBar, \
     TouchAndTextItem
-from .input_manager import InputManager
 
 logger = logging.getLogger(__name__)
 
@@ -61,8 +61,8 @@ class ListView():
             width = self.size[0]
         while i < self.list_size and z < self.max_rows:
             item = TouchAndTextItem(self.font, self.list[i], (
-                self.pos[0], self.pos[1] + self.base_size * z),
-                                    (width, -1))
+                self.pos[0],
+                self.pos[1] + self.base_size * z), (width, -1))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
@@ -79,8 +79,9 @@ class ListView():
             if objects is not None:
                 for key in objects:
                     if key == "scrollbar":
-                        direction = self.screen_objects.get_touch_object(
-                            key).touch(touch_event.current_pos)
+                        direction = \
+                            self.screen_objects.get_touch_object(
+                                key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
                     else:
@@ -171,7 +172,7 @@ class ListView():
         if self.selected is not None:
             try:
                 self.screen_objects.get_touch_object(
-                        str(self.selected)).set_selected(
+                    str(self.selected)).set_selected(
                         True)
             except KeyError:
                 pass

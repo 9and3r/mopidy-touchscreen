@@ -43,12 +43,13 @@ class DynamicBackground():
 # Otherwise a darker color will be returned
 # White text should be seen ok with this background color
 
+
 def get_similar_valid_color(color):
     sum = color[0] + color[1] + color[2]
     new_color = [0, 0, 0]
     if sum > 510:
         rest = (sum - 510)/3 + 1
-        for x in range(0,3):
+        for x in range(0, 3):
             new_color[x] = color[x] - rest
         return new_color
     else:

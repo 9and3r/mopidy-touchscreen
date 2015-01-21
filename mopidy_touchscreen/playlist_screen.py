@@ -42,7 +42,7 @@ class PlaylistScreen(BaseScreen):
             if self.selected_playlist is None:
                 self.playlist_selected(self.playlists[clicked])
             else:
-                if clicked==0:
+                if clicked == 0:
                     self.selected_playlist = None
                     self.list_view.set_list(self.playlists_strings)
                 else:
@@ -50,6 +50,6 @@ class PlaylistScreen(BaseScreen):
                     self.manager.core.tracklist.add(
                         self.playlist_tracks)
                     self.manager.core.playback.play(
-                        tl_track=
-                        self.manager.core.tracklist.tl_tracks.get()
+                        tl_track=self.manager.core.
+                        tracklist.tl_tracks.get()
                         [clicked-1])

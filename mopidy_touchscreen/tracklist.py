@@ -1,6 +1,6 @@
+from .base_screen import BaseScreen
 from .list_view import ListView
 from .main_screen import MainScreen
-from .base_screen import BaseScreen
 
 
 class Tracklist(BaseScreen):
