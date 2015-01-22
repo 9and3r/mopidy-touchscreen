@@ -5,10 +5,9 @@ from threading import Thread
 
 import pygame
 
-import pykka
-
-from mopidy import core
 import mopidy
+from mopidy import core
+import pykka
 
 from .screen_manager import ScreenManager
 
