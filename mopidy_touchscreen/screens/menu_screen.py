@@ -3,8 +3,9 @@ import socket
 import mopidy
 
 from base_screen import BaseScreen
+
 from ..input import InputManager
-from ..graphic_utils import *
+from ..graphic_utils import ScreenObjectsManager, TouchAndTextItem
 
 
 class MenuScreen(BaseScreen):

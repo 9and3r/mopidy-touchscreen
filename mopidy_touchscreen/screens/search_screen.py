@@ -1,8 +1,8 @@
-import pygame
-
 from base_screen import BaseScreen
+
 from ..input import InputManager
-from ..graphic_utils import *
+from ..graphic_utils import ListView,\
+    ScreenObjectsManager, TextItem, TouchAndTextItem
 
 mode_track_name = 0
 mode_album_name = 1

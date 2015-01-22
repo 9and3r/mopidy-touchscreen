@@ -1,6 +1,7 @@
 import logging
 
-from ..input import *
+from ..input import InputManager
+
 from screen_objects import ScreenObjectsManager, ScrollBar, \
     TouchAndTextItem
 

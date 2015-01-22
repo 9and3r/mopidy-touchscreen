@@ -3,9 +3,10 @@ import traceback
 from pkg_resources import Requirement, resource_filename
 import pygame
 
-from graphic_utils import *
-from input import *
-from screens import *
+from graphic_utils import DynamicBackground, ScreenObjectsManager, TouchAndTextItem
+from input import InputManager
+from screens import LibraryScreen, MainScreen, MenuScreen,\
+    PlaylistScreen, SearchScreen, Tracklist
 
 
 logger = logging.getLogger(__name__)
