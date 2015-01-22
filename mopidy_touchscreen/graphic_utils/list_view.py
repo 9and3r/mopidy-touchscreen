@@ -1,7 +1,7 @@
 import logging
 
-from .input_manager import InputManager
-from .screen_objects import ScreenObjectsManager, ScrollBar, \
+from ..input import *
+from screen_objects import ScreenObjectsManager, ScrollBar, \
     TouchAndTextItem
 
 logger = logging.getLogger(__name__)

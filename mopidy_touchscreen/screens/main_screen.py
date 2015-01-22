@@ -6,16 +6,11 @@ import time
 import urllib
 import urllib2
 from threading import Thread
-
 import mopidy.core
 
-import pygame
-
-
-from .base_screen import BaseScreen
-from .input_manager import InputManager
-from .screen_objects import (Progressbar, ScreenObjectsManager,
-                             TouchAndTextItem)
+from base_screen import BaseScreen
+from ..input import InputManager
+from ..graphic_utils import *
 
 
 logger = logging.getLogger(__name__)

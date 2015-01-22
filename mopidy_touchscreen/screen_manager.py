@@ -1,22 +1,11 @@
 import logging
 import traceback
-
 from pkg_resources import Requirement, resource_filename
-
 import pygame
 
-from .dynamic_background import DynamicBackground
-from .input_manager import InputManager
-from .library_screen import LibraryScreen
-from .main_screen import MainScreen
-from .menu_screen import MenuScreen
-from .playlist_screen import PlaylistScreen
-from .screen_objects import ScreenObjectsManager, \
-    TouchAndTextItem
-from .search_screen import SearchScreen
-
-
-from .tracklist import Tracklist
+from graphic_utils import *
+from input import *
+from screens import *
 
 
 logger = logging.getLogger(__name__)
