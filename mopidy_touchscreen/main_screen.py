@@ -7,9 +7,10 @@ import urllib
 import urllib2
 from threading import Thread
 
+import mopidy.core
+
 import pygame
 
-import mopidy.core
 
 from .base_screen import BaseScreen
 from .input_manager import InputManager

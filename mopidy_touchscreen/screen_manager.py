@@ -1,5 +1,6 @@
 import logging
 import traceback
+
 from pkg_resources import Requirement, resource_filename
 
 import pygame

@@ -4,10 +4,11 @@ import traceback
 from threading import Thread
 
 import pygame
+
 import pykka
 
-import mopidy
 from mopidy import core
+import mopidy
 
 from .screen_manager import ScreenManager
 
@@ -57,8 +58,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def get_display_surface(self, size):
         if self.fullscreen:
-            self.screen = pygame.display.set_mode(size,
-                                             pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode(
+                size, pygame.FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
