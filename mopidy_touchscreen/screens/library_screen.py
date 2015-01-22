@@ -1,8 +1,8 @@
 from base_screen import BaseScreen
 
-from ..graphic_utils import ListView
-
 import mopidy.models
+
+from ..graphic_utils import ListView
 
 
 class LibraryScreen(BaseScreen):

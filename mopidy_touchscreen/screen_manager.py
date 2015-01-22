@@ -1,10 +1,10 @@
 import logging
 import traceback
-from pkg_resources import Requirement, resource_filename
 
 from graphic_utils import DynamicBackground, \
     ScreenObjectsManager, TouchAndTextItem
 from input import InputManager
+from pkg_resources import Requirement, resource_filename
 
 import pygame
 

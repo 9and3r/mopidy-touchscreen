@@ -1,9 +1,9 @@
 import os
 import socket
 
-import mopidy
-
 from base_screen import BaseScreen
+
+import mopidy
 
 from ..graphic_utils import ScreenObjectsManager, TouchAndTextItem
 from ..input import InputManager

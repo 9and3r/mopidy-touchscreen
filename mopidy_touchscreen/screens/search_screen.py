@@ -2,9 +2,10 @@ from base_screen import BaseScreen
 
 from ..graphic_utils import ListView,\
     ScreenObjectsManager, TextItem, TouchAndTextItem
-from ..input import InputManager
 
 import pygame
+
+from ..input import InputManager
 
 mode_track_name = 0
 mode_album_name = 1

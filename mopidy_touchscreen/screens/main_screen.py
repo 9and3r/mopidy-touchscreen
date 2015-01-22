@@ -9,9 +9,9 @@ from threading import Thread
 
 import mopidy.core
 
-import pygame
-
 from base_screen import BaseScreen
+
+import pygame
 
 from ..graphic_utils import Progressbar, \
     ScreenObjectsManager, TouchAndTextItem
