@@ -1,3 +1,5 @@
+import pygame
+
 from base_screen import BaseScreen
 
 from ..input import InputManager
