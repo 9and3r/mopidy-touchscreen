@@ -1,9 +1,9 @@
 from base_screen import BaseScreen
 
+import pygame
+
 from ..graphic_utils import ListView,\
     ScreenObjectsManager, TextItem, TouchAndTextItem
-
-import pygame
 
 from ..input import InputManager
 
