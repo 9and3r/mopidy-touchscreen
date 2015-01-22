@@ -1,10 +1,13 @@
 import logging
 import traceback
 from pkg_resources import Requirement, resource_filename
+
+from graphic_utils import DynamicBackground, \
+    ScreenObjectsManager, TouchAndTextItem
+from input import InputManager
+
 import pygame
 
-from graphic_utils import DynamicBackground, ScreenObjectsManager, TouchAndTextItem
-from input import InputManager
 from screens import LibraryScreen, MainScreen, MenuScreen,\
     PlaylistScreen, SearchScreen, Tracklist
 

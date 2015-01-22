@@ -13,8 +13,9 @@ import pygame
 
 from base_screen import BaseScreen
 
+from ..graphic_utils import Progressbar, \
+    ScreenObjectsManager, TouchAndTextItem
 from ..input import InputManager
-from ..graphic_utils import ScreenObjectsManager, Progressbar, TouchAndTextItem
 
 
 logger = logging.getLogger(__name__)

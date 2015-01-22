@@ -1,11 +1,12 @@
 import os
 import socket
+
 import mopidy
 
 from base_screen import BaseScreen
 
-from ..input import InputManager
 from ..graphic_utils import ScreenObjectsManager, TouchAndTextItem
+from ..input import InputManager
 
 
 class MenuScreen(BaseScreen):
