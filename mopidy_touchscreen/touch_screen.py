@@ -5,8 +5,7 @@ from threading import Thread
 
 import pygame
 
-import mopidy
-from mopidy import core
+from mopidy import core, utils
 import pykka
 
 from .screen_manager import ScreenManager
@@ -79,7 +78,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                 else:
                     self.screen_manager.event(event)
         pygame.quit()
-        mopidy.utils.process.exit_process()
+        utils.process.exit_process()
 
     def on_start(self):
         try:
