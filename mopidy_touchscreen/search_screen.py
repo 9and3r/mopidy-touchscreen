@@ -1,11 +1,10 @@
-from .list_view import ListView
-
 import pygame
 
 from .base_screen import BaseScreen
 from .input_manager import InputManager
+from .list_view import ListView
 from .screen_objects import ScreenObjectsManager, \
-    TouchAndTextItem, TextItem
+    TextItem, TouchAndTextItem
 
 
 mode_track_name = 0

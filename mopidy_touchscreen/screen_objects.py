@@ -3,8 +3,6 @@ import math
 
 import pygame
 
-from .input_manager import InputManager
-
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +144,8 @@ class TextItem(BaseItem):
     def render(self, surface):
         if self.fit_horizontal:
             surface.blit(
-                self.box, ((self.pos[0] + self.margin), self.pos[1]), area=self.rect)
+                self.box, ((self.pos[0] + self.margin),
+                           self.pos[1]), area=self.rect)
         else:
             surface.blit(self.box, self.pos,
                          area=pygame.Rect(self.step, 0, self.size[0],

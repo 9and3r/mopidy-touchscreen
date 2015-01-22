@@ -1,5 +1,6 @@
 import os
 import socket
+
 import mopidy
 
 from .base_screen import BaseScreen

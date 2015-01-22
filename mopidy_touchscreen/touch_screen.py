@@ -1,10 +1,11 @@
 import logging
 import os
-from threading import Thread
 import traceback
+from threading import Thread
 
 import pygame
 import pykka
+
 import mopidy
 from mopidy import core
 
@@ -43,6 +44,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
+
             from .gpio_inpput_manager import GPIOManager
 
             pins = {}

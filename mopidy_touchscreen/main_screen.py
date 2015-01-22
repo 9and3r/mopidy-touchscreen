@@ -3,11 +3,13 @@ import json
 import logging
 import os
 import time
-import mopidy.core
 import urllib
 import urllib2
 from threading import Thread
+
 import pygame
+
+import mopidy.core
 
 from .base_screen import BaseScreen
 from .input_manager import InputManager
