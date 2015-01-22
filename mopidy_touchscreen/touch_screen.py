@@ -3,9 +3,10 @@ import os
 import traceback
 from threading import Thread
 
+from mopidy import core, utils
+
 import pygame
 
-from mopidy import core, utils
 import pykka
 
 from .screen_manager import ScreenManager
