@@ -1,6 +1,6 @@
-****************************
+******************
 Mopidy-Touchscreen
-****************************
+******************
 
 .. image:: https://img.shields.io/pypi/v/Mopidy-Touchscreen.svg?style=flat
     :target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
@@ -10,7 +10,7 @@ Mopidy-Touchscreen
     :target: https://pypi.python.org/pypi/Mopidy-Touchscreen/
     :alt: Number of PyPI downloads
 
-.. image:: https://img.shields.io/travis/9and3r/mopidy-touchscreen/master.png?style=flat
+.. image:: https://img.shields.io/travis/9and3r/mopidy-touchscreen/master.svg?style=flat
     :target: https://travis-ci.org/9and3r/mopidy-touchscreen
     :alt: Travis CI build status
 
