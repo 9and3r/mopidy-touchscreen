@@ -25,7 +25,7 @@ Cover images are downloaded from `last.fm <http://www.last.fm/api>`_
 Dependencies
 ============
 
-- ``Mopidy`` >= 0.18
+- ``Mopidy`` >= 1.0
 - ``Pykka`` >= 1.1
 - ``pygame``
 
