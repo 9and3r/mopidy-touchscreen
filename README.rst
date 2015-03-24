@@ -18,9 +18,11 @@ Mopidy-Touchscreen
    :target: https://coveralls.io/r/9and3r/mopidy-touchscreen?branch=master
    :alt: Test coverage
 
-Extension for displaying track info and controlling Mopidy from a touch screen using `PyGame <http://www.pygame.org/>`_/SDL.
+Extension for displaying track info and controlling Mopidy from a touch screen
+using `PyGame <http://www.pygame.org/>`_/SDL.
 
 Cover images are downloaded from `last.fm <http://www.last.fm/api>`_
+
 
 Dependencies
 ============
@@ -28,6 +30,7 @@ Dependencies
 - ``Mopidy`` >= 0.18
 - ``Pykka`` >= 1.1
 - ``pygame``
+
 
 Installation
 ============
@@ -55,13 +58,24 @@ Mopidy-Touchscreen to your Mopidy configuration file::
     cache_dir = $XDG_CACHE_DIR/mopidy/touchscreen
 
 The following configuration values are available:
-    
-- ``touchscreen/enabled``: If the Touchscreen extension should be enabled or not.
-- ``touchscreen/screen_width``: The width of the resolution you want to use in pixels.
-- ``touchscreen/screen_height``: The width of the resolution you want to use in pixels.
-- ``touchscreen/cursor``: If the mouse cursor should be shown. (If you use a touchscreen it should be false)
-- ``touchscreen/fullscreen``: If you want to be shown as a window or in fullscreen.
-- ``touchscreen/screen_width``: The folder to be used as cache. Defaults to ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
+
+- ``touchscreen/enabled``: If the Touchscreen extension should be enabled or
+  not.
+
+- ``touchscreen/screen_width``: The width of the resolution you want to use in
+  pixels.
+
+- ``touchscreen/screen_height``: The width of the resolution you want to use in
+  pixels.
+
+- ``touchscreen/cursor``: If the mouse cursor should be shown. (If you use a
+  touchscreen it should be false)
+
+- ``touchscreen/fullscreen``: If you want to be shown as a window or in
+  fullscreen.
+
+- ``touchscreen/screen_width``: The folder to be used as cache. Defaults to
+  ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
   ``~/.cache/mopidy/touchscreen``
 
 
@@ -84,29 +98,30 @@ Add to the config the next variables::
     sdl_fbdev = /dev/fb1
     sdl_mousdrv = TSLIB
     sdl_mousedev = event0
-    
+
 This is just an example. It may work but each LCD Shield seems to have its own configuration. 
 To find your values find an example of using pygame with your LCD Shield and it should be something like this in the code::
 
     os.environ["SDL_FBDEV"] = "/dev/fb1"
     os.environ["SDL_MOUSEDRV"] = "TSLIB"
     os.environ["SDL_MOUSEDEV"] = "event0"
-    
-Run mopidy with root privileges
+
+Run Mopidy with root privileges
 ```````````````````````````````
-    
+
 You can use ``sudo mopidy``.
 
 In case you are using musicbox edit ``/etc/init.d/mopidy`` file. Change ``DAEMON_USER=mopidy`` to ``DAEMON_USER=root``
 
 Do not forget that this is a workaround and that mopidy will run with root privileges.
-    
-    
+
+
 Help
 ====
 
 You can use `mopidy discuss <https://discuss.mopidy.com/>`_
 or send an email to `9and3r@gmail.com <mailto:9and3r@gmail.com>`_
+
 
 Features
 ========
@@ -132,15 +147,18 @@ Planned
 
 * Use keyboard or GPIO buttons instead of touchscreen
 
+
 Screenshots
 ===========
 
 .. image:: http://i60.tinypic.com/qqsait.jpg
 
+
 Video
 =====
 
 `Example video running the extension <https://www.youtube.com/watch?v=KuYoIb8Q2LI>`_
+
 
 Project resources
 =================
