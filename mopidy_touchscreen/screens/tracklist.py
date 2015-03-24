@@ -36,7 +36,7 @@ class Tracklist(BaseScreen):
     def touch_event(self, touch_event):
         pos = self.list_view.touch_event(touch_event)
         if pos is not None:
-            self.manager.core.playback.change_track(self.tracks[pos],
+            self.manager.core.playback.play(self.tracks[pos],
                                                     on_error_step=1)
 
     def track_started(self, track):
