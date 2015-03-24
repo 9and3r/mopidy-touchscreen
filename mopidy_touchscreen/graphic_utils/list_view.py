@@ -87,7 +87,8 @@ class ListView():
                             self.move_to(direction)
                     else:
                         return int(key)
-        elif touch_event.type == InputManager.key and self.selected is not None:
+        elif (touch_event.type == InputManager.key and
+                self.selected is not None):
             if touch_event.direction == InputManager.enter:
                 if self.selected is not None:
                     return self.selected
