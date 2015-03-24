@@ -171,25 +171,20 @@ Project resources
 Changelog
 =========
 
-v0.3.2
-----------------------------------------
+v0.3.2 (2015-01-09)
+-------------------
 
 - Bug Fixes
 - UI changes
 - Smoth text scrolling
 - Search albums, artist or songs (Not fully implemented. Basic functionality)
 
-v0.2.1
-----------------------------------------
+v0.2.1 (2014-08-02)
+-------------------
 
 - Font will be included on installation
 
-v0.2.0
-----------------------------------------
+v0.2.0 (2014-08-02)
+-------------------
 
 - First working version
-
-v0.1.0 (UNRELEASED)
-----------------------------------------
-
-- Initial release.
