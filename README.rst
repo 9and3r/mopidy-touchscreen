@@ -27,7 +27,7 @@ Cover images are downloaded from `last.fm <http://www.last.fm/api>`_
 Dependencies
 ============
 
-- ``Mopidy`` >= 0.18
+- ``Mopidy`` >= 1.0
 - ``Pykka`` >= 1.1
 - ``pygame``
 
@@ -170,6 +170,12 @@ Project resources
 
 Changelog
 =========
+
+v0.4.0 (UNRELEASED)
+-------------------
+
+- Require Mopidy v1.0
+- Update to work with changed core playback API in Mopidy 1.0
 
 v0.3.2 (2015-01-09)
 -------------------
