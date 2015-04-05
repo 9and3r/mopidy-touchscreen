@@ -5,8 +5,7 @@ from base_screen import BaseScreen
 
 import mopidy
 
-from ..graphic_utils import ListView, TouchAndTextItem
-from ..input import InputManager
+from ..graphic_utils import ListView
 
 
 class MenuScreen(BaseScreen):
