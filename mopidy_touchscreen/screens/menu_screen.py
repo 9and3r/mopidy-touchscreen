@@ -5,7 +5,7 @@ from base_screen import BaseScreen
 
 import mopidy
 
-from ..graphic_utils import ScreenObjectsManager, TouchAndTextItem
+from ..graphic_utils import ListView, TouchAndTextItem
 from ..input import InputManager
 
 
@@ -13,67 +13,28 @@ class MenuScreen(BaseScreen):
     def __init__(self, size, base_size, manager, fonts):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.ip = None
-        self.screen_objects = ScreenObjectsManager()
+        self.list = ListView((0, 0), size, base_size, fonts['base'])
 
-        # Exit mopidy button
-        button = TouchAndTextItem(self.manager.fonts['icon'],
-                                  u"\ue611",
-                                  (0, 0), None)
-        self.screen_objects.set_touch_object("exit_icon", button)
-        button = TouchAndTextItem(self.fonts['base'],
-                                  "Exit Mopidy",
-                                  (button.get_right_pos(),
-                                   0),
-                                  None)
-        self.screen_objects.set_touch_object("exit", button)
+        self.list_items = ["Exit Mopidy", "Shutdown", "Restart", "IP: "]
 
-        # Shutdown button
-        button = TouchAndTextItem(self.fonts['icon'],
-                                  u"\ue60b",
-                                  (0, self.base_size * 1), None)
-        self.screen_objects.set_touch_object("shutdown_icon", button)
-        button = TouchAndTextItem(self.fonts['base'],
-                                  "Shutdown",
-                                  (button.get_right_pos(),
-                                   self.base_size * 1),
-                                  None)
-        self.screen_objects.set_touch_object("shutdown", button)
-
-        # Restart button
-        button = TouchAndTextItem(self.fonts['icon'],
-                                  u"\ue609",
-                                  (0, self.base_size * 2), None)
-        self.screen_objects.set_touch_object("restart_icon", button)
-        button = TouchAndTextItem(self.fonts['base'],
-                                  "Restart",
-                                  (button.get_right_pos(),
-                                   self.base_size * 2),
-                                  None)
-        self.screen_objects.set_touch_object("restart", button)
-
-        # IP addres
-        button = TouchAndTextItem(self.fonts['base'], "IP: ",
-                                  (0, self.base_size * 3), None)
-        self.screen_objects.set_touch_object("ip", button)
+        self.list.set_list(self.list_items)
 
     def update(self, screen):
-        self.screen_objects.render(screen)
+        self.list.render(screen)
 
     def touch_event(self, event):
-        if event.type == InputManager.click:
-            clicked = self.screen_objects.get_touch_objects_in_pos(
-                event.current_pos)
-            for key in clicked:
-                if key == "exit_icon" or key == "exit":
-                    mopidy.utils.process.exit_process()
-                elif key == "shutdown_icon" or key == "shutdown":
-                    if os.system("gksu -- shutdown now -h") != 0:
-                        os.system("sudo shutdown now -h")
-                elif key == "restart_icon" or key == "restart":
-                    if os.system("gksu -- shutdown -r now") != 0:
-                        os.system("sudo shutdown -r now")
-                elif key == "ip":
-                    self.check_connection()
+        clicked = self.list.touch_event(event)
+        if clicked is not None:
+            if clicked == 0:
+                mopidy.utils.process.exit_process()
+            elif clicked == 1:
+                if os.system("gksu -- shutdown now -h") != 0:
+                    os.system("sudo shutdown now -h")
+            elif clicked == 2:
+                if os.system("gksu -- shutdown -r now") != 0:
+                    os.system("sudo shutdown -r now")
+            elif clicked == 3:
+                self.check_connection()
 
     # Will check internet connection
     def check_connection(self):
@@ -83,12 +44,12 @@ class MenuScreen(BaseScreen):
             s.connect(("8.8.8.8", 80))
             self.ip = s.getsockname()[0]
             s.close()
-            self.screen_objects.get_touch_object("ip").set_text(
-                "IP: " + self.ip, "None")
+            self.list_items[3] = "IP: " + self.ip
+            self.list.set_list(self.list_items)
             self.manager.set_connection(True, False)
         except socket.error:
             s.close()
             self.ip = None
-            self.screen_objects.get_touch_object("ip").set_text(
-                "IP: No internet", "None")
+            self.list_items[2] = "IP: No internet"
+            self.list.set_list(self.list_items)
             self.manager.set_connection(False, False)

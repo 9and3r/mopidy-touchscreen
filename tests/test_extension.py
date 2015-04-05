@@ -2,7 +2,11 @@
 
 import unittest
 
+import pygame
+
 from mopidy_touchscreen import Extension
+
+from mopidy_touchscreen.graphic_utils.list_view import ListView
 
 
 # ,touch_screen as frontend_lib
@@ -28,4 +32,8 @@ class ExtensionTest(unittest.TestCase):
         # self.assertIn('username', schema)
         # self.assertIn('password', schema)
 
-    # TODO Write more tests
+    def test_list_view(self):
+        pygame.init()
+        font = pygame.font.SysFont("arial", 200/6)
+        list = ListView((0, 0), (200, 200), 200/6, font)
+        list.set_list(["item1", "item2", "item3"])
