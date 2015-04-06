@@ -258,8 +258,16 @@ class Progressbar(TouchObject):
                 self.pos[0] + self.size[0] / 2 - self.text.size[0] /
                 2, self.text.pos[1])
 
+        # Rectangle
+        self.rectangle = pygame.Surface(size,
+                                                     pygame.SRCALPHA)
+        pygame.draw.rect(self.rectangle, (255, 255, 255),
+                         self.rectangle.get_rect(),
+                         size[1]/20+1)
+
     def render(self, surface):
         surface.blit(self.surface, self.pos)
+        surface.blit(self.rectangle, self.pos)
         self.text.render(surface)
 
     def set_value(self, value):
@@ -304,6 +312,7 @@ class ScrollBar(TouchObject):
                     self.size[1]))
         self.bar = pygame.Surface((self.size[0], self.bar_size))
         self.bar.fill((255, 255, 255))
+
 
     def render(self, surface):
         surface.blit(self.back_bar, self.pos)
