@@ -1,28 +1,21 @@
-import logging
+from base_screen import BaseScreen
+
 import mopidy.models
 
-from .list_view import ListView
-from .input_manager import InputManager
-from .base_screen import BaseScreen
-
-logger = logging.getLogger(__name__)
+from ..graphic_utils import ListView
 
 
 class LibraryScreen(BaseScreen):
     def __init__(self, size, base_size, manager, fonts):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] - self.base_size),
-                                  self.base_size,
-                                  self.fonts['base'])
+            self.size[0], self.size[1] -
+            self.base_size), self.base_size, self.fonts['base'])
         self.directory_list = []
         self.current_directory = None
         self.library = None
         self.library_strings = None
         self.browse_uri(None)
-
-    def get_dirty_area(self):
-        return self.list_view.get_dirty_area()
 
     def go_inside_directory(self, uri):
         self.directory_list.append(self.current_directory)
@@ -44,7 +37,7 @@ class LibraryScreen(BaseScreen):
             self.current_directory = directory
             self.browse_uri(directory)
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         self.list_view.render(screen)
 
     def touch_event(self, touch_event):
@@ -54,24 +47,25 @@ class LibraryScreen(BaseScreen):
                 if clicked == 0:
                     self.go_up_directory()
                 else:
-                    if self.library[
-                                clicked - 1].type == mopidy.models.Ref.TRACK:
-                        self.play_uri(self.current_directory, clicked-1)
+                    if self.library[clicked - 1].type\
+                            == mopidy.models.Ref.TRACK:
+                        self.play_uri(clicked-1)
                     else:
                         self.go_inside_directory(
                             self.library[clicked - 1].uri)
             else:
-                 self.go_inside_directory(
-                        self.library[clicked].uri)
+                self.go_inside_directory(self.library[clicked].uri)
 
-    def play_uri(self, uri, track_pos):
+    def play_uri(self, track_pos):
         self.manager.core.tracklist.clear()
         tracks = []
         for item in self.library:
             if item.type == mopidy.models.Ref.TRACK:
-                tracks.append(self.manager.core.library.lookup(item.uri).get()[0])
+                tracks.append(self.manager.core.library.lookup(
+                    item.uri).get()[0])
             else:
-                track_pos = track_pos - 1
+                track_pos -= 1
         self.manager.core.tracklist.add(tracks)
-        self.manager.core.playback.play(tl_track=self.manager.core.tracklist.tl_tracks.get()[track_pos])
-
+        self.manager.core.playback.play(
+            tl_track=self.manager.core.tracklist.tl_tracks.get()
+            [track_pos])

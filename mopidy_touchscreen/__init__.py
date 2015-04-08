@@ -1,16 +1,13 @@
 from __future__ import unicode_literals
 
-import logging
 import os
+
 from mopidy import config, ext
 
 from .touch_screen import TouchScreen
 
 
-__version__ = '0.3.2'
-
-# TODO: If you need to log, use loggers named after the current Python module
-logger = logging.getLogger(__name__)
+__version__ = '0.4.0'
 
 
 class Extension(ext.Extension):

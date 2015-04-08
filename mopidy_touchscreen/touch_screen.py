@@ -1,11 +1,13 @@
 import logging
+import os
 import traceback
 from threading import Thread
-import os
+
+from mopidy import core, utils
+
 import pygame
+
 import pykka
-import mopidy
-from mopidy import core
 
 from .screen_manager import ScreenManager
 
@@ -23,12 +25,20 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.fullscreen = config['touchscreen']['fullscreen']
         self.screen_size = (config['touchscreen']['screen_width'],
                             config['touchscreen']['screen_height'])
-        os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
-        os.environ["SDL_MOUSEDRV"] = config['touchscreen'][
-            'sdl_mousdrv']
-        os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
-            'sdl_mousedev']
-        os.environ["SDL_AUDIODRIVER"] = config['touchscreen']['sdl_audiodriver']
+
+        if config['touchscreen']['sdl_fbdev'].lower() != "none":
+            os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
+        if config['touchscreen']['sdl_mousdrv'].lower() != "none":
+            os.environ["SDL_MOUSEDRV"] = (
+                config['touchscreen']['sdl_mousdrv'])
+
+        if config['touchscreen']['sdl_mousedev'].lower() != "none":
+            os.environ["SDL_MOUSEDEV"] = config['touchscreen']['sdl_mousedev']
+
+        if config['touchscreen']['sdl_audiodriver'].lower() != "none":
+            os.environ["SDL_AUDIODRIVER"] = (
+                config['touchscreen']['sdl_audiodriver'])
+
         os.environ["SDL_PATH_DSP"] = config['touchscreen']['sdl_path_dsp']
         pygame.init()
         pygame.display.set_caption("Mopidy-Touchscreen")
@@ -37,12 +47,12 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
                                             self.cache_dir)
-        
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
-            from .gpio_inpput_manager import GPIOManager
+
+            from input import GPIOManager
 
             pins = {}
             pins['left'] = config['touchscreen']['gpio_left']
@@ -54,8 +64,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def get_display_surface(self, size):
         if self.fullscreen:
-            self.screen = pygame.display.set_mode(size,
-                                             pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode(
+                size, pygame.FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
@@ -76,7 +86,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
                 else:
                     self.screen_manager.event(event)
         pygame.quit()
-        mopidy.utils.process.exit_process()
+        utils.process.exit_process()
 
     def on_start(self):
         try:

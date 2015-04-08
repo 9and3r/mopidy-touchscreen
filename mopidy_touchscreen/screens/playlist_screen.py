@@ -1,14 +1,15 @@
-from .list_view import ListView
-from .base_screen import BaseScreen
+from base_screen import BaseScreen
+
+from ..graphic_utils import ListView
 
 
 class PlaylistScreen(BaseScreen):
     def __init__(self, size, base_size, manager, fonts):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] - self.base_size),
-                                  self.base_size,
-                                  self.fonts['base'])
+            self.size[0], self.size[1] -
+            self.base_size), self.base_size,
+            self.fonts['base'])
         self.playlists_strings = []
         self.playlists = []
         self.playlists_loaded()
@@ -16,7 +17,7 @@ class PlaylistScreen(BaseScreen):
         self.playlist_tracks = []
         self.playlist_tracks_strings = []
 
-    def update(self, screen, update_all):
+    def update(self, screen):
         self.list_view.render(screen)
 
     def playlists_loaded(self):
@@ -36,21 +37,20 @@ class PlaylistScreen(BaseScreen):
             self.playlist_tracks_strings.append(track.name)
         self.list_view.set_list(self.playlist_tracks_strings)
 
-
     def touch_event(self, touch_event):
         clicked = self.list_view.touch_event(touch_event)
         if clicked is not None:
             if self.selected_playlist is None:
                 self.playlist_selected(self.playlists[clicked])
             else:
-                if clicked==0:
+                if clicked == 0:
                     self.selected_playlist = None
                     self.list_view.set_list(self.playlists_strings)
                 else:
                     self.manager.core.tracklist.clear()
-                    self.manager.core.tracklist.add(self.playlist_tracks)
-                    self.manager.core.playback.play(tl_track=self.manager.core.tracklist.tl_tracks.get()[clicked-1])
-            #self.manager.core.tracklist.clear()
-            #self.manager.core.tracklist.add(
-            #    uri=self.playlists[clicked].uri)
-            #self.manager.core.playback.play()
+                    self.manager.core.tracklist.add(
+                        self.playlist_tracks)
+                    self.manager.core.playback.play(
+                        tl_track=self.manager.core.
+                        tracklist.tl_tracks.get()
+                        [clicked-1])
