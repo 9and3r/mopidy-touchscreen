@@ -28,7 +28,6 @@ class ScreenManager():
         self.core = core
         self.cache = cache
         self.fonts = {}
-        self.background = DynamicBackground()
         self.current_screen = library_index
 
         # Init variables in init
@@ -45,6 +44,8 @@ class ScreenManager():
 
     def init_manager(self, size):
         self.size = size
+        self.background = DynamicBackground(self.size)
+        self.current_screen = 0
         self.base_size = self.size[1] / 8
         font = resource_filename(
             Requirement.parse("mopidy-touchscreen"),
