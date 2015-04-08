@@ -106,4 +106,3 @@ def get_aspect_scale_size(img, (bx, by)):
 
     new_size = (int(aspect*size[0]), int(aspect*size[1]))
     return new_size
-
