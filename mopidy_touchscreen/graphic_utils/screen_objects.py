@@ -91,6 +91,7 @@ class TextItem(BaseItem):
         self.text = text
         self.color = (255, 255, 255)
         self.box = self.font.render(text, True, self.color)
+        self.box = self.box.convert_alpha()
         if size is not None:
             if size[1] == -1:
                 height = self.font.size(text)[1]
@@ -174,9 +175,11 @@ class TouchObject(BaseItem):
         self.active = False
         self.selected = False
         self.selected_box = pygame.Surface(size, pygame.SRCALPHA)
+        self.selected_box = self.selected_box.convert_alpha()
         self.selected_box.fill((0, 0, 0, 128))
-        self.selected_box_rectangle = pygame.Surface(size,
-                                                     pygame.SRCALPHA)
+        self.selected_box_rectangle = pygame.Surface(size, pygame.SRCALPHA)
+        self.selected_box_rectangle = \
+            self.selected_box_rectangle.convert_alpha()
         pygame.draw.rect(self.selected_box_rectangle, (255, 255, 255),
                          self.selected_box_rectangle.get_rect(),
                          size[1]/10+1)
@@ -242,7 +245,8 @@ class Progressbar(TouchObject):
         self.max = max_value
         self.back_color = (0, 0, 0, 128)
         self.main_color = (0, 150, 255)
-        self.surface = pygame.Surface(self.size, pygame.SRCALPHA)
+        self.surface = pygame.Surface(self.size, pygame.SRCALPHA)\
+            .convert_alpha()
         self.surface.fill(self.back_color)
         self.value_text = value_text
         if value_text:
@@ -259,8 +263,8 @@ class Progressbar(TouchObject):
                 2, self.text.pos[1])
 
         # Rectangle
-        self.rectangle = pygame.Surface(size,
-                                                     pygame.SRCALPHA)
+        self.rectangle = pygame.Surface(size, pygame.SRCALPHA)\
+            .convert_alpha()
         pygame.draw.rect(self.rectangle, (255, 255, 255),
                          self.rectangle.get_rect(),
                          size[1]/20+1)
@@ -301,7 +305,8 @@ class ScrollBar(TouchObject):
         self.max = max_value
         self.items_on_screen = items_on_screen
         self.current_item = 0
-        self.back_bar = pygame.Surface(self.size, pygame.SRCALPHA)
+        self.back_bar = pygame.Surface(self.size, pygame.SRCALPHA)\
+            .convert_alpha()
         self.back_bar.fill((255, 255, 255, 128))
         self.bar_pos = 0
         if self.max < 1:
@@ -310,7 +315,7 @@ class ScrollBar(TouchObject):
             self.bar_size = math.ceil(
                 float(self.items_on_screen) / float(self.max) * float(
                     self.size[1]))
-        self.bar = pygame.Surface((self.size[0], self.bar_size))
+        self.bar = pygame.Surface((self.size[0], self.bar_size)).convert()
         self.bar.fill((255, 255, 255))
 
     def render(self, surface):

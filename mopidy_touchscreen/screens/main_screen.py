@@ -255,7 +255,7 @@ class MainScreen(BaseScreen):
                                                      current)
 
     def track_playback_ended(self, tl_track, time_position):
-        self.background.set_target_color(None)
+        self.background.set_target_color(None, None)
         self.image = None
         self.track_duration = "00:00"
 
@@ -284,11 +284,13 @@ class MainScreen(BaseScreen):
 
     def load_image(self):
         size = self.base_size * 4
-        image = pygame.transform.scale(pygame.image.load(
+        image_original = pygame.image.load(
             self.get_cover_folder() +
-            self.get_image_file_name()).convert(), (size, size))
-        self.background.set_target_color(
-            pygame.transform.average_color(image))
+            self.get_image_file_name())
+        image = pygame.transform.scale(image_original, (size, size))
+        image = image.convert()
+        self.background.set_target_color(pygame.transform.average_color(image),
+                                         image_original)
         self.image = image
 
     def touch_event(self, event):
