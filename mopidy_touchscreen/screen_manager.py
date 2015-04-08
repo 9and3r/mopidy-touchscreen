@@ -38,10 +38,6 @@ class ScreenManager():
         self.track = None
         self.input_manager = InputManager(size)
         self.down_bar_objects = ScreenObjectsManager()
-<<<<<<< HEAD
-        self.down_bar_solid = None
-=======
->>>>>>> background-cover
         self.down_bar = None
 
         self.init_manager(size)
@@ -135,16 +131,8 @@ class ScreenManager():
         self.change_screen(self.current_screen)
 
     def update(self):
-<<<<<<< HEAD
-        surface = pygame.Surface(self.size)
-        self.background.draw_background([surface,
-                                         self.down_bar_solid])
-        self.screens[self.current_screen].update(surface)
-        surface.blit(self.down_bar_solid, (0, self.base_size * 7))
-=======
         surface = self.background.draw_background()
         self.screens[self.current_screen].update(surface)
->>>>>>> background-cover
         surface.blit(self.down_bar, (0, self.base_size * 7))
         self.down_bar_objects.render(surface)
         return surface
