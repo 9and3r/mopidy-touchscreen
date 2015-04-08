@@ -313,7 +313,6 @@ class ScrollBar(TouchObject):
         self.bar = pygame.Surface((self.size[0], self.bar_size))
         self.bar.fill((255, 255, 255))
 
-
     def render(self, surface):
         surface.blit(self.back_bar, self.pos)
         surface.blit(self.bar,
