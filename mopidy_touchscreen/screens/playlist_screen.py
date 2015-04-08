@@ -12,7 +12,6 @@ class PlaylistScreen(BaseScreen):
             self.fonts['base'])
         self.playlists_strings = []
         self.playlists = []
-        self.playlists_loaded()
         self.selected_playlist = None
         self.playlist_tracks = []
         self.playlist_tracks_strings = []
