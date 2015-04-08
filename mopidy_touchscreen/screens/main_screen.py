@@ -32,6 +32,7 @@ class MainScreen(BaseScreen):
         self.image = None
         self.artists = None
         self.background = background
+        self.current_track_pos = 0
         self.track_duration = "00:00"
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
@@ -91,14 +92,17 @@ class MainScreen(BaseScreen):
     def update(self, screen):
         screen.blit(self.top_bar, (0, 0))
         if self.track is not None:
-            self.touch_text_manager.get_touch_object(
-                "time_progress").set_value(
-                self.core.playback.time_position.get() / 1000)
-            self.touch_text_manager.get_touch_object(
-                "time_progress").set_text(
-                time.strftime('%M:%S', time.gmtime(
-                    self.core.playback.time_position.get() / 1000)) +
-                "/" + self.track_duration)
+            new_track_pos = self.core.playback.time_position.get() / 1000
+            if new_track_pos != self.current_track_pos:
+                self.current_track_pos = new_track_pos
+                self.touch_text_manager.get_touch_object(
+                    "time_progress").set_value(
+                    self.current_track_pos)
+                self.touch_text_manager.get_touch_object(
+                    "time_progress").set_text(
+                    time.strftime('%M:%S', time.gmtime(
+                        self.current_track_pos)) +
+                    "/" + self.track_duration)
             if self.image is not None:
                 screen.blit(self.image, (
                     self.base_size / 2, self.base_size +
