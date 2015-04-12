@@ -287,6 +287,7 @@ class MainScreen(BaseScreen):
                                                  current)
 
     def load_image(self):
+        #logger.error(self.core.library.get_images({self.track.artists.uri}).get()[self.track.album.uri])
         size = self.base_size * 4
         image_original = pygame.image.load(
             self.get_cover_folder() +

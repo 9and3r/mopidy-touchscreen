@@ -244,7 +244,7 @@ class Progressbar(TouchObject):
         self.value = 0
         self.max = max_value
         self.back_color = (0, 0, 0, 128)
-        self.main_color = (0, 150, 255)
+        self.main_color = (0, 150, 255, 150)
         self.surface = pygame.Surface(self.size, pygame.SRCALPHA)\
             .convert_alpha()
         self.surface.fill(self.back_color)
