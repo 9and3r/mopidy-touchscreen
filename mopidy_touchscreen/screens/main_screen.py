@@ -171,10 +171,11 @@ class MainScreen(BaseScreen):
 
         self.track = track
         if not self.is_image_in_cache():
-            thread = Thread(target=self.download_image(0))
+            thread = Thread(target=self.download_image)
             thread.start()
         else:
-            self.load_image()
+            thread = Thread(target=self.load_image)
+            thread.start()
 
     def get_artist_string(self):
         artists_string = ''
@@ -202,7 +203,18 @@ class MainScreen(BaseScreen):
         return os.path.isfile(
             self.get_cover_folder() + self.get_image_file_name())
 
-    def download_image(self, artist_index):
+    def download_image(self):
+        image_uris = self.core.library.get_images(
+            {self.track.uri}).get()[self.track.uri]
+        if len(image_uris) > 0:
+            urllib.urlretrieve(image_uris[0].uri,
+                               self.get_cover_folder() +
+                               self.get_image_file_name())
+            self.load_image()
+        else:
+            self.download_image_last_fm(0)
+
+    def download_image_last_fm(self, artist_index):
         if artist_index < len(self.artists):
             try:
                 safe_artist = urllib.quote_plus(
@@ -223,7 +235,7 @@ class MainScreen(BaseScreen):
                                    self.get_image_file_name())
                 self.load_image()
             except:
-                self.download_image(artist_index + 1)
+                self.download_image_last_fm(artist_index + 1)
         else:
 
             logger.info("Cover could not be downloaded")
@@ -287,7 +299,6 @@ class MainScreen(BaseScreen):
                                                  current)
 
     def load_image(self):
-        #logger.error(self.core.library.get_images({self.track.artists.uri}).get()[self.track.album.uri])
         size = self.base_size * 4
         image_original = pygame.image.load(
             self.get_cover_folder() +
