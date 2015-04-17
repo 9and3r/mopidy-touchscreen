@@ -77,16 +77,15 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    utils.process.exit_process()
                 elif event.type == pygame.KEYUP and event.key == pygame.K_q:
-                    self.running = False
+                    utils.process.exit_process()
                 elif event.type == pygame.VIDEORESIZE:
                     self.get_display_surface(event.size)
                     self.screen_manager.resize(event)
                 else:
                     self.screen_manager.event(event)
         pygame.quit()
-        utils.process.exit_process()
 
     def on_start(self):
         try:
