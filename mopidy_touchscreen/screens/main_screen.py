@@ -95,8 +95,8 @@ class MainScreen(BaseScreen):
             track_pos_millis = self.core.playback.time_position.get()
             new_track_pos = track_pos_millis / 1000
             self.touch_text_manager.get_touch_object(
-                    "time_progress").set_value(
-                    track_pos_millis)
+                "time_progress").set_value(
+                track_pos_millis)
             if new_track_pos != self.current_track_pos:
                 self.current_track_pos = new_track_pos
                 self.touch_text_manager.get_touch_object(

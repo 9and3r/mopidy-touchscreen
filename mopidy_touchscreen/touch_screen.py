@@ -70,7 +70,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             else:
                 self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
         except Exception:
-            raise exceptions.FrontendError("Error on display init:\n" +  traceback.format_exc())
+            raise exceptions.FrontendError("Error on display init:\n"
+                                           + traceback.format_exc())
 
     def start_thread(self):
         clock = pygame.time.Clock()
