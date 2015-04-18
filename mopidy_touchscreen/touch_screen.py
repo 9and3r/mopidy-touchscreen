@@ -3,7 +3,7 @@ import os
 import traceback
 from threading import Thread
 
-from mopidy import core, utils
+from mopidy import core, exceptions, utils
 
 import pygame
 
@@ -63,16 +63,19 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             self.gpio_manager = GPIOManager(pins)
 
     def get_display_surface(self, size):
-        if self.fullscreen:
-            self.screen = pygame.display.set_mode(
-                size, pygame.FULLSCREEN)
-        else:
-            self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+        try:
+            if self.fullscreen:
+                self.screen = pygame.display.set_mode(
+                    size, pygame.FULLSCREEN)
+            else:
+                self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+        except Exception:
+            raise exceptions.FrontendError("Error on display init:\n" +  traceback.format_exc())
 
     def start_thread(self):
         clock = pygame.time.Clock()
         while self.running:
-            clock.tick(10)
+            clock.tick(20)
             self.screen.blit(self.screen_manager.update(), (0, 0))
             pygame.display.flip()
             for event in pygame.event.get():

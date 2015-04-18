@@ -92,12 +92,13 @@ class MainScreen(BaseScreen):
     def update(self, screen):
         screen.blit(self.top_bar, (0, 0))
         if self.track is not None:
-            new_track_pos = self.core.playback.time_position.get() / 1000
+            track_pos_millis = self.core.playback.time_position.get()
+            new_track_pos = track_pos_millis / 1000
+            self.touch_text_manager.get_touch_object(
+                    "time_progress").set_value(
+                    track_pos_millis)
             if new_track_pos != self.current_track_pos:
                 self.current_track_pos = new_track_pos
-                self.touch_text_manager.get_touch_object(
-                    "time_progress").set_value(
-                    self.current_track_pos)
                 self.touch_text_manager.get_touch_object(
                     "time_progress").set_text(
                     time.strftime('%M:%S', time.gmtime(
@@ -165,7 +166,7 @@ class MainScreen(BaseScreen):
                                (
                                    self.size[0] - size_1 - size_2,
                                    self.base_size),
-                               track.length / 1000, False)
+                               track.length, False)
         self.touch_text_manager.set_touch_object("time_progress",
                                                  progress)
 
@@ -341,7 +342,7 @@ class MainScreen(BaseScreen):
                 if key == "time_progress":
                     value = self.touch_text_manager.get_touch_object(
                         key).get_pos_value(
-                        event.current_pos) * 1000
+                        event.current_pos)
                     self.core.playback.seek(value)
 
                 elif key == "previous":
