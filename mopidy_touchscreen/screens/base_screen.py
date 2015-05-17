@@ -11,3 +11,6 @@ class BaseScreen():
 
     def event(self, event):
         pass
+
+    def change_screen(self, direction):
+        return False

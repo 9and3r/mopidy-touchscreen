@@ -160,11 +160,14 @@ class ScreenManager():
             return self.click_on_objects(objects, event)
         else:
             if event.type == InputManager.key:
-                if event.direction == InputManager.right:
-                    self.change_screen(self.current_screen+1)
-                    return True
-                elif event.direction == InputManager.left:
-                    self.change_screen(self.current_screen-1)
+                dir = event.direction
+                if dir == InputManager.right or dir == InputManager.left:
+                    if not self.screens[self.current_screen]\
+                            .change_screen(dir):
+                        if dir == InputManager.right:
+                            self.change_screen(self.current_screen+1)
+                        else:
+                            self.change_screen(self.current_screen-1)
                     return True
             return False
 

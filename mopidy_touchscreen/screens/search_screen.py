@@ -59,8 +59,7 @@ class SearchScreen(BaseScreen):
             (self.size[0], self.base_size * 2),
             pygame.SRCALPHA)
         self.top_bar.fill((0, 0, 0, 128))
-
-        self.mode = -100
+        self.mode = -1
         self.set_mode(mode=mode_track_name)
         self.set_query("")
 
@@ -133,3 +132,14 @@ class SearchScreen(BaseScreen):
                         self.search(mode=2)
         else:
             self.list_view.touch_event(touch_event)
+
+    def change_screen(self, direction):
+        if direction == InputManager.right:
+            if self.mode < 2:
+                self.set_mode(self.mode+1)
+                return True
+        elif direction == InputManager.left:
+            if self.mode > 0:
+                self.set_mode(self.mode-1)
+                return True
+        return False
