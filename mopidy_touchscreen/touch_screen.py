@@ -3,7 +3,7 @@ import os
 import traceback
 from threading import Thread
 
-from mopidy import core, exceptions, utils
+from mopidy import core, exceptions
 
 import pygame
 

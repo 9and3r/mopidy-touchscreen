@@ -3,8 +3,6 @@ import socket
 
 from base_screen import BaseScreen
 
-import mopidy
-
 from ..graphic_utils import ListView
 
 
