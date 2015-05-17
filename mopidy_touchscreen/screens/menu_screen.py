@@ -25,7 +25,7 @@ class MenuScreen(BaseScreen):
         clicked = self.list.touch_event(event)
         if clicked is not None:
             if clicked == 0:
-                mopidy.utils.process.exit_process()
+                os.system("pkill mopidy")
             elif clicked == 1:
                 if os.system("gksu -- shutdown now -h") != 0:
                     os.system("sudo shutdown now -h")
