@@ -15,6 +15,7 @@ class PlaylistScreen(BaseScreen):
         self.selected_playlist = None
         self.playlist_tracks = []
         self.playlist_tracks_strings = []
+        self.playlists_loaded()
 
     def update(self, screen):
         self.list_view.render(screen)
