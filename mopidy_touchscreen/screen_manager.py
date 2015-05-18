@@ -9,7 +9,7 @@ from pkg_resources import Requirement, resource_filename
 
 import pygame
 
-from screens import LibraryScreen, MainScreen, MenuScreen,\
+from screens import Keyboard, LibraryScreen, MainScreen, MenuScreen,\
     PlaylistScreen, SearchScreen, Tracklist
 
 
@@ -39,6 +39,7 @@ class ScreenManager():
         self.input_manager = InputManager(size)
         self.down_bar_objects = ScreenObjectsManager()
         self.down_bar = None
+        self.keyboard = None
 
         self.init_manager(size)
 
@@ -132,9 +133,12 @@ class ScreenManager():
 
     def update(self):
         surface = self.background.draw_background()
-        self.screens[self.current_screen].update(surface)
-        surface.blit(self.down_bar, (0, self.base_size * 7))
-        self.down_bar_objects.render(surface)
+        if self.keyboard:
+            self.keyboard.update(surface)
+        else:
+            self.screens[self.current_screen].update(surface)
+            surface.blit(self.down_bar, (0, self.base_size * 7))
+            self.down_bar_objects.render(surface)
         return surface
 
     def track_started(self, track):
@@ -149,7 +153,9 @@ class ScreenManager():
     def event(self, event):
         event = self.input_manager.event(event)
         if event is not None:
-            if not self.manage_event(event):
+            if self.keyboard is not None:
+                self.keyboard.touch_event(event)
+            elif not self.manage_event(event):
                 self.screens[self.current_screen].touch_event(event)
 
     def manage_event(self, event):
@@ -218,3 +224,10 @@ class ScreenManager():
 
     def resize(self, event):
         self.init_manager(event.size)
+
+    def open_keyboard(self, input_listener):
+        self.keyboard = Keyboard(self.size, self.base_size, self,
+                                 self.fonts, input_listener)
+
+    def close_keyboard(self):
+        self.keyboard = None

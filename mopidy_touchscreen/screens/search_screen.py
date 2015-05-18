@@ -3,7 +3,7 @@ from base_screen import BaseScreen
 import pygame
 
 from ..graphic_utils import ListView,\
-    ScreenObjectsManager, TextItem, TouchAndTextItem
+    ScreenObjectsManager, TouchAndTextItem
 
 from ..input import InputManager
 
@@ -23,33 +23,43 @@ class SearchScreen(BaseScreen):
         self.screen_objects = ScreenObjectsManager()
         self.query = ""
 
+        # Search button
+        button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
+                                  (0, self.base_size),
+                                  None, center=True)
+        self.screen_objects.set_touch_object(
+            "search", button)
+
+        x = button.get_right_pos()
+
         # Query text
-        text = TextItem(self.fonts['base'], self.query, (0, 0),
-                        (self.size[0], self.base_size), center=True)
-        self.screen_objects.set_object("query", text)
+        text = TouchAndTextItem(self.fonts['base'], self.query, (0, 0),
+                                (self.size[0], self.base_size), center=True)
+        self.screen_objects.set_touch_object("query", text)
 
         # Mode buttons
-        button_size = (self.size[0] / 3, self.base_size)
+        button_size = ((self.size[0]-x)/3, self.base_size)
         self.mode_objects_keys = ["mode_track", "mode_album",
                                   "mode_artist"]
 
         # Track button
         button = TouchAndTextItem(self.fonts['base'], "Track",
-                                  (0, self.base_size),
-                                  button_size, center=True)
+                                  (x, self.base_size),
+                                  (button_size[0], self.base_size),
+                                  center=True)
         self.screen_objects.set_touch_object(
             self.mode_objects_keys[0], button)
 
         # Album button
         button = TouchAndTextItem(self.fonts['base'], "Album",
-                                  (button_size[0], self.base_size),
+                                  (button_size[0]+x, self.base_size),
                                   button_size, center=True)
         self.screen_objects.set_touch_object(
             self.mode_objects_keys[1], button)
 
         # Artist button
         button = TouchAndTextItem(self.fonts['base'], "Artist",
-                                  (button_size[0]*2, self.base_size),
+                                  (button_size[0]*2+x, self.base_size),
                                   button_size, center=True)
         self.screen_objects.set_touch_object(
             self.mode_objects_keys[2], button)
@@ -61,7 +71,7 @@ class SearchScreen(BaseScreen):
         self.top_bar.fill((0, 0, 0, 128))
         self.mode = -1
         self.set_mode(mode=mode_track_name)
-        self.set_query("")
+        self.set_query("Search")
 
     def update(self, screen):
         screen.blit(self.top_bar, (0, 0))
@@ -79,7 +89,7 @@ class SearchScreen(BaseScreen):
 
     def set_query(self, query=""):
         self.query = query
-        self.screen_objects.get_object("query").set_text(
+        self.screen_objects.get_touch_object("query").set_text(
             self.query, False)
 
     def search(self, query=None, mode=None):
@@ -130,8 +140,15 @@ class SearchScreen(BaseScreen):
                         self.search(mode=1)
                     if clicked == self.mode_objects_keys[2]:
                         self.search(mode=2)
+                    if clicked == "query" or clicked == "search":
+                        self.manager.open_keyboard(self)
         else:
-            self.list_view.touch_event(touch_event)
+            pos = self.list_view.touch_event(touch_event)
+            if pos is not None:
+                self.manager.core.tracklist.clear()
+                self.manager.core.tracklist.add(
+                    uri=self.results[pos].uri)
+                self.manager.core.playback.play()
 
     def change_screen(self, direction):
         if direction == InputManager.right:
@@ -142,4 +159,9 @@ class SearchScreen(BaseScreen):
             if self.mode > 0:
                 self.set_mode(self.mode-1)
                 return True
+            else:
+                self.manager.open_keyboard(self)
         return False
+
+    def text_input(self, text):
+        self.search(text, self.mode)

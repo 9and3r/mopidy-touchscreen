@@ -86,12 +86,13 @@ class TextItem(BaseItem):
 
     scroll_speed = 5
 
-    def __init__(self, font, text, pos, size, center=False):
+    def __init__(self, font, text, pos, size, center=False, background=None):
         self.font = font
         self.text = text
         self.color = (255, 255, 255)
         self.box = self.font.render(text, True, self.color)
         self.box = self.box.convert_alpha()
+        self.background = background
         if size is not None:
             if size[1] == -1:
                 height = self.font.size(text)[1]
@@ -143,6 +144,9 @@ class TextItem(BaseItem):
             return BaseItem.update(self)
 
     def render(self, surface):
+        if self.background:
+            surface.fill(self.background, rect=self.rect_in_pos)
+            pygame.draw.rect(surface, (0, 0, 0), self.rect_in_pos, 1)
         if self.fit_horizontal:
             surface.blit(
                 self.box, ((self.pos[0] + self.margin),
@@ -163,10 +167,16 @@ class TextItem(BaseItem):
         if text != self.text:
             if change_size:
                 TextItem.__init__(self, self.font, text, self.pos,
-                                  None, self.center)
+                                  None, self.center, self.background)
             else:
                 TextItem.__init__(self, self.font, text, self.pos,
-                                  self.size, self.center)
+                                  self.size, self.center, self.background)
+
+    def add_text(self, add_text, change_size):
+        self.set_text(self.text+add_text, change_size)
+
+    def remove_text(self, chars, change_size):
+        self.set_text(self.text[:-chars], change_size)
 
 
 class TouchObject(BaseItem):
@@ -208,8 +218,9 @@ class TouchObject(BaseItem):
 
 
 class TouchAndTextItem(TouchObject, TextItem):
-    def __init__(self, font, text, pos, size, center=False):
-        TextItem.__init__(self, font, text, pos, size, center=center)
+    def __init__(self, font, text, pos, size, center=False, background=None):
+        TextItem.__init__(self, font, text, pos, size, center=center,
+                          background=background)
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
         self.normal_box = self.box
