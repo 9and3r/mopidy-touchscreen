@@ -195,19 +195,10 @@ v0.2.0 (2014-08-02)
 
 - First working version
 
-Contents:
- 
+
+
 .. toctree::
    :maxdepth: 2
- 
-.. automodule:: screens
- 
-.. autoclass:: BaseScreen
-    :members:
- 
-Indices and tables
-==================
- 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+   how_to_install
+   source_code/index

@@ -11,6 +11,13 @@ class BaseScreen():
         self.fonts = fonts
 
     def update(self, surface, update_type, rects):
+        """
+        Draw this screen to the surface
+
+        :param surface:
+        :param update_type:
+        :param rects:
+        """
         pass
 
     def event(self, event):
