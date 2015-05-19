@@ -23,6 +23,7 @@ class ListView():
         self.selected = None
         self.active = []
         self.set_list([])
+        self.update_keys = []
 
     # Sets the list for the lisview.
     # It should be an iterable of strings
@@ -49,6 +50,7 @@ class ListView():
 
     # Will load items currently displaying in item_pos
     def load_new_item_position(self, item_pos):
+        self.update_keys = []
         self.current_item = item_pos
         if self.scrollbar:
             self.screen_objects.clear_touch(["scrollbar"])
@@ -60,19 +62,36 @@ class ListView():
             width = self.size[0] - self.base_size
         else:
             width = self.size[0]
+        self.should_update_always = False
         while i < self.list_size and z < self.max_rows:
             item = TouchAndTextItem(self.font, self.list[i], (
                 self.pos[0],
                 self.pos[1] + self.base_size * z), (width, -1))
+            if not item.fit_horizontal:
+                self.update_keys.append(str(i))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
         self.reload_selected()
 
-    def render(self, surface):
-        self.screen_objects.render(surface)
+    def should_update(self):
+        if len(self.update_keys) > 0:
+            return True
+        else:
+            return False
+
+    def render(self, surface, update_all, rects):
+        if update_all:
+            self.screen_objects.render(surface)
+        else:
+            for key in self.update_keys:
+                object = self.screen_objects.get_touch_object(key)
+                object.update()
+                object.render(surface)
+                rects.append(object.rect_in_pos)
 
     def touch_event(self, touch_event):
+        self.must_update = True
         if touch_event.type == InputManager.click \
                 or touch_event.type == InputManager.long_click:
             objects = self.screen_objects.get_touch_objects_in_pos(
@@ -127,6 +146,7 @@ class ListView():
 
     # Set active items
     def set_active(self, active):
+        self.must_update = True
         for number in self.active:
             try:
                 self.screen_objects.get_touch_object(
@@ -144,6 +164,7 @@ class ListView():
         self.active = active
 
     def set_selected(self, selected):
+        self.must_update = True
         if selected > -1 and selected < len(self.list):
             if self.selected is not None:
                 try:
@@ -163,6 +184,7 @@ class ListView():
             self.set_selected_on_screen()
 
     def set_selected_on_screen(self):
+        self.must_update = True
         if self.current_item + self.max_rows <= self.selected:
             self.move_to(1)
             self.set_selected_on_screen()
@@ -171,6 +193,7 @@ class ListView():
             self.set_selected_on_screen()
 
     def reload_selected(self):
+        self.must_update = True
         if self.selected is not None:
             try:
                 self.screen_objects.get_touch_object(

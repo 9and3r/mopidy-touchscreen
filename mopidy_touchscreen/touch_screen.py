@@ -75,10 +75,10 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def start_thread(self):
         clock = pygame.time.Clock()
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
         while self.running:
-            clock.tick(20)
-            self.screen.blit(self.screen_manager.update(), (0, 0))
-            pygame.display.flip()
+            clock.tick(12)
+            self.screen_manager.update(self.screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     os.system("pkill mopidy")

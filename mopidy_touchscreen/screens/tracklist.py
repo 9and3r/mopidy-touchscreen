@@ -19,8 +19,12 @@ class Tracklist(BaseScreen):
         self.track_started(
             self.manager.core.playback.current_tl_track.get())
 
-    def update(self, screen):
-        self.list_view.render(screen)
+    def should_update(self):
+        return self.list_view.should_update()
+
+    def update(self, screen, update_type, rects):
+        update_all = (update_type == BaseScreen.update_all)
+        self.list_view.render(screen, update_all, rects)
 
     def tracklist_changed(self):
         self.update_list()

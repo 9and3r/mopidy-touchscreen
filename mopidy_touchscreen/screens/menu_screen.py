@@ -16,8 +16,12 @@ class MenuScreen(BaseScreen):
 
         self.list.set_list(self.list_items)
 
-    def update(self, screen):
-        self.list.render(screen)
+    def should_update(self):
+        return self.list.should_update()
+
+    def update(self, screen, update_type, rects):
+        update_all = (update_type == BaseScreen.update_all)
+        self.list.render(screen, update_all, rects)
 
     def touch_event(self, event):
         clicked = self.list.touch_event(event)

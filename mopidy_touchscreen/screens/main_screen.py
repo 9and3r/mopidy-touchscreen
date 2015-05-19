@@ -31,7 +31,9 @@ class MainScreen(BaseScreen):
         self.cache = cache
         self.image = None
         self.artists = None
+        self.update_next_frame = True
         self.background = background
+        self.update_keys = []
         self.current_track_pos = 0
         self.track_duration = "00:00"
         self.touch_text_manager = ScreenObjectsManager()
@@ -89,29 +91,51 @@ class MainScreen(BaseScreen):
         self.touch_text_manager.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
 
-    def update(self, screen):
-        screen.blit(self.top_bar, (0, 0))
-        if self.track is not None:
+    def should_update(self):
+        if len(self.update_keys) > 0:
+            return True
+        else:
             track_pos_millis = self.core.playback.time_position.get()
             new_track_pos = track_pos_millis / 1000
-            self.touch_text_manager.get_touch_object(
-                "time_progress").set_value(
-                track_pos_millis)
             if new_track_pos != self.current_track_pos:
+                return True
+            else:
+                return False
+
+    def update(self, screen, update_type, rects):
+        if update_type == BaseScreen.update_all:
+            screen.blit(self.top_bar, (0, 0))
+            self.touch_text_manager.render(screen)
+            if self.image is not None:
+                    screen.blit(self.image, (
+                        self.base_size / 2, self.base_size +
+                        self.base_size / 2))
+
+        elif update_type == BaseScreen.update_partial \
+                and self.track is not None:
+            track_pos_millis = self.core.playback.time_position.get()
+            new_track_pos = track_pos_millis / 1000
+
+            if new_track_pos != self.current_track_pos:
+                progress = self.touch_text_manager.get_touch_object(
+                    "time_progress")
+                progress.set_value(track_pos_millis)
                 self.current_track_pos = new_track_pos
-                self.touch_text_manager.get_touch_object(
-                    "time_progress").set_text(
+                progress.set_text(
                     time.strftime('%M:%S', time.gmtime(
                         self.current_track_pos)) +
                     "/" + self.track_duration)
-            if self.image is not None:
-                screen.blit(self.image, (
-                    self.base_size / 2, self.base_size +
-                    self.base_size / 2))
-        self.touch_text_manager.render(screen)
-        return screen
+                progress.render(screen)
+                rects.append(progress.rect_in_pos)
+
+            for key in self.update_keys:
+                object = self.touch_text_manager.get_touch_object(key)
+                object.update()
+                object.render(screen)
+                rects.append(object.rect_in_pos)
 
     def track_started(self, track):
+        self.update_keys = []
         self.image = None
         x = self.base_size * 5
         width = self.size[0] - self.base_size / 2 - x
@@ -128,6 +152,8 @@ class MainScreen(BaseScreen):
         label = TouchAndTextItem(self.fonts['base'],
                                  MainScreen.get_track_name(track),
                                  (x, self.base_size * 2), (width, -1))
+        if not label.fit_horizontal:
+            self.update_keys.append("track_name")
         self.touch_text_manager.set_touch_object("track_name", label)
 
         # Album name
@@ -135,6 +161,8 @@ class MainScreen(BaseScreen):
                                  MainScreen.get_track_album_name
                                  (track), (x, self.base_size * 3),
                                  (width, -1))
+        if not label.fit_horizontal:
+            self.update_keys.append("album_name")
         self.touch_text_manager.set_touch_object("album_name", label)
 
         # Artist
@@ -142,6 +170,8 @@ class MainScreen(BaseScreen):
                                  self.get_artist_string(),
                                  (x, self.base_size * 4),
                                  (width, -1))
+        if not label.fit_horizontal:
+            self.update_keys.append("artist_name")
         self.touch_text_manager.set_touch_object("artist_name", label)
 
         # Previous track button
@@ -251,6 +281,8 @@ class MainScreen(BaseScreen):
                                        (self.base_size / 2,
                                         self.base_size * 2),
                                        (width, -1))
+            if not current.fit_horizontal:
+                self.update_keys.append("track_name")
             self.touch_text_manager.set_touch_object("track_name",
                                                      current)
 
@@ -260,6 +292,8 @@ class MainScreen(BaseScreen):
                                        (self.base_size / 2,
                                         self.base_size * 3),
                                        (width, -1))
+            if not current.fit_horizontal:
+                self.update_keys.append("album_name")
             self.touch_text_manager.set_touch_object("album_name",
                                                      current)
 
@@ -268,11 +302,15 @@ class MainScreen(BaseScreen):
                                        (self.base_size / 2,
                                         self.base_size * 4),
                                        (width, -1))
+            if not current.fit_horizontal:
+                self.update_keys.append("artist_name")
             self.touch_text_manager.set_touch_object("artist_name",
                                                      current)
 
+            self.background.set_background_image(None)
+
     def track_playback_ended(self, tl_track, time_position):
-        self.background.set_target_color(None, None)
+        self.background.set_background_image(None)
         self.image = None
         self.track_duration = "00:00"
 
@@ -306,9 +344,8 @@ class MainScreen(BaseScreen):
             self.get_image_file_name())
         image = pygame.transform.scale(image_original, (size, size))
         image = image.convert()
-        self.background.set_target_color(pygame.transform.average_color(image),
-                                         image_original)
         self.image = image
+        self.background.set_background_image(image_original)
 
     def touch_event(self, event):
         if event.type == InputManager.click:

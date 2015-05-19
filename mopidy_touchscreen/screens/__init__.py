@@ -1,4 +1,5 @@
 # flake8: noqa
+from base_screen import BaseScreen
 from library_screen import LibraryScreen
 from keyboard_screen import Keyboard
 from main_screen import MainScreen

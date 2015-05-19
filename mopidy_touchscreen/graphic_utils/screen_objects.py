@@ -79,12 +79,12 @@ class BaseItem():
         return self.pos[0] + self.size[0]
 
     def update(self):
-        pass
+        return False
 
 
 class TextItem(BaseItem):
 
-    scroll_speed = 5
+    scroll_speed = 2
 
     def __init__(self, font, text, pos, size, center=False, background=None):
         self.font = font
@@ -228,7 +228,7 @@ class TouchAndTextItem(TouchObject, TextItem):
                                            self.active_color)
 
     def update(self):
-        TextItem.update(self)
+        return TextItem.update(self)
 
     def set_text(self, text, change_size):
         TextItem.set_text(self, text, change_size)
