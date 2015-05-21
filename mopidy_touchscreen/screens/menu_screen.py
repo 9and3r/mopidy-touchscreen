@@ -51,6 +51,6 @@ class MenuScreen(BaseScreen):
         except socket.error:
             s.close()
             self.ip = None
-            self.list_items[2] = "IP: No internet"
+            self.list_items[3] = "IP: No internet"
             self.list.set_list(self.list_items)
             self.manager.set_connection(False, False)
