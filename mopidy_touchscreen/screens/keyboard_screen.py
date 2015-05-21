@@ -136,7 +136,10 @@ class Keyboard(BaseScreen):
                     y = -1
                 elif touch_event.direction == InputManager.down:
                     y = 1
-                self.change_selected(x, y)
+                if touch_event.direction == InputManager.enter:
+                    self.selected_click()
+                else:
+                    self.change_selected(x, y)
 
     def change_keyboard(self):
         if self.current_keyboard == 0:
@@ -165,20 +168,20 @@ class Keyboard(BaseScreen):
                     self.selected_others = 2
                 self.set_selected_other()
             if self.selected_others < 0:
-                key = self.keys[self.current_keyboard]
-                [self.selected_col][self.selected_row]
+                key = self.keys[self.current_keyboard][
+                    self.selected_col][self.selected_row]
                 self.keyboards[self.current_keyboard].set_selected(key)
             else:
                 self.keyboards[0].set_selected(None)
-                self.keyboards[0].set_selected(None)
+                self.keyboards[1].set_selected(None)
         else:
             if y < 0:
                 self.selected_others = -1
                 self.set_selected_other()
                 self.selected_col = 2
                 self.selected_row = 0
-                key = self.keys[self.current_keyboard]
-                [self.selected_col][self.selected_row]
+                key = self.keys[self.current_keyboard][
+                    self.selected_col][self.selected_row]
                 self.keyboards[self.current_keyboard].set_selected(key)
             else:
                 self.selected_others += x
@@ -187,6 +190,24 @@ class Keyboard(BaseScreen):
                 elif self.selected_others > 3:
                     self.selected_others = 3
                 self.set_selected_other()
+
+    def selected_click(self):
+        if self.selected_others >= 0:
+            if self.selected_others == 0:
+                self.change_keyboard()
+            elif self.selected_others == 1:
+                self.other_objects.get_object("text").remove_text(1, False)
+            elif self.selected_others == 2:
+                self.other_objects.get_object("text").add_text(" ", False)
+            elif self.selected_others == 3:
+                text = self.other_objects.get_object("text").text
+                self.listener.text_input(text)
+                self.manager.close_keyboard()
+        else:
+            key = self.keys[self.current_keyboard][
+                self.selected_col][self.selected_row]
+            self.other_objects.get_object("text").add_text(
+                key, False)
 
     def set_selected_other(self):
         key = None
