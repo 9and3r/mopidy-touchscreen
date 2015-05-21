@@ -151,39 +151,64 @@ class Keyboard(BaseScreen):
 
     def change_selected(self, x, y):
         if self.selected_others < 0:
-            self.selected_row += x
-            if self.selected_row < 0:
-                self.selected_row = 0
-            elif self.selected_row > 9:
-                self.selected_row = 9
-            self.selected_col += y
+            # We are on the keyboard
+
+            # Update col
+            self.selected_col += x
             if self.selected_col < 0:
                 self.selected_col = 0
-            elif self.selected_col > 2:
+            elif self.selected_col > 9:
+                self.selected_col = 9
+
+            # Update row
+            self.selected_row += y
+            if self.selected_row < 0:
+                self.selected_row = 0
+            elif self.selected_row > 2:
+
+                # Change to the bottom part
                 if self.selected_col < 2:
                     self.selected_others = 0
-                elif self.selected_col < 8:
+                elif self.selected_col < 4:
                     self.selected_others = 1
-                else:
+                elif self.selected_col < 8:
                     self.selected_others = 2
-                self.set_selected_other()
+                else:
+                    self.selected_others = 3
+
+            # Update selected
             if self.selected_others < 0:
                 key = self.keys[self.current_keyboard][
-                    self.selected_col][self.selected_row]
+                    self.selected_row][self.selected_col]
                 self.keyboards[self.current_keyboard].set_selected(key)
             else:
                 self.keyboards[0].set_selected(None)
                 self.keyboards[1].set_selected(None)
+                self.set_selected_other()
         else:
+            # We are on the bottom part
             if y < 0:
+                # we are returning to the keyboard
+
+                # Select col
+                if self.selected_others == 0:
+                    self.selected_col = 0
+                elif self.selected_others == 1:
+                    self.selected_col = 2
+                elif self.selected_others == 2:
+                    self.selected_col = 4
+                else:
+                    self.selected_col = 8
+
                 self.selected_others = -1
                 self.set_selected_other()
-                self.selected_col = 2
-                self.selected_row = 0
+
+                self.selected_row = 2
                 key = self.keys[self.current_keyboard][
-                    self.selected_col][self.selected_row]
+                    self.selected_row][self.selected_col]
                 self.keyboards[self.current_keyboard].set_selected(key)
-            else:
+            elif x != 0:
+                # We change in horizontal
                 self.selected_others += x
                 if self.selected_others < 0:
                     self.selected_others = 0
@@ -205,7 +230,7 @@ class Keyboard(BaseScreen):
                 self.manager.close_keyboard()
         else:
             key = self.keys[self.current_keyboard][
-                self.selected_col][self.selected_row]
+                self.selected_row][self.selected_col]
             self.other_objects.get_object("text").add_text(
                 key, False)
 
