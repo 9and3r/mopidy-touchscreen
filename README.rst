@@ -171,11 +171,15 @@ Project resources
 Changelog
 =========
 
-v0.4.0 (UNRELEASED)
+v1.0.0 (UNRELEASED)
 -------------------
 
 - Require Mopidy v1.0
 - Update to work with changed core playback API in Mopidy 1.0
+- Search working
+- GPIO and Keyboard support
+- Lower CPU usage
+- Bug Fixes
 
 v0.3.2 (2015-01-09)
 -------------------
