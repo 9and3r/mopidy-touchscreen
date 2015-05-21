@@ -15,7 +15,7 @@ import mopidy.core
 import pygame
 
 from ..graphic_utils import Progressbar, \
-    ScreenObjectsManager, TouchAndTextItem
+    ScreenObjectsManager, TextItem, TouchAndTextItem
 from ..input import InputManager
 
 
@@ -129,7 +129,7 @@ class MainScreen(BaseScreen):
                 rects.append(progress.rect_in_pos)
 
             for key in self.update_keys:
-                object = self.touch_text_manager.get_touch_object(key)
+                object = self.touch_text_manager.get_object(key)
                 object.update()
                 object.render(screen)
                 rects.append(object.rect_in_pos)
@@ -149,30 +149,30 @@ class MainScreen(BaseScreen):
             self.artists.append(artist)
 
         # Track name
-        label = TouchAndTextItem(self.fonts['base'],
+        label = TextItem(self.fonts['base'],
                                  MainScreen.get_track_name(track),
                                  (x, self.base_size * 2), (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("track_name")
-        self.touch_text_manager.set_touch_object("track_name", label)
+        self.touch_text_manager.set_object("track_name", label)
 
         # Album name
-        label = TouchAndTextItem(self.fonts['base'],
+        label = TextItem(self.fonts['base'],
                                  MainScreen.get_track_album_name
                                  (track), (x, self.base_size * 3),
                                  (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("album_name")
-        self.touch_text_manager.set_touch_object("album_name", label)
+        self.touch_text_manager.set_object("album_name", label)
 
         # Artist
-        label = TouchAndTextItem(self.fonts['base'],
+        label = TextItem(self.fonts['base'],
                                  self.get_artist_string(),
                                  (x, self.base_size * 4),
                                  (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("artist_name")
-        self.touch_text_manager.set_touch_object("artist_name", label)
+        self.touch_text_manager.set_object("artist_name", label)
 
         # Previous track button
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61c",
@@ -275,7 +275,7 @@ class MainScreen(BaseScreen):
             # so it will use all the screen size for the text
             width = self.size[0] - self.base_size
 
-            current = TouchAndTextItem(self.fonts['base'],
+            current = TextItem(self.fonts['base'],
                                        MainScreen.get_track_name
                                        (self.track),
                                        (self.base_size / 2,
@@ -283,10 +283,10 @@ class MainScreen(BaseScreen):
                                        (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("track_name")
-            self.touch_text_manager.set_touch_object("track_name",
+            self.touch_text_manager.set_object("track_name",
                                                      current)
 
-            current = TouchAndTextItem(self.fonts['base'],
+            current = TextItem(self.fonts['base'],
                                        MainScreen.get_track_album_name
                                        (self.track),
                                        (self.base_size / 2,
@@ -294,17 +294,17 @@ class MainScreen(BaseScreen):
                                        (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("album_name")
-            self.touch_text_manager.set_touch_object("album_name",
+            self.touch_text_manager.set_object("album_name",
                                                      current)
 
-            current = TouchAndTextItem(self.fonts['base'],
+            current = TextItem(self.fonts['base'],
                                        self.get_artist_string(),
                                        (self.base_size / 2,
                                         self.base_size * 4),
                                        (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("artist_name")
-            self.touch_text_manager.set_touch_object("artist_name",
+            self.touch_text_manager.set_object("artist_name",
                                                      current)
 
             self.background.set_background_image(None)
@@ -316,25 +316,25 @@ class MainScreen(BaseScreen):
 
         width = self.size[0] - self.base_size
 
-        current = TouchAndTextItem(self.fonts['base'], "",
+        current = TextItem(self.fonts['base'], "",
                                    (self.base_size / 2,
                                     self.base_size * 2),
                                    (width, -1))
-        self.touch_text_manager.set_touch_object("track_name",
+        self.touch_text_manager.set_object("track_name",
                                                  current)
 
-        current = TouchAndTextItem(self.fonts['base'], "",
+        current = TextItem(self.fonts['base'], "",
                                    (self.base_size / 2,
                                     self.base_size * 3),
                                    (width, -1))
-        self.touch_text_manager.set_touch_object("album_name",
+        self.touch_text_manager.set_object("album_name",
                                                  current)
 
-        current = TouchAndTextItem(self.fonts['base'], "",
+        current = TextItem(self.fonts['base'], "",
                                    (self.base_size / 2,
                                     self.base_size * 4),
                                    (width, -1))
-        self.touch_text_manager.set_touch_object("artist_name",
+        self.touch_text_manager.set_object("artist_name",
                                                  current)
 
     def load_image(self):
@@ -410,12 +410,6 @@ class MainScreen(BaseScreen):
                         not self.core.tracklist.single.get())
                 elif key == "internet":
                     self.manager.check_connection()
-                elif key == "track_name":
-                    self.manager.search(self.track.name, 0)
-                elif key == "album_name":
-                    self.manager.search(self.track.album.name, 1)
-                elif key == "artist_name":
-                    self.manager.search(self.get_artist_string(), 2)
 
     def change_volume(self, event):
         manager = self.touch_text_manager
