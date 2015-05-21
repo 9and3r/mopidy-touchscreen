@@ -178,7 +178,8 @@ v1.0.0 (UNRELEASED)
 - Update to work with changed core playback API in Mopidy 1.0
 - Search working
 - GPIO and Keyboard support
-- Lower CPU usage
+- Background image
+- Lower CPU usage (Update screen only when needed)
 - Bug Fixes
 
 v0.3.2 (2015-01-09)
