@@ -126,8 +126,6 @@ or send an email to `9and3r@gmail.com <mailto:9and3r@gmail.com>`_
 Features
 ========
 
-Working
--------
 
 * See track info (track name, album, artist, cover image)
 * Seek Track
@@ -141,10 +139,6 @@ Working
 * Repeat one/on/off
 * Playback list and song selection
 * Playlists
-
-Planned
--------
-
 * Use keyboard or GPIO buttons instead of touchscreen
 
 
