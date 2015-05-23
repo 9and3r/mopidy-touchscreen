@@ -41,11 +41,10 @@ class DynamicBackground:
         self.update = True
 
 
-@staticmethod
-def get_aspect_scale_size(img, size):
+def get_aspect_scale_size(img, new_size):
     size = img.get_size()
-    aspect_x = size[0] / float(size[0])
-    aspect_y = size[1] / float(size[1])
+    aspect_x = new_size[0] / float(size[0])
+    aspect_y = new_size[1] / float(size[1])
     if aspect_x > aspect_y:
         aspect = aspect_x
     else:

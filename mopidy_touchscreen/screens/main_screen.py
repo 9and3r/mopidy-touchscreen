@@ -137,7 +137,7 @@ class MainScreen(BaseScreen):
     def track_started(self, track):
         self.update_keys = []
         self.image = None
-        x = self.base_size * 5
+        x = self.size[1] - self.base_size * 3
         width = self.size[0] - self.base_size / 2 - x
 
         self.track_duration = time.strftime('%M:%S', time.gmtime(
@@ -151,7 +151,7 @@ class MainScreen(BaseScreen):
         # Track name
         label = TextItem(self.fonts['base'],
                          MainScreen.get_track_name(track),
-                         (x, self.base_size * 2), (width, -1))
+                         (x, (self.size[1]-self.base_size*3)/2 - self.base_size*0.5), (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("track_name")
         self.touch_text_manager.set_object("track_name", label)
@@ -159,7 +159,7 @@ class MainScreen(BaseScreen):
         # Album name
         label = TextItem(self.fonts['base'],
                          MainScreen.get_track_album_name
-                         (track), (x, self.base_size * 3),
+                         (track), (x, (self.size[1]-self.base_size*3)/2 + self.base_size*0.5),
                          (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("album_name")
@@ -168,7 +168,7 @@ class MainScreen(BaseScreen):
         # Artist
         label = TextItem(self.fonts['base'],
                          self.get_artist_string(),
-                         (x, self.base_size * 4),
+                         (x, (self.size[1]-self.base_size*3)/2 + self.base_size*1.5),
                          (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("artist_name")
@@ -176,14 +176,14 @@ class MainScreen(BaseScreen):
 
         # Previous track button
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61c",
-                                  (0, self.base_size * 6), None)
+                                  (0, self.size[1] - self.base_size * 2), None)
         self.touch_text_manager.set_touch_object("previous", button)
         size_1 = button.get_right_pos()
 
         size_2 = self.fonts['icon'].size(u"\ue61d")[0]
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61d",
                                   (self.size[0] - size_2,
-                                   self.base_size * 6),
+                                   self.size[1] - self.base_size * 2),
                                   None)
         self.touch_text_manager.set_touch_object("next", button)
 
@@ -192,7 +192,7 @@ class MainScreen(BaseScreen):
                                time.strftime('%M:%S', time.gmtime(
                                    0)) + "/" + time.strftime(
                                    '%M:%S', time.gmtime(0)),
-                               (size_1, self.base_size * 6),
+                               (size_1, self.size[1] - self.base_size * 2),
                                (
                                    self.size[0] - size_1 - size_2,
                                    self.base_size),
@@ -332,7 +332,7 @@ class MainScreen(BaseScreen):
         self.touch_text_manager.set_object("artist_name", current)
 
     def load_image(self):
-        size = self.base_size * 4
+        size = self.size[1] - self.base_size * 4
         image_original = pygame.image.load(
             self.get_cover_folder() +
             self.get_image_file_name())
