@@ -119,7 +119,7 @@ class Keyboard(BaseScreen):
                     self.listener.text_input(text)
                     self.manager.close_keyboard()
         elif touch_event.type == InputManager.key:
-            if isinstance(touch_event.unicode, unicode):
+            if not isinstance(touch_event.unicode, int):
                 if touch_event.unicode == u'\x08':
                     self.other_objects.get_object("text").remove_text(1, False)
                 else:

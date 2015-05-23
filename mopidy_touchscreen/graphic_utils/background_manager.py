@@ -3,7 +3,7 @@ import pygame
 change_speed = 2
 
 
-class DynamicBackground():
+class DynamicBackground:
 
     def __init__(self, size):
         self.image_loaded = False
@@ -41,14 +41,14 @@ class DynamicBackground():
         self.update = True
 
 
-def get_aspect_scale_size(img, (bx, by)):
+@staticmethod
+def get_aspect_scale_size(img, size):
     size = img.get_size()
-    aspect_x = bx / float(size[0])
-    aspect_y = by / float(size[1])
+    aspect_x = size[0] / float(size[0])
+    aspect_y = size[1] / float(size[1])
     if aspect_x > aspect_y:
         aspect = aspect_x
     else:
         aspect = aspect_y
-
     new_size = (int(aspect*size[0]), int(aspect*size[1]))
     return new_size

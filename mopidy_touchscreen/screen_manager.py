@@ -78,35 +78,35 @@ class ScreenManager():
 
         # Search button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
-                                  (0, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (0, self.size[1] - self.base_size),
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
-                                  (x, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (x, self.size[1] - self.base_size),
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
         # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
-                                  (x, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (x, self.size[1] - self.base_size),
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
         # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
-                                  (x, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (x, self.size[1] - self.base_size),
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
         # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
-                                  (x, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (x, self.size[1] - self.base_size),
                                   button_size, center=True)
 
         self.down_bar_objects.set_touch_object("menu_4", button)
@@ -114,18 +114,18 @@ class ScreenManager():
 
         # Menu button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
-                                  (x, self.size[1] - self.base_size), #change these to move the location of the icons
+                                  (x, self.size[1] - self.base_size),
                                   button_size,
                                   center=True)
         self.down_bar_objects.set_touch_object("menu_5", button)
 
         # Down bar Solid
         self.down_bar_solid = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size )) #change the 7 to move the bar
+            (self.size[0], self.size[1] - self.base_size))
 
         # Down bar
         self.down_bar = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size ), #change the 7 to move the bar
+            (self.size[0], self.size[1] - self.base_size),
             pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 200))
 

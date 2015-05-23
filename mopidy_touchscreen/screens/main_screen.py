@@ -107,9 +107,9 @@ class MainScreen(BaseScreen):
             screen.blit(self.top_bar, (0, 0))
             self.touch_text_manager.render(screen)
             if self.image is not None:
-                    screen.blit(self.image, (
-                        self.base_size / 2, self.base_size +
-                        self.base_size / 2))
+                screen.blit(self.image, (
+                    self.base_size / 2, self.base_size +
+                    self.base_size / 2))
 
         elif update_type == BaseScreen.update_partial \
                 and self.track is not None:
@@ -150,26 +150,26 @@ class MainScreen(BaseScreen):
 
         # Track name
         label = TextItem(self.fonts['base'],
-                                 MainScreen.get_track_name(track),
-                                 (x, self.base_size * 2), (width, -1))
+                         MainScreen.get_track_name(track),
+                         (x, self.base_size * 2), (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("track_name")
         self.touch_text_manager.set_object("track_name", label)
 
         # Album name
         label = TextItem(self.fonts['base'],
-                                 MainScreen.get_track_album_name
-                                 (track), (x, self.base_size * 3),
-                                 (width, -1))
+                         MainScreen.get_track_album_name
+                         (track), (x, self.base_size * 3),
+                         (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("album_name")
         self.touch_text_manager.set_object("album_name", label)
 
         # Artist
         label = TextItem(self.fonts['base'],
-                                 self.get_artist_string(),
-                                 (x, self.base_size * 4),
-                                 (width, -1))
+                         self.get_artist_string(),
+                         (x, self.base_size * 4),
+                         (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("artist_name")
         self.touch_text_manager.set_object("artist_name", label)
@@ -276,36 +276,33 @@ class MainScreen(BaseScreen):
             width = self.size[0] - self.base_size
 
             current = TextItem(self.fonts['base'],
-                                       MainScreen.get_track_name
-                                       (self.track),
-                                       (self.base_size / 2,
-                                        self.base_size * 2),
-                                       (width, -1))
+                               MainScreen.get_track_name
+                               (self.track),
+                               (self.base_size / 2,
+                                self.base_size * 2),
+                               (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("track_name")
-            self.touch_text_manager.set_object("track_name",
-                                                     current)
+            self.touch_text_manager.set_object("track_name", current)
 
             current = TextItem(self.fonts['base'],
-                                       MainScreen.get_track_album_name
-                                       (self.track),
-                                       (self.base_size / 2,
-                                        self.base_size * 3),
-                                       (width, -1))
+                               MainScreen.get_track_album_name
+                               (self.track),
+                               (self.base_size / 2,
+                                self.base_size * 3),
+                               (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("album_name")
-            self.touch_text_manager.set_object("album_name",
-                                                     current)
+            self.touch_text_manager.set_object("album_name", current)
 
             current = TextItem(self.fonts['base'],
-                                       self.get_artist_string(),
-                                       (self.base_size / 2,
-                                        self.base_size * 4),
-                                       (width, -1))
+                               self.get_artist_string(),
+                               (self.base_size / 2,
+                                self.base_size * 4),
+                               (width, -1))
             if not current.fit_horizontal:
                 self.update_keys.append("artist_name")
-            self.touch_text_manager.set_object("artist_name",
-                                                     current)
+            self.touch_text_manager.set_object("artist_name", current)
 
             self.background.set_background_image(None)
 
@@ -317,25 +314,22 @@ class MainScreen(BaseScreen):
         width = self.size[0] - self.base_size
 
         current = TextItem(self.fonts['base'], "",
-                                   (self.base_size / 2,
-                                    self.base_size * 2),
-                                   (width, -1))
-        self.touch_text_manager.set_object("track_name",
-                                                 current)
+                           (self.base_size / 2,
+                            self.base_size * 2),
+                           (width, -1))
+        self.touch_text_manager.set_object("track_name", current)
 
         current = TextItem(self.fonts['base'], "",
-                                   (self.base_size / 2,
-                                    self.base_size * 3),
-                                   (width, -1))
-        self.touch_text_manager.set_object("album_name",
-                                                 current)
+                           (self.base_size / 2,
+                            self.base_size * 3),
+                           (width, -1))
+        self.touch_text_manager.set_object("album_name", current)
 
         current = TextItem(self.fonts['base'], "",
-                                   (self.base_size / 2,
-                                    self.base_size * 4),
-                                   (width, -1))
-        self.touch_text_manager.set_object("artist_name",
-                                                 current)
+                           (self.base_size / 2,
+                            self.base_size * 4),
+                           (width, -1))
+        self.touch_text_manager.set_object("artist_name", current)
 
     def load_image(self):
         size = self.base_size * 4
@@ -484,7 +478,7 @@ class MainScreen(BaseScreen):
 
     @staticmethod
     def get_track_album_name(track):
-        if track.album is not None and track.album.name is not None\
+        if track.album is not None and track.album.name is not None \
                 and len(track.album.name) > 0:
             return track.album.name
         else:
