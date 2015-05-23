@@ -43,11 +43,13 @@ class ScreenManager():
         self.keyboard = None
         self.update_type = BaseScreen.update_all
 
-        self.init_manager(size, resolution_factor)
-
-    def init_manager(self, size, resolution_factor):
-        self.size = size
         self.resolution_factor = resolution_factor
+
+        self.init_manager(size)
+
+    def init_manager(self, size):
+        self.size = size
+
         self.background = DynamicBackground(self.size)
         self.base_size = self.size[1] / self.resolution_factor
         font = resource_filename(
