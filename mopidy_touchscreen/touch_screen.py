@@ -25,7 +25,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.fullscreen = config['touchscreen']['fullscreen']
         self.screen_size = (config['touchscreen']['screen_width'],
                             config['touchscreen']['screen_height'])
-
+        self.resolution_factor = (config['touchscreen']['resolution_factor'])
         if config['touchscreen']['sdl_fbdev'].lower() != "none":
             os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
         if config['touchscreen']['sdl_mousdrv'].lower() != "none":
@@ -46,7 +46,8 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         pygame.mouse.set_visible(self.cursor)
         self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
-                                            self.cache_dir)
+                                            self.cache_dir,
+                                            self.resolution_factor)
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
