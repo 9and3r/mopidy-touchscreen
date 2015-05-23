@@ -25,7 +25,7 @@ menu_index = 5
 
 class ScreenManager():
 
-    def __init__(self, size, core, cache):
+    def __init__(self, size, core, cache, resolution_factor):
         self.core = core
         self.cache = cache
         self.fonts = {}
@@ -43,12 +43,13 @@ class ScreenManager():
         self.keyboard = None
         self.update_type = BaseScreen.update_all
 
-        self.init_manager(size)
+        self.init_manager(size, resolution_factor)
 
-    def init_manager(self, size):
+    def init_manager(self, size, resolution_factor):
         self.size = size
+        self.resolution_factor = resolution_factor
         self.background = DynamicBackground(self.size)
-        self.base_size = self.size[1] / 8
+        self.base_size = self.size[1] / (8+self.resolution_factor) #change this for more screen space
         font = resource_filename(
             Requirement.parse("mopidy-touchscreen"),
             "mopidy_touchscreen/icomoon.ttf")
@@ -75,35 +76,35 @@ class ScreenManager():
 
         # Search button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
-                                  (0, self.base_size * 7),
+                                  (0, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_0", button)
         x = button.get_right_pos()
 
         # Main button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
-                                  (x, self.base_size * 7),
+                                  (x, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_1", button)
         x = button.get_right_pos()
 
         # Tracklist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
-                                  (x, self.base_size * 7),
+                                  (x, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_2", button)
         x = button.get_right_pos()
 
         # Library button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
-                                  (x, self.base_size * 7),
+                                  (x, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size, center=True)
         self.down_bar_objects.set_touch_object("menu_3", button)
         x = button.get_right_pos()
 
         # Playlist button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
-                                  (x, self.base_size * 7),
+                                  (x, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size, center=True)
 
         self.down_bar_objects.set_touch_object("menu_4", button)
@@ -111,18 +112,18 @@ class ScreenManager():
 
         # Menu button
         button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
-                                  (x, self.base_size * 7),
+                                  (x, self.base_size * (7+self.resolution_factor)), #change these to move the location of the icons
                                   button_size,
                                   center=True)
         self.down_bar_objects.set_touch_object("menu_5", button)
 
         # Down bar Solid
         self.down_bar_solid = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size * 7))
+            (self.size[0], self.size[1] - self.base_size * (7+self.resolution_factor))) #change the 7 to move the bar
 
         # Down bar
         self.down_bar = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size * 7),
+            (self.size[0], self.size[1] - self.base_size * (7+self.resolution_factor)), #change the 7 to move the bar
             pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 200))
 
@@ -161,7 +162,7 @@ class ScreenManager():
             else:
                 self.screens[self.current_screen].\
                     update(surface, update_type, rects)
-                surface.blit(self.down_bar, (0, self.base_size * 7))
+                surface.blit(self.down_bar, (0, self.base_size * (7+self.resolution_factor)))
                 self.down_bar_objects.render(surface)
 
             if update_type == BaseScreen.update_all or len(rects) < 1:
