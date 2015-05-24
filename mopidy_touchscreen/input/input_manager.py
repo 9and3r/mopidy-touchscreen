@@ -67,7 +67,8 @@ class InputManager():
             return self.key_up(event)
 
     def key_down(self, event):
-        if len(event.unicode) > 0 and event.key not in \
+        if event.unicode is not None\
+                and len(event.unicode) > 0 and event.key not in \
                 InputManager.special_keys:
             return InputEvent(InputManager.key, None, None, None,
                               None, event.unicode)
