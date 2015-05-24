@@ -7,12 +7,14 @@ from ..graphic_utils import ListView
 
 
 class MenuScreen(BaseScreen):
-    def __init__(self, size, base_size, manager, fonts):
+    def __init__(self, size, base_size, manager, fonts, core):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.ip = None
+        self.core = core
         self.list = ListView((0, 0), size, base_size, fonts['base'])
 
-        self.list_items = ["Exit Mopidy", "Shutdown", "Restart", "IP: "]
+        self.list_items = ["Random", "Repeat", "Single", "Consume",
+                           "Exit Mopidy", "Shutdown", "Restart", "IP: "]
 
         self.list.set_list(self.list_items)
 
@@ -27,30 +29,61 @@ class MenuScreen(BaseScreen):
         clicked = self.list.touch_event(event)
         if clicked is not None:
             if clicked == 0:
-                os.system("pkill mopidy")
+                random = not self.core.tracklist.random.get()
+                self.core.tracklist.set_random(random)
             elif clicked == 1:
+                repeat = not self.core.tracklist.repeat.get()
+                self.core.tracklist.set_repeat(repeat)
+            elif clicked == 2:
+                single = not self.core.tracklist.single.get()
+                self.core.tracklist.set_single(single)
+            elif clicked == 3:
+                consume = not self.core.tracklist.consume.get()
+                self.core.tracklist.set_consume(consume)
+            elif clicked == 4:
+                os.system("pkill mopidy")
+            elif clicked == 5:
                 if os.system("gksu -- shutdown now -h") != 0:
                     os.system("sudo shutdown now -h")
-            elif clicked == 2:
+            elif clicked == 6:
                 if os.system("gksu -- shutdown -r now") != 0:
                     os.system("sudo shutdown -r now")
-            elif clicked == 3:
+            elif clicked == 7:
                 self.check_connection()
 
     # Will check internet connection
     def check_connection(self):
         try:
-            self.manager.set_connection(False, True)
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             self.ip = s.getsockname()[0]
             s.close()
-            self.list_items[3] = "IP: " + self.ip
+            self.list_items[7] = "IP: " + self.ip
             self.list.set_list(self.list_items)
-            self.manager.set_connection(True, False)
         except socket.error:
             s.close()
             self.ip = None
-            self.list_items[3] = "IP: No internet"
+            self.list_items[7] = "IP: No internet"
             self.list.set_list(self.list_items)
-            self.manager.set_connection(False, False)
+
+    def options_changed(self):
+        active = []
+        if self.core.tracklist.random.get():
+            active.append(0)
+        if self.core.tracklist.repeat.get():
+            active.append(1)
+        if self.core.tracklist.single.get():
+            active.append(2)
+        if self.core.tracklist.consume.get():
+            active.append(3)
+        self.list.set_active(active)
+
+    def set_connection(self, connection, loading):
+        internet = self.touch_text_manager.get_touch_object(
+            "internet")
+        if loading:
+            internet.set_text(u"\ue627", None)
+            internet.set_active(False)
+        else:
+            internet.set_text(u"\ue602", None)
+            internet.set_active(connection)

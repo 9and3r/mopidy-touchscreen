@@ -67,7 +67,7 @@ class ScreenManager():
                 LibraryScreen(size, self.base_size, self, self.fonts),
                 PlaylistScreen(size,
                                self.base_size, self, self.fonts),
-                MenuScreen(size, self.base_size, self, self.fonts)]
+                MenuScreen(size, self.base_size, self, self.fonts, self.core)]
         except:
             traceback.print_exc()
         self.track = None
@@ -119,10 +119,6 @@ class ScreenManager():
                                   center=True)
         self.down_bar_objects.set_touch_object("menu_5", button)
 
-        # Down bar Solid
-        self.down_bar_solid = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size))
-
         # Down bar
         self.down_bar = pygame.Surface(
             (self.size[0], self.size[1] - self.base_size),
@@ -131,9 +127,11 @@ class ScreenManager():
 
         self.options_changed()
         self.mute_changed(self.core.playback.mute.get())
-        self.playback_state_changed(self.core.playback.state.get(),
-                                    self.core.playback.state.get())
+        playback_state = self.core.playback.state.get()
+        self.playback_state_changed(playback_state,
+                                    playback_state)
         self.screens[menu_index].check_connection()
+
         self.change_screen(self.current_screen)
 
         self.update_type = BaseScreen.update_all
@@ -230,7 +228,7 @@ class ScreenManager():
         self.update_type = BaseScreen.update_all
 
     def options_changed(self):
-        self.screens[main_screen_index].options_changed()
+        self.screens[menu_index].options_changed()
         self.update_type = BaseScreen.update_all
 
     def change_screen(self, new_screen):
@@ -252,15 +250,6 @@ class ScreenManager():
 
     def playlists_loaded(self):
         self.screens[playlist_index].playlists_loaded()
-        self.update_type = BaseScreen.update_all
-
-    def set_connection(self, connection, loading):
-        self.screens[main_screen_index].set_connection(connection,
-                                                       loading)
-        self.update_type = BaseScreen.update_all
-
-    def check_connection(self):
-        self.screens[menu_index].check_connection()
         self.update_type = BaseScreen.update_all
 
     def search(self, query, mode):

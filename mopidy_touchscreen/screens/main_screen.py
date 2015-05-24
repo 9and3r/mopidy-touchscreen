@@ -54,30 +54,6 @@ class MainScreen(BaseScreen):
         self.touch_text_manager.set_touch_object("pause_play", button)
         x = button.get_right_pos()
 
-        # Random
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue629 ",
-                                  (x, 0), None)
-        self.touch_text_manager.set_touch_object("random", button)
-        x = button.get_right_pos()
-
-        # Repeat
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue626",
-                                  (x, 0), None)
-        self.touch_text_manager.set_touch_object("repeat", button)
-        x = button.get_right_pos()
-
-        # Single
-        button = TouchAndTextItem(self.fonts['base'], " 1 ", (x, 0),
-                                  None)
-        self.touch_text_manager.set_touch_object("single", button)
-        x = button.get_right_pos()
-
-        # Internet
-        button = TouchAndTextItem(self.fonts['icon'], u"\ue602 ",
-                                  (x, 0), None)
-        self.touch_text_manager.set_touch_object("internet", button)
-        x = button.get_right_pos()
-
         # Mute
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61f ",
                                   (x, 0), None)
@@ -151,7 +127,9 @@ class MainScreen(BaseScreen):
         # Track name
         label = TextItem(self.fonts['base'],
                          MainScreen.get_track_name(track),
-                         (x, (self.size[1]-self.base_size*3)/2 - self.base_size*0.5), (width, -1))
+                         (x, (self.size[1]-self.base_size*3)/2
+                          - self.base_size*0.5),
+                         (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("track_name")
         self.touch_text_manager.set_object("track_name", label)
@@ -159,7 +137,9 @@ class MainScreen(BaseScreen):
         # Album name
         label = TextItem(self.fonts['base'],
                          MainScreen.get_track_album_name
-                         (track), (x, (self.size[1]-self.base_size*3)/2 + self.base_size*0.5),
+                         (track),
+                         (x, (self.size[1]-self.base_size*3)/2
+                          + self.base_size*0.5),
                          (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("album_name")
@@ -168,7 +148,8 @@ class MainScreen(BaseScreen):
         # Artist
         label = TextItem(self.fonts['base'],
                          self.get_artist_string(),
-                         (x, (self.size[1]-self.base_size*3)/2 + self.base_size*1.5),
+                         (x, (self.size[1]-self.base_size*3)/2
+                          + self.base_size*1.5),
                          (width, -1))
         if not label.fit_horizontal:
             self.update_keys.append("artist_name")
@@ -392,18 +373,6 @@ class MainScreen(BaseScreen):
                     mute = not self.core.playback.mute.get()
                     self.core.playback.set_mute(mute)
                     self.mute_changed(mute)
-                elif key == "random":
-                    random = not self.core.tracklist.random.get()
-                    self.core.tracklist.set_random(random)
-                    self.options_changed()
-                elif key == "repeat":
-                    self.core.tracklist.set_repeat(
-                        not self.core.tracklist.repeat.get())
-                elif key == "single":
-                    self.core.tracklist.set_single(
-                        not self.core.tracklist.single.get())
-                elif key == "internet":
-                    self.manager.check_connection()
 
     def change_volume(self, event):
         manager = self.touch_text_manager
@@ -411,7 +380,14 @@ class MainScreen(BaseScreen):
         pos = event.current_pos
         value = volume.get_pos_value(pos)
         self.core.playback.volume = value
-        self.volume_changed(value)
+
+    def playback_state_changed(self, old_state, new_state):
+        if new_state == mopidy.core.PlaybackState.PLAYING:
+            self.touch_text_manager.get_touch_object(
+                "pause_play").set_text(u"\ue616", False)
+        else:
+            self.touch_text_manager.get_touch_object(
+                "pause_play").set_text(u"\ue615", False)
 
     def volume_changed(self, volume):
         if not self.core.playback.mute.get():
@@ -434,14 +410,6 @@ class MainScreen(BaseScreen):
         self.touch_text_manager.get_touch_object("volume").set_value(
             volume)
 
-    def options_changed(self):
-        self.touch_text_manager.get_touch_object("random").set_active(
-            self.core.tracklist.random.get())
-        self.touch_text_manager.get_touch_object("repeat").set_active(
-            self.core.tracklist.repeat.get())
-        self.touch_text_manager.get_touch_object("single").set_active(
-            self.core.tracklist.single.get())
-
     def mute_changed(self, mute):
         self.touch_text_manager.get_touch_object("mute").set_active(
             not mute)
@@ -450,24 +418,6 @@ class MainScreen(BaseScreen):
                 u"\ue623", False)
         else:
             self.volume_changed(self.core.playback.volume.get())
-
-    def playback_state_changed(self, old_state, new_state):
-        if new_state == mopidy.core.PlaybackState.PLAYING:
-            self.touch_text_manager.get_touch_object(
-                "pause_play").set_text(u"\ue616", False)
-        else:
-            self.touch_text_manager.get_touch_object(
-                "pause_play").set_text(u"\ue615", False)
-
-    def set_connection(self, connection, loading):
-        internet = self.touch_text_manager.get_touch_object(
-            "internet")
-        if loading:
-            internet.set_text(u"\ue627", None)
-            internet.set_active(False)
-        else:
-            internet.set_text(u"\ue602", None)
-            internet.set_active(connection)
 
     @staticmethod
     def get_track_name(track):
