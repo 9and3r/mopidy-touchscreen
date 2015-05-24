@@ -91,12 +91,14 @@ class InputManager():
             else:
                 return None
             if direction is not None:
-                if time.time() - self.down_time > InputManager.long_click_min_time:
+                if time.time() - self.down_time > \
+                        InputManager.long_click_min_time:
                     longpress = True
                 else:
                     longpress = False
                 return InputEvent(InputManager.key, None, None, None,
-                                  direction, self.last_key, longpress=longpress)
+                                  direction, self.last_key,
+                                  longpress=longpress)
 
     def mouse_down(self, event):
         self.down_pos = event.pos
