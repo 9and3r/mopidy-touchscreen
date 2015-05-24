@@ -46,9 +46,9 @@ def right(channel):
         type = pygame.KEYUP
     else:
         type = pygame.KEYDOWN
+        dict['unicode'] = None
     dict['key'] = pygame.K_RIGHT
     event = pygame.event.Event(type, dict)
-    event.unicode = None
     pygame.event.post(event)
 
 
@@ -58,9 +58,9 @@ def left(channel):
         type = pygame.KEYUP
     else:
         type = pygame.KEYDOWN
+        dict['unicode'] = None
     dict['key'] = pygame.K_RIGHT
     event = pygame.event.Event(type, dict)
-    event.unicode = None
     pygame.event.post(event)
 
 
@@ -70,9 +70,9 @@ def down(channel):
         type = pygame.KEYUP
     else:
         type = pygame.KEYDOWN
+        dict['unicode'] = None
     dict['key'] = pygame.K_DOWN
     event = pygame.event.Event(type, dict)
-    event.unicode = None
     pygame.event.post(event)
 
 
@@ -82,9 +82,9 @@ def up(channel):
         type = pygame.KEYUP
     else:
         type = pygame.KEYDOWN
+        dict['unicode'] = None
     dict['key'] = pygame.K_UP
     event = pygame.event.Event(type, dict)
-    event.unicode = None
     pygame.event.post(event)
 
 
@@ -94,7 +94,7 @@ def enter(channel):
         type = pygame.KEYUP
     else:
         type = pygame.KEYDOWN
+        dict['unicode'] = None
     dict['key'] = pygame.K_RETURN
     event = pygame.event.Event(type, dict)
-    event.unicode = None
     pygame.event.post(event)
