@@ -172,6 +172,7 @@ v1.0.0 (UNRELEASED)
 - Update to work with changed core playback API in Mopidy 1.0
 - Search working
 - GPIO and Keyboard support
+- Resolution factor to adapt the interface for different screen sizes (Thanks to `Syco54645 <https://github.com/Syco54645>`_)
 - Background image
 - Lower CPU usage (Update screen only when needed)
 - Bug Fixes
