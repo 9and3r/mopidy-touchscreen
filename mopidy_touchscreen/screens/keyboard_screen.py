@@ -51,7 +51,8 @@ class Keyboard(BaseScreen):
                 button = \
                     TouchAndTextItem(self.font, key, (pos, line),
                                      (self.base_width, self.base_height),
-                                     center=True, background=(150, 150, 150))
+                                     center=True, background=(150, 150, 150),
+                                     scroll_no_fit=False)
                 self.keyboards[self.current_keyboard].\
                     set_touch_object(key, button)
                 pos += self.base_width
@@ -62,35 +63,39 @@ class Keyboard(BaseScreen):
         button = TouchAndTextItem(self.font, "123",
                                   (0, self.base_height*4),
                                   (self.base_width*2, self.base_height),
-                                  center=True, background=(150, 150, 150))
+                                  center=True, background=(150, 150, 150),
+                                  scroll_no_fit=False)
         self.other_objects.set_touch_object("symbols", button)
 
         # remove button
         button = TouchAndTextItem(self.font, "<-",
                                   (self.base_width*2, self.base_height*4),
                                   (self.base_width*2, self.base_height),
-                                  center=True, background=(150, 150, 150))
+                                  center=True, background=(150, 150, 150),
+                                  scroll_no_fit=False)
         self.other_objects.set_touch_object("remove", button)
 
         # Space button
         button = TouchAndTextItem(self.font, " ",
                                   (self.base_width*4, self.base_height*4),
                                   (self.base_width*4, self.base_height),
-                                  center=True, background=(150, 150, 150))
+                                  center=True, background=(150, 150, 150),
+                                  scroll_no_fit=False)
         self.other_objects.set_touch_object("space", button)
 
         # OK button
         button = TouchAndTextItem(self.font, "->",
                                   (self.base_width*8, self.base_height*4),
                                   (self.base_width*2, self.base_height),
-                                  center=True, background=(150, 150, 150))
+                                  center=True, background=(150, 150, 150),
+                                  scroll_no_fit=False)
         self.other_objects.set_touch_object("ok", button)
 
         # EditText button
         button = TouchAndTextItem(self.font, "",
                                   (0, 0),
-                                  (self.base_width*10, self.base_height),
-                                  center=True)
+                                  (self.size[0], self.base_height),
+                                  center=False, scroll_no_fit=False)
         self.other_objects.set_object("text", button)
         self.change_selected(0, 0)
 

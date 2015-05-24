@@ -7,7 +7,7 @@ import pygame
 logger = logging.getLogger(__name__)
 
 
-class ScreenObjectsManager():
+class ScreenObjectsManager:
     def __init__(self):
         self.touch_objects = {}
         self.text_objects = {}
@@ -86,9 +86,11 @@ class TextItem(BaseItem):
 
     scroll_speed = 2
 
-    def __init__(self, font, text, pos, size, center=False, background=None):
+    def __init__(self, font, text, pos, size, center=False, background=None,
+                 scroll_no_fit=True):
         self.font = font
         self.text = text
+        self.scroll_no_fit = scroll_no_fit
         self.color = (255, 255, 255)
         self.box = self.font.render(text, True, self.color)
         self.box = self.box.convert_alpha()
@@ -126,7 +128,7 @@ class TextItem(BaseItem):
                                self.box.get_rect().width)/2
 
     def update(self):
-        if not self.fit_horizontal:
+        if self.scroll_no_fit and not self.fit_horizontal:
             self.step += TextItem.scroll_speed
             if self.step_2 is None:
                 if (self.box.get_rect().width - self.step +
@@ -152,25 +154,33 @@ class TextItem(BaseItem):
                 self.box, ((self.pos[0] + self.margin),
                            self.pos[1]), area=self.rect)
         else:
-            surface.blit(self.box, self.pos,
-                         area=pygame.Rect(self.step, 0, self.size[0],
-                                          self.size[1]))
-            if self.step_2 is not None:
-                surface.blit(self.box, (self.pos[0]+self.step_2,
-                                        self.pos[1]),
-                             area=pygame.Rect(0, 0,
-                                              self.size[0] -
-                                              self.step_2,
+            if self.scroll_no_fit:
+                surface.blit(self.box, self.pos,
+                             area=pygame.Rect(self.step, 0, self.size[0],
+                                              self.size[1]))
+                if self.step_2 is not None:
+                    surface.blit(self.box, (self.pos[0]+self.step_2,
+                                            self.pos[1]),
+                                 area=pygame.Rect(0, 0,
+                                                  self.size[0] -
+                                                  self.step_2,
+                                                  self.size[1]))
+            else:
+                step = self.box.get_rect().width - self.size[0]
+                surface.blit(self.box, self.pos,
+                             area=pygame.Rect(step, 0, self.size[0],
                                               self.size[1]))
 
     def set_text(self, text, change_size):
         if text != self.text:
             if change_size:
                 TextItem.__init__(self, self.font, text, self.pos,
-                                  None, self.center, self.background)
+                                  None, self.center, self.background,
+                                  self.scroll_no_fit)
             else:
                 TextItem.__init__(self, self.font, text, self.pos,
-                                  self.size, self.center, self.background)
+                                  self.size, self.center, self.background,
+                                  self.scroll_no_fit)
 
     def add_text(self, add_text, change_size):
         self.set_text(self.text+add_text, change_size)
@@ -218,9 +228,10 @@ class TouchObject(BaseItem):
 
 
 class TouchAndTextItem(TouchObject, TextItem):
-    def __init__(self, font, text, pos, size, center=False, background=None):
+    def __init__(self, font, text, pos, size, center=False, background=None,
+                 scroll_no_fit=True):
         TextItem.__init__(self, font, text, pos, size, center=center,
-                          background=background)
+                          background=background, scroll_no_fit=scroll_no_fit)
         TouchObject.__init__(self, pos, self.size)
         self.active_color = (0, 150, 255)
         self.normal_box = self.box
