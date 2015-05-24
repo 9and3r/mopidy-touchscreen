@@ -53,7 +53,7 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
 
-            from .input.gpio_input_manager import GPIOManager
+            from .gpio_input_manager import GPIOManager
 
             pins = {}
             pins['left'] = config['touchscreen']['gpio_left']
