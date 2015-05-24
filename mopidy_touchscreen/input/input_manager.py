@@ -91,8 +91,12 @@ class InputManager():
             else:
                 return None
             if direction is not None:
+                if time.time() - self.down_time > InputManager.long_click_min_time:
+                    longpress = True
+                else:
+                    longpress = False
                 return InputEvent(InputManager.key, None, None, None,
-                                  direction, self.last_key)
+                                  direction, self.last_key, longpress=longpress)
 
     def mouse_down(self, event):
         self.down_pos = event.pos
@@ -125,13 +129,14 @@ class InputManager():
                                   self.up_pos, False, None)
 
 
-class InputEvent():
+class InputEvent:
     def __init__(self, event_type, down_pos, current_pos, vertical,
-                 direction, unicode=None):
+                 direction, unicode=None, longpress=False):
         self.type = event_type
         self.down_pos = down_pos
         self.current_pos = current_pos
         self.unicode = unicode
+        self.longpress = longpress
         if event_type is InputManager.swipe and direction is None:
             if vertical:
                 if self.down_pos[1] < self.current_pos[1]:

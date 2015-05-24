@@ -29,16 +29,16 @@ class MenuScreen(BaseScreen):
         clicked = self.list.touch_event(event)
         if clicked is not None:
             if clicked == 0:
-                random = not self.core.tracklist.random.get()
+                random = not self.core.tracklist.get_random().get()
                 self.core.tracklist.set_random(random)
             elif clicked == 1:
-                repeat = not self.core.tracklist.repeat.get()
+                repeat = not self.core.tracklist.get_repeat().get()
                 self.core.tracklist.set_repeat(repeat)
             elif clicked == 2:
-                single = not self.core.tracklist.single.get()
+                single = not self.core.tracklist.get_single().get()
                 self.core.tracklist.set_single(single)
             elif clicked == 3:
-                consume = not self.core.tracklist.consume.get()
+                consume = not self.core.tracklist.get_consume().get()
                 self.core.tracklist.set_consume(consume)
             elif clicked == 4:
                 os.system("pkill mopidy")

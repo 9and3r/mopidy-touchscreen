@@ -339,14 +339,32 @@ class MainScreen(BaseScreen):
                 volume = self.core.playback.volume.get() + 10
                 if volume > 100:
                     volume = 100
-                self.core.playback.volume = volume
-                self.manager.volume_changed(volume)
+                self.core.mixer.set_volume(volume)
             elif event.direction == InputManager.down:
                 volume = self.core.playback.volume.get() - 10
                 if volume < 0:
                     volume = 0
-                self.core.playback.volume = volume
-                self.manager.volume_changed(volume)
+                self.core.mixer.set_volume(volume)
+        elif event.type == InputManager.key:
+            if event.direction == InputManager.enter:
+                self.click_on_objects(["pause_play"], None)
+            elif event.direction == InputManager.up:
+                vol = self.core.mixer.get_volume().get()
+                vol += 3
+                if vol > 100:
+                    vol = 100
+                self.core.mixer.set_volume(vol)
+            elif event.direction == InputManager.down:
+                vol = self.core.mixer.get_volume().get()
+                vol -= 3
+                if vol < 0:
+                    vol = 0
+                self.core.mixer.set_volume(vol)
+            elif event.longpress:
+                if event.direction == InputManager.left:
+                    self.click_on_objects(["previous"], None)
+                elif event.direction == InputManager.right:
+                    self.click_on_objects(["next"], None)
 
     def click_on_objects(self, objects, event):
         if objects is not None:
@@ -379,7 +397,7 @@ class MainScreen(BaseScreen):
         volume = manager.get_touch_object("volume")
         pos = event.current_pos
         value = volume.get_pos_value(pos)
-        self.core.playback.volume = value
+        self.core.mixer.set_volume(value)
 
     def playback_state_changed(self, old_state, new_state):
         if new_state == mopidy.core.PlaybackState.PLAYING:

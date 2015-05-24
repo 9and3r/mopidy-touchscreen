@@ -198,7 +198,7 @@ class ScreenManager():
                     event.current_pos)
             return self.click_on_objects(objects, event)
         else:
-            if event.type == InputManager.key:
+            if event.type == InputManager.key and not event.longpress:
                 dir = event.direction
                 if dir == InputManager.right or dir == InputManager.left:
                     if not self.screens[self.current_screen]\
