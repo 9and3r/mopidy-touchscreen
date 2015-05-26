@@ -11,7 +11,8 @@ class MenuScreen(BaseScreen):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.ip = None
         self.core = core
-        self.list = ListView((0, 0), (size[0], size[1]-base_size), base_size, fonts['base'])
+        self.list = ListView((0, 0), (size[0], size[1]-base_size),
+                             base_size, fonts['base'])
 
         self.list_items = ["Random", "Repeat", "Single", "Consume",
                            "Exit Mopidy", "Shutdown", "Restart", "IP: "]
