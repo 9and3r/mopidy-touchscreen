@@ -145,7 +145,7 @@ Features
 Screenshots
 ===========
 
-.. image:: http://i60.tinypic.com/qqsait.jpg
+.. image:: http://oi57.tinypic.com/29yjgwo.jpg
 
 
 Video
