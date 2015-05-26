@@ -138,18 +138,25 @@ You can use GPIO buttons to controll mopidy touchscreen. To do that set the conf
 
 You can choose what pins to use:
 
-    - ``touchscreen/gpio``: If you want to use gpio buttons. If this is set to false other gpio configuration values will be ignored.
-    - ``touchscreen/gpio_left``: Pin used to simulate left key press.
-    - ``touchscreen/gpio_right``: Pin used to simulate right key press.
-    - ``touchscreen/gpio_up``: Pin used to simulate up key press.
-    - ``touchscreen/gpio_down``: Pin used to simulate down key press.
-    - ``touchscreen/gpio_enter``: Pin used to simulate enter key press.
+- ``touchscreen/gpio``: If you want to use gpio buttons. If this is set to false other gpio configuration values will be ignored.
+- ``touchscreen/gpio_left``: Pin used to simulate left key press.
+- ``touchscreen/gpio_right``: Pin used to simulate right key press.
+- ``touchscreen/gpio_up``: Pin used to simulate up key press.
+- ``touchscreen/gpio_down``: Pin used to simulate down key press.
+- ``touchscreen/gpio_enter``: Pin used to simulate enter key press.
     
 All pins numbers are in BCM mode. You can check `here <http://raspberrypi.stackexchange.com/a/12967>`_ to see the numbers for your board.
 
 The buttons must be connected to GROUND.
 
 Pin - Button - Ground
+
+How To Use
+==========
+
+You can use it with a touchscreen or mouse clicking on the icons. 
+In case you are using a keyboard use arrow keys to navigate and enter to select.
+The GPIO buttons simulate keyboard keys so the use is exactly the same as using a keyboard.
 
 Help
 ====
