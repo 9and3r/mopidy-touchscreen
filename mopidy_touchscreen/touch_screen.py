@@ -83,8 +83,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     os.system("pkill mopidy")
-                elif event.type == pygame.KEYUP and event.key == pygame.K_q:
-                    os.system("pkill mopidy")
                 elif event.type == pygame.VIDEORESIZE:
                     self.get_display_surface(event.size)
                     self.screen_manager.resize(event)
