@@ -97,7 +97,8 @@ class Keyboard(BaseScreen):
                                   (self.size[0], self.base_height),
                                   center=False, scroll_no_fit=False)
         self.other_objects.set_object("text", button)
-        self.change_selected(0, 0)
+        self.selected_others = 3
+        self.set_selected_other()
 
     def update(self, screen):
         screen.fill((0, 0, 0))
