@@ -90,6 +90,7 @@ class SearchScreen(BaseScreen):
                     set_active(False)
             self.screen_objects.get_touch_object(
                 self.mode_objects_keys[self.mode]).set_active(True)
+            self.search(self.query, self.mode)
 
     def set_query(self, query=""):
         self.query = query
