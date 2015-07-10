@@ -27,6 +27,12 @@ class ScreenObjectsManager:
     def set_touch_object(self, key, add_object):
         self.touch_objects[key] = add_object
 
+    def delete_touch_object(self, key):
+        try:
+            del self.touch_objects[key]
+        except KeyError:
+            pass
+
     def get_touch_object(self, key):
         return self.touch_objects[key]
 

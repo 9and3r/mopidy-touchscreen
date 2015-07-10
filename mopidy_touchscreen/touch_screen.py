@@ -132,3 +132,6 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
 
     def playlists_loaded(self):
         self.screen_manager.playlists_loaded()
+
+    def stream_title_changed(self, title):
+        self.screen_manager.stream_title_changed(title)

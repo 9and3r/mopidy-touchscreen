@@ -260,6 +260,10 @@ class ScreenManager():
         self.init_manager(event.size)
         self.update_type = BaseScreen.update_all
 
+    def stream_title_changed(self, title):
+        self.screens[main_screen_index].stream_title_changed(title)
+        self.update_type = BaseScreen.update_all
+
     def open_keyboard(self, input_listener):
         self.keyboard = Keyboard(self.size, self.base_size, self,
                                  self.fonts, input_listener)
