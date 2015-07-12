@@ -49,9 +49,9 @@ class ScreenManager():
 
     def init_manager(self, size):
         self.size = size
+        self.base_size = self.size[1] / self.resolution_factor
 
         self.background = DynamicBackground(self.size)
-        self.base_size = self.size[1] / self.resolution_factor
         font = resource_filename(
             Requirement.parse("mopidy-touchscreen"),
             "mopidy_touchscreen/icomoon.ttf")

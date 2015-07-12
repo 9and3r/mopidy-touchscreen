@@ -1,5 +1,6 @@
 import pygame
 
+
 change_speed = 2
 
 
@@ -30,12 +31,12 @@ class DynamicBackground:
         if image is not None:
             image_size = get_aspect_scale_size(image, self.size)
             target = pygame.transform.smoothscale(image, image_size)
-            target.set_alpha(150)
-            self.image_loaded = True
             self.surface_image.fill((0, 0, 0))
-            pos = ((self.size[0] - image_size[0])/2,
-                   (self.size[1] - image_size[1])/2)
-            self.surface_image.blit(target, pos)
+            pos = (int((self.size[0] - image_size[0])/2),
+                   (int(self.size[1] - image_size[1])/2))
+            self.surface_image.blit(blur_surf_times(
+                target, self.size[0]/40, 10), pos)
+            self.image_loaded = True
         else:
             self.image_loaded = False
         self.update = True
@@ -51,3 +52,24 @@ def get_aspect_scale_size(img, new_size):
         aspect = aspect_y
     new_size = (int(aspect*size[0]), int(aspect*size[1]))
     return new_size
+
+
+def blur_surf_times(surface, amt, times):
+    for i in range(times):
+        surface = blur_surf(surface, amt)
+    return surface
+
+
+# http://www.akeric.com/blog/?p=720
+def blur_surf(surface, amt):
+    """
+    Blur the given surface by the given 'amount'.  Only values 1 and greater
+    are valid.  Value 1 = no blur.
+    """
+
+    scale = 1.0/float(amt)
+    surf_size = surface.get_size()
+    scale_size = (int(surf_size[0]*scale), int(surf_size[1]*scale))
+    surf = pygame.transform.smoothscale(surface, scale_size)
+    surf = pygame.transform.smoothscale(surf, surf_size)
+    return surf

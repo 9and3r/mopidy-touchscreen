@@ -103,7 +103,7 @@ class MainScreen(BaseScreen):
                     progress.set_value(track_pos_millis)
                     self.current_track_pos = new_track_pos
                     progress.set_text(
-                    time.strftime('%M:%S', time.gmtime(
+                        time.strftime('%M:%S', time.gmtime(
                             self.current_track_pos)) +
                         "/" + self.track_duration)
                     progress.render(screen)
@@ -139,16 +139,16 @@ class MainScreen(BaseScreen):
 
             # Progress
             progress = Progressbar(self.fonts['base'],
-                               time.strftime('%M:%S', time.gmtime(
-                                   0)) + "/" + time.strftime(
+                                   time.strftime('%M:%S', time.gmtime(
+                                       0)) + "/" + time.strftime(
                                    '%M:%S', time.gmtime(0)),
-                               (size_1, self.size[1] - self.base_size * 2),
-                               (
+                                   (size_1, self.size[1] - self.base_size * 2),
+                                   (
                                    self.size[0] - size_1 - size_2,
                                    self.base_size),
-                               track.length, False)
+                                   track.length, False)
             self.touch_text_manager.set_touch_object("time_progress",
-                                                 progress)
+                                                     progress)
             self.progress_show = True
         else:
             self.progress_show = False
