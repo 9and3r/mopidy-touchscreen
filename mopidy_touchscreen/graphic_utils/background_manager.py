@@ -12,13 +12,23 @@ class DynamicBackground:
         self.surface = pygame.Surface(self.size).convert()
         self.surface.fill((145, 16, 16))
         self.surface_image = pygame.Surface(self.size).convert()
+        self.surface_image.fill((145, 16, 16))
+        self.surface_image_last = pygame.Surface(self.size).convert()
         self.update = True
+        self.screen_change_percent = 100
 
     def draw_background(self):
         if self.image_loaded:
-            return self.surface_image.copy()
-        else:
-            return self.surface.copy()
+            if self.screen_change_percent < 255:
+                self.surface.fill((0, 0, 0))
+                self.surface_image_last.set_alpha(
+                    255 - self.screen_change_percent)
+                self.surface_image.set_alpha(self.screen_change_percent)
+                self.surface.blit(self.surface_image_last, (0, 0))
+                self.surface.blit(self.surface_image, (0, 0))
+                self.screen_change_percent += 5
+                self.update = True
+        return self.surface.copy()
 
     def should_update(self):
         if self.update:
@@ -31,14 +41,13 @@ class DynamicBackground:
         if image is not None:
             image_size = get_aspect_scale_size(image, self.size)
             target = pygame.transform.smoothscale(image, image_size)
-            self.surface_image.fill((0, 0, 0))
+            self.surface_image_last = self.surface_image.copy()
             pos = (int((self.size[0] - image_size[0])/2),
                    (int(self.size[1] - image_size[1])/2))
             self.surface_image.blit(blur_surf_times(
                 target, self.size[0]/40, 10), pos)
+            self.screen_change_percent = 0
             self.image_loaded = True
-        else:
-            self.image_loaded = False
         self.update = True
 
 

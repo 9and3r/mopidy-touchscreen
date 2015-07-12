@@ -85,15 +85,28 @@ class MainScreen(BaseScreen):
     def update(self, screen, update_type, rects):
         if update_type == BaseScreen.update_all:
             screen.blit(self.top_bar, (0, 0))
+            self.update_progress(screen, rects)
             self.touch_text_manager.render(screen)
             if self.image is not None:
                 screen.blit(self.image, (
                     self.base_size / 2, self.base_size +
                     self.base_size / 2))
 
-        elif update_type == BaseScreen.update_partial \
+        if update_type == BaseScreen.update_partial \
                 and self.track is not None:
-            if self.progress_show:
+
+            progress = self.update_progress(screen, rects)
+            if progress is not None:
+                progress.render(screen)
+                rects.append(progress.rect_in_pos)
+            for key in self.update_keys:
+                object = self.touch_text_manager.get_object(key)
+                object.update()
+                object.render(screen)
+                rects.append(object.rect_in_pos)
+
+    def update_progress(self, screen, rects):
+        if self.progress_show:
                 track_pos_millis = self.core.playback.time_position.get()
                 new_track_pos = track_pos_millis / 1000
 
@@ -106,13 +119,8 @@ class MainScreen(BaseScreen):
                         time.strftime('%M:%S', time.gmtime(
                             self.current_track_pos)) +
                         "/" + self.track_duration)
-                    progress.render(screen)
-                    rects.append(progress.rect_in_pos)
-            for key in self.update_keys:
-                object = self.touch_text_manager.get_object(key)
-                object.update()
-                object.render(screen)
-                rects.append(object.rect_in_pos)
+                    return progress
+        return None
 
     def track_started(self, track):
         self.update_keys = []
