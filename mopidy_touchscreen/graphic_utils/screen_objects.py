@@ -21,6 +21,22 @@ class ScreenObjectsManager:
     def set_object(self, key, add_object):
         self.text_objects[key] = add_object
 
+    def get_update_rects(self):
+        update_rects = []
+        for key in self.text_objects:
+            object = self.text_objects[key]
+            if hasattr(object, "fit_horizontal") and not object.fit_horizontal:
+                update_rects.append(object.rect_in_pos)
+        for key in self.touch_objects:
+            object = self.touch_objects[key]
+            if hasattr(object, "fit_horizontal") and not object.fit_horizontal:
+                update_rects.append(object.rect_in_pos)
+        return update_rects
+
+    def set_horizontal_shift(self, shift):
+        for key in self.text_objects:
+            self.text_objects[key].set_horizontal_shift(shift)
+
     def get_object(self, key):
         return self.text_objects[key]
 
@@ -72,10 +88,11 @@ class ScreenObjectsManager:
             self.selected_key = None
 
 
-class BaseItem():
-    def __init__(self, pos, size):
+class BaseItem:
+    def __init__(self, pos, size, horizontal_shift=0):
         self.pos = pos
         self.size = size
+        self.horizontal_shift = horizontal_shift
         self.rect = pygame.Rect(0, 0, self.size[0], self.size[1])
         self.rect_in_pos = pygame.Rect(self.pos[0], self.pos[1],
                                        self.size[0],
@@ -84,16 +101,31 @@ class BaseItem():
     def get_right_pos(self):
         return self.pos[0] + self.size[0]
 
+    def set_horizontal_shift(self, shift):
+        self.horizontal_shift = shift
+
     def update(self):
         return False
 
+
+class ImageView(BaseItem):
+    def __init__(self, pos, size, horizontal_shift=0):
+        BaseItem.__init__(self, pos, size, horizontal_shift)
+        self.image = None
+
+    def set_image(self, image):
+        self.image = image
+
+    def render(self, surface):
+        if self.image is not None:
+            surface.blit(self.image, (self.pos[0] + self.horizontal_shift, self.pos[1]))
 
 class TextItem(BaseItem):
 
     scroll_speed = 2
 
     def __init__(self, font, text, pos, size, center=False, background=None,
-                 scroll_no_fit=True):
+                 scroll_no_fit=True, horizontal_shift=0):
         self.font = font
         self.text = text
         self.scroll_no_fit = scroll_no_fit
@@ -104,11 +136,11 @@ class TextItem(BaseItem):
         if size is not None:
             if size[1] == -1:
                 height = self.font.size(text)[1]
-                BaseItem.__init__(self, pos, (size[0], height))
+                BaseItem.__init__(self, pos, (size[0], height), horizontal_shift)
             else:
-                BaseItem.__init__(self, pos, size)
+                BaseItem.__init__(self, pos, size, horizontal_shift)
         else:
-            BaseItem.__init__(self, pos, self.font.size(text))
+            BaseItem.__init__(self, pos, self.font.size(text), horizontal_shift)
         if size is not None:
             if self.pos[0] + self.box.get_rect().width > pos[0] + \
                     size[0]:
@@ -155,25 +187,26 @@ class TextItem(BaseItem):
         if self.background:
             surface.fill(self.background, rect=self.rect_in_pos)
             pygame.draw.rect(surface, (0, 0, 0), self.rect_in_pos, 1)
+        pos = (self.pos[0] + self.horizontal_shift, self.pos[1])
         if self.fit_horizontal:
             surface.blit(
-                self.box, ((self.pos[0] + self.margin),
+                self.box, ((pos[0] + self.margin),
                            self.pos[1]), area=self.rect)
         else:
             if self.scroll_no_fit:
-                surface.blit(self.box, self.pos,
+                surface.blit(self.box, pos,
                              area=pygame.Rect(self.step, 0, self.size[0],
                                               self.size[1]))
                 if self.step_2 is not None:
-                    surface.blit(self.box, (self.pos[0]+self.step_2,
-                                            self.pos[1]),
+                    surface.blit(self.box, (pos[0]+self.step_2,
+                                            pos[1]),
                                  area=pygame.Rect(0, 0,
                                                   self.size[0] -
                                                   self.step_2,
                                                   self.size[1]))
             else:
                 step = self.box.get_rect().width - self.size[0]
-                surface.blit(self.box, self.pos,
+                surface.blit(self.box, pos,
                              area=pygame.Rect(step, 0, self.size[0],
                                               self.size[1]))
 
@@ -182,11 +215,11 @@ class TextItem(BaseItem):
             if change_size:
                 TextItem.__init__(self, self.font, text, self.pos,
                                   None, self.center, self.background,
-                                  self.scroll_no_fit)
+                                  self.scroll_no_fit, self.horizontal_shift)
             else:
                 TextItem.__init__(self, self.font, text, self.pos,
                                   self.size, self.center, self.background,
-                                  self.scroll_no_fit)
+                                  self.scroll_no_fit, self.horizontal_shift)
 
     def add_text(self, add_text, change_size):
         self.set_text(self.text+add_text, change_size)

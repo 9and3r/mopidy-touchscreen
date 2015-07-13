@@ -10,7 +10,7 @@ class BaseScreen():
         self.manager = manager
         self.fonts = fonts
 
-    def update(self, surface, update_type, rects):
+    def update(self, surface, update_type):
         """
         Draw this screen to the surface
 
@@ -25,6 +25,9 @@ class BaseScreen():
 
     def change_screen(self, direction):
         return False
+
+    def set_update_rects(self, rects):
+        pass
 
     def should_update(self):
         return BaseScreen.update_partial

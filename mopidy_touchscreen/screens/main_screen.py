@@ -14,8 +14,9 @@ import mopidy.core
 
 import pygame
 
-from ..graphic_utils import Progressbar, \
+from ..graphic_utils import ImageView, Progressbar, \
     ScreenObjectsManager, TextItem, TouchAndTextItem
+from ..graphic_utils.view_pager import ViewPager
 from ..input import InputManager
 
 
@@ -28,6 +29,8 @@ class MainScreen(BaseScreen):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.core = core
         self.track = None
+        self.previous_track = None
+        self.next_track = None
         self.cache = cache
         self.image = None
         self.artists = None
@@ -36,6 +39,7 @@ class MainScreen(BaseScreen):
         self.update_keys = []
         self.current_track_pos = 0
         self.track_duration = "00:00"
+        self.view_pager = ViewPager(self.size, self)
         self.touch_text_manager = ScreenObjectsManager()
         current_track = self.core.playback.current_track.get()
         if current_track is None:
@@ -66,46 +70,48 @@ class MainScreen(BaseScreen):
                                100, True)
         self.touch_text_manager.set_touch_object("volume", progress)
         progress.set_value(self.core.playback.volume.get())
+
         self.progress_show = False
 
-    def should_update(self):
-        if len(self.update_keys) > 0:
-            return True
+    def should_update(self, rects):
+        update = self.view_pager.should_update()
+        if update is not BaseScreen.no_update:
+            return update
+        elif len(self.update_keys) > 0:
+            return BaseScreen.update_partial
         else:
             if self.progress_show:
                 track_pos_millis = self.core.playback.time_position.get()
                 new_track_pos = track_pos_millis / 1000
                 if new_track_pos != self.current_track_pos:
-                    return True
+                    return BaseScreen.update_partial
                 else:
-                    return False
+                    return BaseScreen.no_update
             else:
-                return False
+                return BaseScreen.no_update
 
-    def update(self, screen, update_type, rects):
+    def set_update_rects(self, rects):
+        progress = self.update_progress()
+        if progress is not None:
+            self.update_keys.append("time_progress")
+            rects.append(progress.rect_in_pos)
+
+    def update(self, screen, update_type):
         if update_type == BaseScreen.update_all:
             screen.blit(self.top_bar, (0, 0))
-            self.update_progress(screen, rects)
+            self.update_progress()
             self.touch_text_manager.render(screen)
-            if self.image is not None:
-                screen.blit(self.image, (
-                    self.base_size / 2, self.base_size +
-                    self.base_size / 2))
+            self.view_pager.render(screen, update_type)
 
         if update_type == BaseScreen.update_partial \
                 and self.track is not None:
-
-            progress = self.update_progress(screen, rects)
-            if progress is not None:
-                progress.render(screen)
-                rects.append(progress.rect_in_pos)
             for key in self.update_keys:
                 object = self.touch_text_manager.get_object(key)
                 object.update()
                 object.render(screen)
-                rects.append(object.rect_in_pos)
+            self.view_pager.render(screen, update_type)
 
-    def update_progress(self, screen, rects):
+    def update_progress(self):
         if self.progress_show:
                 track_pos_millis = self.core.playback.time_position.get()
                 new_track_pos = track_pos_millis / 1000
@@ -122,11 +128,79 @@ class MainScreen(BaseScreen):
                     return progress
         return None
 
-    def track_started(self, track):
-        self.update_keys = []
-        self.image = None
+    def create_objects_manager(self):
+
+        touch_text_manager = ScreenObjectsManager()
         x = self.size[1] - self.base_size * 3
         width = self.size[0] - self.base_size / 2 - x
+
+        # Track name
+        label = TextItem(self.fonts['base'],
+                         "",
+                         (x, (self.size[1]-self.base_size*3)/2
+                          - self.base_size*0.5),
+                         (width, -1))
+        touch_text_manager.set_object("track_name", label)
+
+        # Album name
+        label = TextItem(self.fonts['base'],
+                         "",
+                         (x, (self.size[1]-self.base_size*3)/2
+                          + self.base_size*0.5),
+                         (width, -1))
+        touch_text_manager.set_object("album_name", label)
+
+        # Artist
+        label = TextItem(self.fonts['base'],
+                         "",
+                         (x, (self.size[1]-self.base_size*3)/2
+                          + self.base_size*1.5),
+                         (width, -1))
+        touch_text_manager.set_object("artist_name", label)
+
+        # Cover image
+        pos = (self.base_size / 2, self.base_size +
+                    self.base_size / 2)
+        size = self.size[1] - self.base_size * 4
+        cover = ImageView(pos, (size, size))
+        touch_text_manager.set_object("cover_image", cover)
+
+        return touch_text_manager
+
+    def set_page_values(self, screen_objects_manager, pos):
+        if pos == 0:
+            track = self.previous_track
+        elif pos == 1:
+            track = self.track
+        elif pos == 2:
+            track = self.next_track
+        if track is None:
+            return False
+        else:
+            screen_objects_manager.get_object("track_name").set_horizontal_shift(200)
+            screen_objects_manager.get_object("track_name").set_text(MainScreen.get_track_name(track), False)
+            screen_objects_manager.get_object("album_name").set_text(MainScreen.get_track_album_name(track), False)
+            screen_objects_manager.get_object("artist_name").set_text(MainScreen.get_artist_string(track), False)
+            return True
+
+    def track_started(self, track):
+        self.next_track = track
+
+        self.update_keys = []
+        self.image = None
+        self.view_pager.notify_changed()
+
+        if self.previous_track is not None and track.uri == self.previous_track.uri:
+            logger.error("sartu naiz")
+            self.view_pager.change_to_page(-1)
+            image_view = self.view_pager.objets_manager[0].get_object("cover_image")
+        else:
+            self.view_pager.change_to_page(1)
+            image_view = self.view_pager.objets_manager[2].get_object("cover_image")
+        image_view.set_image(None)
+
+        self.previous_track = self.track
+        self.track = track
 
         # Previous track button
         button = TouchAndTextItem(self.fonts['icon'], u"\ue61c",
@@ -167,61 +241,19 @@ class MainScreen(BaseScreen):
         for artist in track.artists:
             self.artists.append(artist)
 
-        # Track name
-        label = TextItem(self.fonts['base'],
-                         MainScreen.get_track_name(track),
-                         (x, (self.size[1]-self.base_size*3)/2
-                          - self.base_size*0.5),
-                         (width, -1))
-        if not label.fit_horizontal:
-            self.update_keys.append("track_name")
-        self.touch_text_manager.set_object("track_name", label)
-
-        # Album name
-        label = TextItem(self.fonts['base'],
-                         MainScreen.get_track_album_name
-                         (track),
-                         (x, (self.size[1]-self.base_size*3)/2
-                          + self.base_size*0.5),
-                         (width, -1))
-        if not label.fit_horizontal:
-            self.update_keys.append("album_name")
-        self.touch_text_manager.set_object("album_name", label)
-
-        # Artist
-        label = TextItem(self.fonts['base'],
-                         self.get_artist_string(),
-                         (x, (self.size[1]-self.base_size*3)/2
-                          + self.base_size*1.5),
-                         (width, -1))
-        if not label.fit_horizontal:
-            self.update_keys.append("artist_name")
-        self.touch_text_manager.set_object("artist_name", label)
-
-        self.track = track
         if not self.is_image_in_cache():
-            thread = Thread(target=self.download_image)
+            thread = Thread(target=self.download_image, args=[image_view])
             thread.start()
         else:
-            thread = Thread(target=self.load_image)
+            thread = Thread(target=self.load_image, args=[image_view])
             thread.start()
 
     def stream_title_changed(self, title):
         self.touch_text_manager.get_object("track_name").set_text(title, False)
 
-    def get_artist_string(self):
-        artists_string = ''
-        for artist in self.artists:
-            artists_string += artist.name + ', '
-        if len(artists_string) > 2:
-            artists_string = artists_string[:-2]
-        elif len(artists_string) == 0:
-            artists_string = "Unknow Artist"
-        return artists_string
-
     def get_image_file_name(self):
         name = MainScreen.get_track_album_name(
-            self.track) + '-' + self.get_artist_string()
+            self.track) + '-' + self.get_artist_string(self.track)
         md5name = hashlib.md5(name.encode('utf-8')).hexdigest()
         return md5name
 
@@ -235,18 +267,19 @@ class MainScreen(BaseScreen):
         return os.path.isfile(
             self.get_cover_folder() + self.get_image_file_name())
 
-    def download_image(self):
+    def download_image(self, image_view):
+
         image_uris = self.core.library.get_images(
             {self.track.uri}).get()[self.track.uri]
         if len(image_uris) > 0:
             urllib.urlretrieve(image_uris[0].uri,
                                self.get_cover_folder() +
                                self.get_image_file_name())
-            self.load_image()
+            self.load_image(image_view)
         else:
-            self.download_image_last_fm(0)
+            self.download_image_last_fm(0, image_view)
 
-    def download_image_last_fm(self, artist_index):
+    def download_image_last_fm(self, artist_index, image_view):
         if artist_index < len(self.artists):
             try:
                 safe_artist = urllib.quote_plus(
@@ -265,81 +298,26 @@ class MainScreen(BaseScreen):
                 urllib.urlretrieve(image,
                                    self.get_cover_folder() +
                                    self.get_image_file_name())
-                self.load_image()
+                self.load_image(image_view)
             except:
-                self.download_image_last_fm(artist_index + 1)
+                self.download_image_last_fm(artist_index + 1, image_view)
         else:
 
             logger.info("Cover could not be downloaded")
-
-            # There is no cover
-            # so it will use all the screen size for the text
-            width = self.size[0] - self.base_size
-
-            current = TextItem(self.fonts['base'],
-                               MainScreen.get_track_name
-                               (self.track),
-                               (self.base_size / 2,
-                                self.base_size * 2),
-                               (width, -1))
-            if not current.fit_horizontal:
-                self.update_keys.append("track_name")
-            self.touch_text_manager.set_object("track_name", current)
-
-            current = TextItem(self.fonts['base'],
-                               MainScreen.get_track_album_name
-                               (self.track),
-                               (self.base_size / 2,
-                                self.base_size * 3),
-                               (width, -1))
-            if not current.fit_horizontal:
-                self.update_keys.append("album_name")
-            self.touch_text_manager.set_object("album_name", current)
-
-            current = TextItem(self.fonts['base'],
-                               self.get_artist_string(),
-                               (self.base_size / 2,
-                                self.base_size * 4),
-                               (width, -1))
-            if not current.fit_horizontal:
-                self.update_keys.append("artist_name")
-            self.touch_text_manager.set_object("artist_name", current)
-
-            self.background.set_background_image(None)
 
     def track_playback_ended(self, tl_track, time_position):
         self.background.set_background_image(None)
         self.image = None
         self.track_duration = "00:00"
 
-        width = self.size[0] - self.base_size
-
-        current = TextItem(self.fonts['base'], "",
-                           (self.base_size / 2,
-                            self.base_size * 2),
-                           (width, -1))
-        self.touch_text_manager.set_object("track_name", current)
-
-        current = TextItem(self.fonts['base'], "",
-                           (self.base_size / 2,
-                            self.base_size * 3),
-                           (width, -1))
-        self.touch_text_manager.set_object("album_name", current)
-
-        current = TextItem(self.fonts['base'], "",
-                           (self.base_size / 2,
-                            self.base_size * 4),
-                           (width, -1))
-        self.touch_text_manager.set_object("artist_name", current)
-
-    def load_image(self):
+    def load_image(self, image_view):
         size = self.size[1] - self.base_size * 4
         image_original = pygame.image.load(
             self.get_cover_folder() +
             self.get_image_file_name())
         image = pygame.transform.scale(image_original, (size, size))
         image = image.convert()
-        self.image = image
+        image_view.set_image(image)
         self.background.set_background_image(image_original)
 
     def touch_event(self, event):
@@ -459,15 +437,32 @@ class MainScreen(BaseScreen):
 
     @staticmethod
     def get_track_name(track):
-        if track.name is None:
+        if track is None:
+            return ""
+        elif track.name is None:
             return track.uri
         else:
             return track.name
 
     @staticmethod
     def get_track_album_name(track):
+        if track is None:
+            return ""
         if track.album is not None and track.album.name is not None \
                 and len(track.album.name) > 0:
             return track.album.name
         else:
             return "Unknow Album"
+
+    @staticmethod
+    def get_artist_string(track):
+        artists_string = ''
+        if track is None:
+            return artists_string
+        for artist in track.artists:
+            artists_string += artist.name + ', '
+        if len(artists_string) > 2:
+            artists_string = artists_string[:-2]
+        elif len(artists_string) == 0:
+            artists_string = "Unknow Artist"
+        return artists_string

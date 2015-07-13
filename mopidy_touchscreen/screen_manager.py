@@ -147,23 +147,26 @@ class ScreenManager():
                 if self.background.should_update():
                     return BaseScreen.update_all
                 else:
-                    if self.screens[self.current_screen].should_update():
-                        return BaseScreen.update_partial
-                    else:
-                        return BaseScreen.no_update
+                    return self.screens[self.current_screen].should_update()
 
     def update(self, screen):
         update_type = self.get_update_type()
         if update_type != BaseScreen.no_update:
             rects = []
-            surface = self.background.draw_background()
             if self.keyboard:
+                surface = self.background.draw_background()
                 self.keyboard.update(surface)
             else:
+                if update_type == BaseScreen.update_partial:
+                    self.screens[self.current_screen].set_update_rects(rects)
+                    surface = self.background.draw_background()
+                else:
+                    surface = self.background.draw_background()
                 self.screens[self.current_screen].\
-                    update(surface, update_type, rects)
-                surface.blit(self.down_bar, (0, self.size[1] - self.base_size))
-                self.down_bar_objects.render(surface)
+                    update(surface, update_type)
+                if update_type == BaseScreen.update_all:
+                    surface.blit(self.down_bar, (0, self.size[1] - self.base_size))
+                    self.down_bar_objects.render(surface)
 
             if update_type == BaseScreen.update_all or len(rects) < 1:
                 screen.blit(surface, (0, 0))

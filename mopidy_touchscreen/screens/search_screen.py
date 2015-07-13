@@ -74,13 +74,19 @@ class SearchScreen(BaseScreen):
         self.set_query("Search")
 
     def should_update(self):
-        return self.list_view.should_update()
+        if self.list_view.should_update():
+            return BaseScreen.update_partial
+        else:
+            return BaseScreen.no_update
 
-    def update(self, screen, update_type, rects):
+    def set_update_rects(self, rects):
+        self.list_view.set_update_rects(rects)
+
+    def update(self, screen, update_type):
         screen.blit(self.top_bar, (0, 0))
         self.screen_objects.render(screen)
         update_all = (update_type == BaseScreen.update_all)
-        self.list_view.render(screen, update_all, rects)
+        self.list_view.render(screen, update_all)
 
     def set_mode(self, mode=mode_track_name):
         if mode is not self.mode:

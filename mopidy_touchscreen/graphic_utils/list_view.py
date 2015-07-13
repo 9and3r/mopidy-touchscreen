@@ -80,15 +80,19 @@ class ListView():
         else:
             return False
 
-    def render(self, surface, update_all, rects):
+    def set_update_rects(self, rects):
+        for key in self.update_keys:
+                object = self.screen_objects.get_touch_object(key)
+                object.update()
+                rects.append(object.rect_in_pos)
+
+    def render(self, surface, update_all):
         if update_all:
             self.screen_objects.render(surface)
         else:
             for key in self.update_keys:
                 object = self.screen_objects.get_touch_object(key)
-                object.update()
                 object.render(surface)
-                rects.append(object.rect_in_pos)
 
     def touch_event(self, touch_event):
         self.must_update = True
