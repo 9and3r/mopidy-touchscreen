@@ -1,6 +1,7 @@
-from .list_view import ListView
+from base_screen import BaseScreen
+
 from .main_screen import MainScreen
-from .base_screen import BaseScreen
+from ..graphic_utils import ListView
 
 
 class Tracklist(BaseScreen):
@@ -10,13 +11,20 @@ class Tracklist(BaseScreen):
         self.base_size = base_size
         self.manager = manager
         self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] - self.base_size), self.base_size, self.fonts['base'])
+            self.size[0], self.size[1] -
+            self.base_size), self.base_size, self.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
         self.update_list()
+        self.track_started(
+            self.manager.core.playback.current_tl_track.get())
 
-    def update(self, screen, update_all):
-        self.list_view.render(screen)
+    def should_update(self):
+        return self.list_view.should_update()
+
+    def update(self, screen, update_type, rects):
+        update_all = (update_type == BaseScreen.update_all)
+        self.list_view.render(screen, update_all, rects)
 
     def tracklist_changed(self):
         self.update_list()
@@ -32,9 +40,8 @@ class Tracklist(BaseScreen):
     def touch_event(self, touch_event):
         pos = self.list_view.touch_event(touch_event)
         if pos is not None:
-            self.manager.core.playback.change_track(self.tracks[pos],
-                                                    on_error_step=1)
+            self.manager.core.playback.play(self.tracks[pos])
 
     def track_started(self, track):
-        self.list_view.set_selected(
+        self.list_view.set_active(
             [self.manager.core.tracklist.index(track).get()])

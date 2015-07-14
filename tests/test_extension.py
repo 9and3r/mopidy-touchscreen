@@ -27,5 +27,3 @@ class ExtensionTest(unittest.TestCase):
         # TODO Test the content of your config schema
         # self.assertIn('username', schema)
         # self.assertIn('password', schema)
-
-    # TODO Write more tests

@@ -1,11 +1,13 @@
 import logging
+import os
 import traceback
 from threading import Thread
-import os
+
+from mopidy import core, exceptions
+
 import pygame
+
 import pykka
-import mopidy
-from mopidy import core
 
 from .screen_manager import ScreenManager
 
@@ -23,30 +25,35 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
         self.fullscreen = config['touchscreen']['fullscreen']
         self.screen_size = (config['touchscreen']['screen_width'],
                             config['touchscreen']['screen_height'])
-        os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
-        os.environ["SDL_MOUSEDRV"] = config['touchscreen'][
-            'sdl_mousdrv']
-        os.environ["SDL_MOUSEDEV"] = config['touchscreen'][
-            'sdl_mousedev']
-        os.environ["SDL_AUDIODRIVER"] = config['touchscreen']['sdl_audiodriver']
+        self.resolution_factor = (config['touchscreen']['resolution_factor'])
+        if config['touchscreen']['sdl_fbdev'].lower() != "none":
+            os.environ["SDL_FBDEV"] = config['touchscreen']['sdl_fbdev']
+        if config['touchscreen']['sdl_mousdrv'].lower() != "none":
+            os.environ["SDL_MOUSEDRV"] = (
+                config['touchscreen']['sdl_mousdrv'])
+
+        if config['touchscreen']['sdl_mousedev'].lower() != "none":
+            os.environ["SDL_MOUSEDEV"] = config['touchscreen']['sdl_mousedev']
+
+        if config['touchscreen']['sdl_audiodriver'].lower() != "none":
+            os.environ["SDL_AUDIODRIVER"] = (
+                config['touchscreen']['sdl_audiodriver'])
+
         os.environ["SDL_PATH_DSP"] = config['touchscreen']['sdl_path_dsp']
         pygame.init()
         pygame.display.set_caption("Mopidy-Touchscreen")
-        if self.fullscreen:
-            self.screen = pygame.display.set_mode(self.screen_size,
-                                             pygame.FULLSCREEN)
-        else:
-            self.screen = pygame.display.set_mode(self.screen_size)
+        self.get_display_surface(self.screen_size)
         pygame.mouse.set_visible(self.cursor)
         self.screen_manager = ScreenManager(self.screen_size,
                                             self.core,
-                                            self.cache_dir)
-        
+                                            self.cache_dir,
+                                            self.resolution_factor)
 
         # Raspberry pi GPIO
         self.gpio = config['touchscreen']['gpio']
         if self.gpio:
-            from .gpio_inpput_manager import GPIOManager
+
+            from .input import GPIOManager
 
             pins = {}
             pins['left'] = config['touchscreen']['gpio_left']
@@ -56,21 +63,32 @@ class TouchScreen(pykka.ThreadingActor, core.CoreListener):
             pins['enter'] = config['touchscreen']['gpio_enter']
             self.gpio_manager = GPIOManager(pins)
 
+    def get_display_surface(self, size):
+        try:
+            if self.fullscreen:
+                self.screen = pygame.display.set_mode(
+                    size, pygame.FULLSCREEN)
+            else:
+                self.screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+        except Exception:
+            raise exceptions.FrontendError("Error on display init:\n"
+                                           + traceback.format_exc())
+
     def start_thread(self):
         clock = pygame.time.Clock()
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
         while self.running:
-            clock.tick(15)
-            self.screen.blit(self.screen_manager.update(), (0, 0))
-            pygame.display.flip()
+            clock.tick(12)
+            self.screen_manager.update(self.screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
-                elif event.type == pygame.KEYUP and event.key == pygame.K_q:
-                    self.running = False
+                    os.system("pkill mopidy")
+                elif event.type == pygame.VIDEORESIZE:
+                    self.get_display_surface(event.size)
+                    self.screen_manager.resize(event)
                 else:
                     self.screen_manager.event(event)
         pygame.quit()
-        mopidy.utils.process.exit_process()
 
     def on_start(self):
         try:

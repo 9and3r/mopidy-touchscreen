@@ -1,8 +1,9 @@
 import logging
 
-from .screen_objects import ScreenObjectsManager, ScrollBar, \
+from screen_objects import ScreenObjectsManager, ScrollBar, \
     TouchAndTextItem
-from .input_manager import InputManager
+
+from ..input import InputManager
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +20,13 @@ class ListView():
         self.list_size = 0
         self.list = []
         self.scrollbar = False
+        self.selected = None
+        self.active = []
         self.set_list([])
-        self.selected = []
+        self.update_keys = []
 
-    # Sets the list for the lisview. It should be an iterable of strings
+    # Sets the list for the lisview.
+    # It should be an iterable of strings
     def set_list(self, item_list):
         self.screen_objects.clear()
         self.list = item_list
@@ -38,10 +42,15 @@ class ListView():
                                                  scroll_bar)
         else:
             self.scrollbar = False
+        if self.list_size > 0:
+            self.selected = 0
+        else:
+            self.selected = None
         self.load_new_item_position(0)
 
     # Will load items currently displaying in item_pos
     def load_new_item_position(self, item_pos):
+        self.update_keys = []
         self.current_item = item_pos
         if self.scrollbar:
             self.screen_objects.clear_touch(["scrollbar"])
@@ -53,19 +62,36 @@ class ListView():
             width = self.size[0] - self.base_size
         else:
             width = self.size[0]
+        self.should_update_always = False
         while i < self.list_size and z < self.max_rows:
             item = TouchAndTextItem(self.font, self.list[i], (
-                self.pos[0], self.pos[1] + self.base_size * z),
-                                    (width, -1))
+                self.pos[0],
+                self.pos[1] + self.base_size * z), (width, -1))
+            if not item.fit_horizontal:
+                self.update_keys.append(str(i))
             self.screen_objects.set_touch_object(str(i), item)
             i += 1
             z += 1
+        self.reload_selected()
 
+    def should_update(self):
+        if len(self.update_keys) > 0:
+            return True
+        else:
+            return False
 
-    def render(self, surface):
-        self.screen_objects.render(surface)
+    def render(self, surface, update_all, rects):
+        if update_all:
+            self.screen_objects.render(surface)
+        else:
+            for key in self.update_keys:
+                object = self.screen_objects.get_touch_object(key)
+                object.update()
+                object.render(surface)
+                rects.append(object.rect_in_pos)
 
     def touch_event(self, touch_event):
+        self.must_update = True
         if touch_event.type == InputManager.click \
                 or touch_event.type == InputManager.long_click:
             objects = self.screen_objects.get_touch_objects_in_pos(
@@ -73,12 +99,22 @@ class ListView():
             if objects is not None:
                 for key in objects:
                     if key == "scrollbar":
-                        direction = self.screen_objects.get_touch_object(
-                            key).touch(touch_event.current_pos)
+                        direction = \
+                            self.screen_objects.get_touch_object(
+                                key).touch(touch_event.current_pos)
                         if direction != 0:
                             self.move_to(direction)
                     else:
                         return int(key)
+        elif (touch_event.type == InputManager.key and
+                self.selected is not None):
+            if touch_event.direction == InputManager.enter:
+                if self.selected is not None:
+                    return self.selected
+            elif touch_event.direction == InputManager.up:
+                self.set_selected(self.selected-1)
+            elif touch_event.direction == InputManager.down:
+                self.set_selected(self.selected+1)
         elif touch_event.type == InputManager.swipe:
             if touch_event.direction == InputManager.up:
                 self.move_to(-1)
@@ -106,22 +142,62 @@ class ListView():
                 self.screen_objects.get_touch_object(
                     "scrollbar").set_item(
                     self.current_item)
-            self.set_selected(self.selected)
+            self.set_active(self.active)
 
-    # Set selected items
-    def set_selected(self, selected):
-        for number in self.selected:
+    # Set active items
+    def set_active(self, active):
+        self.must_update = True
+        for number in self.active:
             try:
                 self.screen_objects.get_touch_object(
                     str(number)).set_active(
                     False)
             except KeyError:
                 pass
-        for number in selected:
+        for number in active:
             try:
                 self.screen_objects.get_touch_object(
                     str(number)).set_active(
                     True)
             except KeyError:
                 pass
-        self.selected = selected
+        self.active = active
+
+    def set_selected(self, selected):
+        self.must_update = True
+        if selected > -1 and selected < len(self.list):
+            if self.selected is not None:
+                try:
+                    self.screen_objects.get_touch_object(
+                        str(self.selected)).set_selected(
+                        False)
+                except KeyError:
+                    pass
+            if selected is not None:
+                try:
+                    self.screen_objects.get_touch_object(
+                        str(selected)).set_selected(
+                        True)
+                except KeyError:
+                    pass
+            self.selected = selected
+            self.set_selected_on_screen()
+
+    def set_selected_on_screen(self):
+        self.must_update = True
+        if self.current_item + self.max_rows <= self.selected:
+            self.move_to(1)
+            self.set_selected_on_screen()
+        elif self.current_item > self.selected:
+            self.move_to(-1)
+            self.set_selected_on_screen()
+
+    def reload_selected(self):
+        self.must_update = True
+        if self.selected is not None:
+            try:
+                self.screen_objects.get_touch_object(
+                    str(self.selected)).set_selected(
+                        True)
+            except KeyError:
+                pass

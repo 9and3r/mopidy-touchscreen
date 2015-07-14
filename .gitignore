@@ -3,8 +3,9 @@
 *.swp
 *~
 .coverage
+.idea/
 .tox/
 MANIFEST
 build/
 dist/
-.idea/
+xunit-*.xml

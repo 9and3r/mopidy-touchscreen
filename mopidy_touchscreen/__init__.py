@@ -1,16 +1,13 @@
 from __future__ import unicode_literals
 
-import logging
 import os
+
 from mopidy import config, ext
 
 from .touch_screen import TouchScreen
 
 
-__version__ = '0.3.2'
-
-# TODO: If you need to log, use loggers named after the current Python module
-logger = logging.getLogger(__name__)
+__version__ = '1.0.0'
 
 
 class Extension(ext.Extension):
@@ -27,6 +24,7 @@ class Extension(ext.Extension):
         schema = super(Extension, self).get_config_schema()
         schema['screen_width'] = config.Integer(minimum=1)
         schema['screen_height'] = config.Integer(minimum=1)
+        schema['resolution_factor'] = config.Integer(minimum=6)
         schema['cursor'] = config.Boolean()
         schema['fullscreen'] = config.Boolean()
         schema['cache_dir'] = config.Path()

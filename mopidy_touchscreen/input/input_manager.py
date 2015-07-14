@@ -20,6 +20,9 @@ class InputManager():
     right = 3
     enter = 4
 
+    special_keys = [pygame.K_DOWN, pygame.K_UP, pygame.K_LEFT,
+                    pygame.K_RIGHT, pygame.K_RETURN]
+
     def __init__(self, size):
         self.down_pos = (0, 0)
         self.up_pos = (0, 0)
@@ -37,13 +40,13 @@ class InputManager():
                 touch_event = InputEvent(InputManager.swipe,
                                          self.down_pos,
                                          self.up_pos, True,
-                                         InputManager.up)
+                                         InputManager.up, None)
                 return touch_event
             elif event.button == 5:
                 touch_event = InputEvent(InputManager.swipe,
                                          self.down_pos,
                                          self.up_pos, True,
-                                         InputManager.down)
+                                         InputManager.down, None)
                 return touch_event
             elif event.button == 1 and self.down_button == 1:
                 touch_event = self.mouse_up(event)
@@ -51,7 +54,7 @@ class InputManager():
             elif event.button == 3 and self.down_button == 3:
                 touch_event = InputEvent(InputManager.long_click,
                                          self.down_pos, self.up_pos,
-                                         None, None)
+                                         None, None, None)
                 return touch_event
             else:
                 return None
@@ -59,14 +62,20 @@ class InputManager():
             self.mouse_down(event)
             return None
         elif event.type == pygame.KEYDOWN:
-            self.key_down(event)
-            return None
+            return self.key_down(event)
         elif event.type == pygame.KEYUP:
             return self.key_up(event)
 
     def key_down(self, event):
-        self.last_key = event.key
-        self.down_time = time.time()
+        if event.unicode is not None\
+                and len(event.unicode) > 0 and event.key not in \
+                InputManager.special_keys:
+            return InputEvent(InputManager.key, None, None, None,
+                              None, event.unicode)
+        else:
+            self.last_key = event.key
+            self.down_time = time.time()
+            return None
 
     def key_up(self, event):
         if self.last_key == event.key:
@@ -83,8 +92,14 @@ class InputManager():
             else:
                 return None
             if direction is not None:
+                if time.time() - self.down_time > \
+                        InputManager.long_click_min_time:
+                    longpress = True
+                else:
+                    longpress = False
                 return InputEvent(InputManager.key, None, None, None,
-                                  direction)
+                                  direction, self.last_key,
+                                  longpress=longpress)
 
     def mouse_down(self, event):
         self.down_pos = event.pos
@@ -93,10 +108,10 @@ class InputManager():
 
     def mouse_up(self, event):
         self.up_pos = event.pos
-        if abs(self.down_pos[0] - self.up_pos[
-            0]) < self.max_move_margin:
-            if abs(self.down_pos[1] - self.up_pos[
-                1]) < self.max_move_margin:
+        if abs(self.down_pos[0] -
+                self.up_pos[0]) < self.max_move_margin:
+            if abs(self.down_pos[1] -
+                    self.up_pos[1]) < self.max_move_margin:
                 if time.time() - InputManager.long_click_min_time > \
                         self.down_time:
                     return InputEvent(InputManager.long_click,
@@ -106,23 +121,25 @@ class InputManager():
                     return InputEvent(InputManager.click,
                                       self.down_pos,
                                       self.up_pos, None, None)
-            elif abs(self.down_pos[1] - self.up_pos[
-                1]) > self.min_swipe_move:
+            elif abs(self.down_pos[1] - self.up_pos[1])\
+                    > self.min_swipe_move:
                 return InputEvent(InputManager.swipe, self.down_pos,
                                   self.up_pos, True, None)
         elif self.down_pos[1] - self.up_pos[1] < self.max_move_margin:
-            if abs(self.down_pos[0] - self.up_pos[
-                0]) > self.min_swipe_move:
+            if abs(self.down_pos[0] - self.up_pos[0]) > \
+                    self.min_swipe_move:
                 return InputEvent(InputManager.swipe, self.down_pos,
                                   self.up_pos, False, None)
 
 
-class InputEvent():
+class InputEvent:
     def __init__(self, event_type, down_pos, current_pos, vertical,
-                 direction):
+                 direction, unicode=None, longpress=False):
         self.type = event_type
         self.down_pos = down_pos
         self.current_pos = current_pos
+        self.unicode = unicode
+        self.longpress = longpress
         if event_type is InputManager.swipe and direction is None:
             if vertical:
                 if self.down_pos[1] < self.current_pos[1]:
