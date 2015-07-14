@@ -31,13 +31,21 @@ class ViewPager:
         self.update = True
 
     def should_update(self):
-        if self.update:
-            return BaseScreen.update_all
+        if self.update or len(self.update_rects) > 0:
+            return BaseScreen.update_partial
         else:
-            if len(self.update_rects)>0:
-                return BaseScreen.update_partial
-            else:
-                return BaseScreen.no_update
+            return BaseScreen.no_update
+
+    def set_update_rects(self, rects):
+        if self.update or self.direction != 0:
+            rects += self.objets_manager[0].get_update_rects(True)
+            rects += self.objets_manager[1].get_update_rects(True)
+            rects += self.objets_manager[2].get_update_rects(True)
+            self.shift()
+            rects += self.objets_manager[0].get_update_rects(True)
+            rects += self.objets_manager[1].get_update_rects(True)
+            rects += self.objets_manager[2].get_update_rects(True)
+        rects += self.update_rects
 
     def shift(self):
         if self.direction == 1:
@@ -77,8 +85,6 @@ class ViewPager:
                 self.objets_manager[0].render(screen)
         else:
             self.update = False
-            self.update_rects = self.objets_manager[1].get_update_rects()
-            #if update_type == BaseScreen.update_partial:
-                #rects += self.update_rects
+            self.update_rects = self.objets_manager[1].get_update_rects(False)
 
         self.objets_manager[1].render(screen)

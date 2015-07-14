@@ -28,7 +28,7 @@ class PlaylistScreen(BaseScreen):
 
     def update(self, screen, update_type):
         update_all = (update_type == BaseScreen.update_all)
-        self.list.render(screen, update_all)
+        self.list_view.render(screen, update_all)
 
     def playlists_loaded(self):
         self.selected_playlist = None

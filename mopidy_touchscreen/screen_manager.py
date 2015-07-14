@@ -152,23 +152,21 @@ class ScreenManager():
     def update(self, screen):
         update_type = self.get_update_type()
         if update_type != BaseScreen.no_update:
-            rects = []
             if self.keyboard:
                 surface = self.background.draw_background()
                 self.keyboard.update(surface)
             else:
+                surface = self.background.draw_background()
                 if update_type == BaseScreen.update_partial:
+                    rects = []
                     self.screens[self.current_screen].set_update_rects(rects)
-                    surface = self.background.draw_background()
-                else:
-                    surface = self.background.draw_background()
                 self.screens[self.current_screen].\
                     update(surface, update_type)
                 if update_type == BaseScreen.update_all:
                     surface.blit(self.down_bar, (0, self.size[1] - self.base_size))
                     self.down_bar_objects.render(surface)
 
-            if update_type == BaseScreen.update_all or len(rects) < 1:
+            if update_type == BaseScreen.update_all:
                 screen.blit(surface, (0, 0))
                 pygame.display.flip()
             else:

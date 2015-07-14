@@ -17,7 +17,7 @@ class DynamicBackground:
         self.update = True
         self.screen_change_percent = 100
 
-    def draw_background(self):
+    def draw_background(self, rects=None):
         if self.image_loaded:
             if self.screen_change_percent < 255:
                 self.surface.fill((0, 0, 0))
@@ -26,7 +26,7 @@ class DynamicBackground:
                 self.surface_image.set_alpha(self.screen_change_percent)
                 self.surface.blit(self.surface_image_last, (0, 0))
                 self.surface.blit(self.surface_image, (0, 0))
-                self.screen_change_percent += 5
+                self.screen_change_percent += 50
                 self.update = True
         return self.surface.copy()
 

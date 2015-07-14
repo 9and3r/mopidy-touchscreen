@@ -21,15 +21,15 @@ class ScreenObjectsManager:
     def set_object(self, key, add_object):
         self.text_objects[key] = add_object
 
-    def get_update_rects(self):
+    def get_update_rects(self, all):
         update_rects = []
         for key in self.text_objects:
             object = self.text_objects[key]
-            if hasattr(object, "fit_horizontal") and not object.fit_horizontal:
+            if all or (hasattr(object, "fit_horizontal") and not object.fit_horizontal):
                 update_rects.append(object.rect_in_pos)
         for key in self.touch_objects:
             object = self.touch_objects[key]
-            if hasattr(object, "fit_horizontal") and not object.fit_horizontal:
+            if all or (hasattr(object, "fit_horizontal") and not object.fit_horizontal):
                 update_rects.append(object.rect_in_pos)
         return update_rects
 

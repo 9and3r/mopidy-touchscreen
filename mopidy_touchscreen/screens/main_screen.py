@@ -73,7 +73,7 @@ class MainScreen(BaseScreen):
 
         self.progress_show = False
 
-    def should_update(self, rects):
+    def should_update(self):
         update = self.view_pager.should_update()
         if update is not BaseScreen.no_update:
             return update
@@ -93,8 +93,9 @@ class MainScreen(BaseScreen):
     def set_update_rects(self, rects):
         progress = self.update_progress()
         if progress is not None:
-            self.update_keys.append("time_progress")
+            self.update_keys = [("time_progress")]
             rects.append(progress.rect_in_pos)
+        self.view_pager.set_update_rects(rects)
 
     def update(self, screen, update_type):
         if update_type == BaseScreen.update_all:
@@ -106,7 +107,7 @@ class MainScreen(BaseScreen):
         if update_type == BaseScreen.update_partial \
                 and self.track is not None:
             for key in self.update_keys:
-                object = self.touch_text_manager.get_object(key)
+                object = self.touch_text_manager.get_touch_object(key)
                 object.update()
                 object.render(screen)
             self.view_pager.render(screen, update_type)
@@ -186,12 +187,10 @@ class MainScreen(BaseScreen):
     def track_started(self, track):
         self.next_track = track
 
-        self.update_keys = []
         self.image = None
         self.view_pager.notify_changed()
 
         if self.previous_track is not None and track.uri == self.previous_track.uri:
-            logger.error("sartu naiz")
             self.view_pager.change_to_page(-1)
             image_view = self.view_pager.objets_manager[0].get_object("cover_image")
         else:
