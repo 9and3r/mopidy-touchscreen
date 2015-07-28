@@ -5,6 +5,8 @@ from graphic_utils import DynamicBackground, \
     ScreenObjectsManager, TouchAndTextItem
 from input import InputManager
 
+import mopidy
+
 from pkg_resources import Requirement, resource_filename
 
 import pygame
@@ -208,6 +210,27 @@ class ScreenManager():
                         else:
                             self.change_screen(self.current_screen-1)
                     return True
+                elif event.unicode is not None:
+                    if event.unicode == "n":
+                        self.core.playback.next()
+                    elif event.unicode == "p":
+                        self.core.playback.previous()
+                    elif event.unicode == "+":
+                        volume = self.core.playback.volume.get() + 10
+                        if volume > 100:
+                            volume = 100
+                        self.core.mixer.set_volume(volume)
+                    elif event.unicode == "-":
+                        volume = self.core.playback.volume.get() - 10
+                        if volume < 0:
+                            volume = 0
+                        self.core.mixer.set_volume(volume)
+                    elif event.unicode == " ":
+                        if self.core.playback.get_state().get() == \
+                                mopidy.core.PlaybackState.PLAYING:
+                            self.core.playback.pause()
+                        else:
+                            self.core.playback.play()
             return False
 
     def volume_changed(self, volume):
