@@ -77,7 +77,7 @@ The following configuration values are available:
 - ``touchscreen/fullscreen``: If you want to be shown as a window or in
   fullscreen.
 
-- ``touchscreen/screen_width``: The folder to be used as cache. Defaults to
+- ``touchscreen/cache_dir``: The folder to be used as cache. Defaults to
   ``$XDG_CACHE_DIR/mopidy/touchscreen``, which usually means
   ``~/.cache/mopidy/touchscreen``
 
