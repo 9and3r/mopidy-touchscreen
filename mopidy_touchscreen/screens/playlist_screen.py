@@ -38,7 +38,11 @@ class PlaylistScreen(BaseScreen):
         self.playlist_tracks = playlist.tracks
         self.playlist_tracks_strings = ["../"]
         for track in self.playlist_tracks:
-            self.playlist_tracks_strings.append(track.name)
+            if track.name is None:
+                self.playlist_tracks_strings.append(track.uri)
+            else:
+                self.playlist_tracks_strings.append(track.name)
+
         self.list_view.set_list(self.playlist_tracks_strings)
 
     def touch_event(self, touch_event):
