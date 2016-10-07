@@ -277,18 +277,9 @@ class Progressbar(TouchObject):
             .convert_alpha()
         self.surface.fill(self.back_color)
         self.value_text = value_text
-        if value_text:
-            self.text = TextItem(font, str(max_value), pos, None)
-            self.text.pos = (self.pos[0]
-                             + self.size[0] / 2 -
-                             self.text.size[0] /
-                             2, self.text.pos[1])
-            self.text.set_text(str(self.value), True)
-        else:
-            self.text = TextItem(font, text, pos, None)
-            self.text.pos = (
-                self.pos[0] + self.size[0] / 2 - self.text.size[0] /
-                2, self.text.pos[1])
+
+        self.text = TextItem(font, str(max_value), pos, None)
+        self.text.set_text(str(self.value), True)
 
         # Rectangle
         self.rectangle = pygame.Surface(size, pygame.SRCALPHA)\
@@ -307,10 +298,6 @@ class Progressbar(TouchObject):
             self.value = value
             if self.value_text:
                 self.set_text(str(self.value))
-                self.text.pos = (self.pos[0]
-                                 + self.size[0] / 2 -
-                                 self.text.size[0]
-                                 / 2, self.text.pos[1])
             self.surface.fill(self.back_color)
             pos_pixel = value * self.size[0] / self.max
             rect = pygame.Rect(0, 0, pos_pixel, self.size[1])
@@ -322,6 +309,8 @@ class Progressbar(TouchObject):
 
     def set_text(self, text):
         self.text.set_text(text, True)
+        self.text.pos = (self.pos[0] + self.size[0] / 2 - self.text.size[0] / 2,
+                         self.pos[1] + self.size[1]/2 - self.text.size[1]/2)
 
 
 class ScrollBar(TouchObject):
