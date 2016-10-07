@@ -54,12 +54,15 @@ class ScreenManager():
         self.base_size = self.size[1] / self.resolution_factor
 
         self.background = DynamicBackground(self.size)
-        font = resource_filename(
+        font_icon = resource_filename(
             Requirement.parse("mopidy-touchscreen"),
             "mopidy_touchscreen/icomoon.ttf")
-        self.fonts['base'] = pygame.font.SysFont("arial",
-                                                 int(self.base_size*0.9))
-        self.fonts['icon'] = pygame.font.Font(font, int(self.base_size*0.9))
+
+        font_base = resource_filename(
+            Requirement.parse("mopidy-touchscreen"),
+            "mopidy_touchscreen/NotoSans-Regular.ttf")
+        self.fonts['base'] = pygame.font.Font(font_base, int(self.base_size*0.9))
+        self.fonts['icon'] = pygame.font.Font(font_icon, int(self.base_size*0.9))
         try:
             self.screens = [
                 SearchScreen(size, self.base_size, self, self.fonts),

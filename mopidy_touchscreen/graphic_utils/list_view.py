@@ -14,7 +14,7 @@ class ListView():
         self.pos = pos
         self.base_size = base_size
         self.screen_objects = ScreenObjectsManager()
-        self.max_rows = self.size[1] / self.base_size
+        self.max_rows = self.size[1] / font.size("TEXT SIZE")[1]
         self.current_item = 0
         self.font = font
         self.list_size = 0
@@ -63,10 +63,12 @@ class ListView():
         else:
             width = self.size[0]
         self.should_update_always = False
-        while i < self.list_size and z < self.max_rows:
+        current_y = self.pos[1]
+        while i < self.list_size and current_y <= self.pos[1] + self.size[1]:
             item = TouchAndTextItem(self.font, self.list[i], (
                 self.pos[0],
-                self.pos[1] + self.base_size * z), (width, -1))
+                current_y), (width, -1))
+            current_y += item.size[1]
             if not item.fit_horizontal:
                 self.update_keys.append(str(i))
             self.screen_objects.set_touch_object(str(i), item)
