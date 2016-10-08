@@ -10,6 +10,9 @@ class BaseScreen():
         self.manager = manager
         self.fonts = fonts
 
+    def find_update_rects(self, rects):
+        pass
+
     def update(self, surface, update_type, rects):
         """
         Draw this screen to the surface

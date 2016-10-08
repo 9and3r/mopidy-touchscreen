@@ -18,6 +18,15 @@ class DynamicBackground:
         self.screen_change_percent = 100
 
     def draw_background(self):
+        self.update_background()
+        return self.surface.copy()
+
+    def draw_background_in_rects(self, surface, rects):
+        self.update_background()
+        for rect in rects:
+            surface.blit(self.surface, rect, area=rect)
+
+    def update_background(self):
         if self.image_loaded:
             if self.screen_change_percent < 255:
                 self.surface.fill((0, 0, 0))
@@ -28,7 +37,6 @@ class DynamicBackground:
                 self.surface.blit(self.surface_image, (0, 0))
                 self.screen_change_percent += 5
                 self.update = True
-        return self.surface.copy()
 
     def should_update(self):
         if self.update:

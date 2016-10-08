@@ -1,4 +1,5 @@
 import logging
+import random
 import traceback
 
 from graphic_utils import DynamicBackground, \
@@ -49,6 +50,8 @@ class ScreenManager():
 
         self.init_manager(size)
 
+        self.last_surface = pygame.Surface(size)
+
     def init_manager(self, size):
         self.size = size
         self.base_size = self.size[1] / self.resolution_factor
@@ -63,72 +66,47 @@ class ScreenManager():
             "mopidy_touchscreen/NotoSans-Regular.ttf")
         self.fonts['base'] = pygame.font.Font(font_base, int(self.base_size*0.9))
         self.fonts['icon'] = pygame.font.Font(font_icon, int(self.base_size*0.9))
-        try:
-            self.screens = [
-                SearchScreen(size, self.base_size, self, self.fonts),
-                MainScreen(size, self.base_size, self, self.fonts,
-                           self.cache, self.core, self.background),
-                Tracklist(size, self.base_size, self, self.fonts),
-                LibraryScreen(size, self.base_size, self, self.fonts),
-                PlaylistScreen(size,
-                               self.base_size, self, self.fonts),
-                MenuScreen(size, self.base_size, self, self.fonts, self.core)]
-        except:
-            traceback.print_exc()
+
         self.track = None
 
         # Menu buttons
 
         button_size = (self.size[0] / 6, self.base_size)
 
-        # Search button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue986",
-                                  (0, self.size[1] - self.base_size),
-                                  button_size, center=True)
-        self.down_bar_objects.set_touch_object("menu_0", button)
-        x = button.get_right_pos()
+        menu_icons = [u" \ue986", u" \ue600", u"\ue60d", u" \ue604", u" \ue605", u" \ue60a"]
 
-        # Main button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue600",
-                                  (x, self.size[1] - self.base_size),
-                                  button_size, center=True)
-        self.down_bar_objects.set_touch_object("menu_1", button)
-        x = button.get_right_pos()
+        x = 0
+        i = 0
+        while(i<6):
 
-        # Tracklist button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue60d",
-                                  (x, self.size[1] - self.base_size),
-                                  button_size, center=True)
-        self.down_bar_objects.set_touch_object("menu_2", button)
-        x = button.get_right_pos()
-
-        # Library button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue604",
-                                  (x, self.size[1] - self.base_size),
-                                  button_size, center=True)
-        self.down_bar_objects.set_touch_object("menu_3", button)
-        x = button.get_right_pos()
-
-        # Playlist button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue605",
-                                  (x, self.size[1] - self.base_size),
-                                  button_size, center=True)
-
-        self.down_bar_objects.set_touch_object("menu_4", button)
-        x = button.get_right_pos()
-
-        # Menu button
-        button = TouchAndTextItem(self.fonts['icon'], u" \ue60a",
-                                  (x, self.size[1] - self.base_size),
-                                  button_size,
-                                  center=True)
-        self.down_bar_objects.set_touch_object("menu_5", button)
+            button = TouchAndTextItem(self.fonts['icon'], menu_icons[i],
+                                    (x, self.size[1] - self.base_size),
+                                    button_size, center=True)
+            self.down_bar_objects.set_touch_object("menu_" + str(i), button)
+            x = button.get_right_pos()
+            i += 1
+            button.pos = (button.pos[0], self.size[1] - button.rect_in_pos.size[1])
 
         # Down bar
         self.down_bar = pygame.Surface(
-            (self.size[0], self.size[1] - self.base_size),
+            (self.size[0], button.rect_in_pos.size[1]),
             pygame.SRCALPHA)
         self.down_bar.fill((0, 0, 0, 200))
+
+        screen_size = (size[0], self.size[1] - button.rect.size[1])
+
+        try:
+            self.screens = [
+                SearchScreen(screen_size, self.base_size, self, self.fonts),
+                MainScreen(screen_size, self.base_size, self, self.fonts,
+                           self.cache, self.core, self.background),
+                Tracklist(screen_size, self.base_size, self, self.fonts),
+                LibraryScreen(screen_size, self.base_size, self, self.fonts),
+                PlaylistScreen(screen_size,
+                               self.base_size, self, self.fonts),
+                MenuScreen(screen_size, self.base_size, self, self.fonts, self.core)]
+        except:
+            traceback.print_exc()
 
         self.options_changed()
         self.mute_changed(self.core.playback.mute.get())
@@ -161,22 +139,29 @@ class ScreenManager():
         update_type = self.get_update_type()
         if update_type != BaseScreen.no_update:
             rects = []
-            surface = self.background.draw_background()
+            if update_type == BaseScreen.update_partial:
+                surface = self.last_surface
+                self.screens[self.current_screen].find_update_rects(rects)
+                self.background.draw_background_in_rects(surface, rects)
+            else:
+                surface = self.background.draw_background()
+
             if self.keyboard:
                 self.keyboard.update(surface)
             else:
                 self.screens[self.current_screen].\
                     update(surface, update_type, rects)
-                surface.blit(self.down_bar, (0, self.size[1] - self.base_size))
+                surface.blit(self.down_bar, (0, self.size[1] - self.down_bar.get_size()[1]))
                 self.down_bar_objects.render(surface)
 
-            if update_type == BaseScreen.update_all or len(rects) < 1:
+            if update_type == BaseScreen.update_all:
                 screen.blit(surface, (0, 0))
                 pygame.display.flip()
             else:
                 for rect in rects:
                     screen.blit(surface, rect, area=rect)
-                pygame.display.update(rects)
+                    pygame.display.update(rects)
+            self.last_surface = surface
 
     def track_started(self, track):
         self.track = track

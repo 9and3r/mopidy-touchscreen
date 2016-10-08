@@ -6,9 +6,7 @@ from ..graphic_utils import ListView
 class PlaylistScreen(BaseScreen):
     def __init__(self, size, base_size, manager, fonts):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
-        self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] -
-            self.base_size), self.base_size,
+        self.list_view = ListView((0, 0), size, self.base_size,
             self.fonts['base'])
         self.playlists_strings = []
         self.playlists = []
@@ -19,6 +17,10 @@ class PlaylistScreen(BaseScreen):
 
     def should_update(self):
         return self.list_view.should_update()
+
+    def find_update_rects(self, rects):
+        return self.list_view.find_update_rects(rects)
+
 
     def update(self, screen, update_type, rects):
         update_all = (update_type == BaseScreen.update_all)

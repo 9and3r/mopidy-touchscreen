@@ -17,7 +17,7 @@ class SearchScreen(BaseScreen):
         BaseScreen.__init__(self, size, base_size, manager, fonts)
         self.list_view = ListView((0, self.base_size*2), (
             self.size[0], self.size[1] -
-            3*self.base_size), self.base_size, manager.fonts['base'])
+            2*self.base_size), self.base_size, manager.fonts['base'])
         self.results_strings = []
         self.results = []
         self.screen_objects = ScreenObjectsManager()
@@ -75,6 +75,10 @@ class SearchScreen(BaseScreen):
 
     def should_update(self):
         return self.list_view.should_update()
+
+    def find_update_rects(self, rects):
+        return self.list_view.find_update_rects(rects)
+
 
     def update(self, screen, update_type, rects):
         screen.blit(self.top_bar, (0, 0))

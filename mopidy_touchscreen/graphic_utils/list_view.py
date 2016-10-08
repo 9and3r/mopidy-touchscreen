@@ -82,6 +82,11 @@ class ListView():
         else:
             return False
 
+    def find_update_rects(self, rects):
+        for key in self.update_keys:
+            object = self.screen_objects.get_touch_object(key)
+            rects.append(object.rect_in_pos)
+
     def render(self, surface, update_all, rects):
         if update_all:
             self.screen_objects.render(surface)
@@ -90,7 +95,6 @@ class ListView():
                 object = self.screen_objects.get_touch_object(key)
                 object.update()
                 object.render(surface)
-                rects.append(object.rect_in_pos)
 
     def touch_event(self, touch_event):
         self.must_update = True

@@ -10,9 +10,7 @@ class Tracklist(BaseScreen):
         self.size = size
         self.base_size = base_size
         self.manager = manager
-        self.list_view = ListView((0, 0), (
-            self.size[0], self.size[1] -
-            self.base_size), self.base_size, self.fonts['base'])
+        self.list_view = ListView((0, 0), size, self.base_size, self.fonts['base'])
         self.tracks = []
         self.tracks_strings = []
         self.update_list()
@@ -21,6 +19,10 @@ class Tracklist(BaseScreen):
 
     def should_update(self):
         return self.list_view.should_update()
+
+    def find_update_rects(self, rects):
+        return self.list_view.find_update_rects(rects)
+
 
     def update(self, screen, update_type, rects):
         update_all = (update_type == BaseScreen.update_all)
