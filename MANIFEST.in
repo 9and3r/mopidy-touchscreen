@@ -5,6 +5,7 @@ include MANIFEST.in
 include README.rst
 include mopidy_touchscreen/ext.conf
 include mopidy_touchscreen/icomoon.ttf
+include mopidy_touchscreen/NotoSans-Regular.ttf
 include tox.ini
 
 recursive-include tests *.py
