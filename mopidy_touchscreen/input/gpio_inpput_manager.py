@@ -30,13 +30,13 @@ class GPIOManager():
 
         # Down Button
         GPIO.setup(pins['down'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(pins['down'], GPIO.BOTH, callback=right,
+        GPIO.add_event_detect(pins['down'], GPIO.BOTH, callback=down,
                               bouncetime=30)
 
         # Enter Button
         GPIO.setup(pins['enter'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(pins['enter'], GPIO.BOTH,
-                              callback=right,
+                              callback=enter,
                               bouncetime=30)
 
 
@@ -59,7 +59,7 @@ def left(channel):
     else:
         type = pygame.KEYDOWN
         dict['unicode'] = None
-    dict['key'] = pygame.K_RIGHT
+    dict['key'] = pygame.K_LEFT
     event = pygame.event.Event(type, dict)
     pygame.event.post(event)
 
